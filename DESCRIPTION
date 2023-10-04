@@ -1,0 +1,20 @@
+Package: rosv
+Title: An R Interface to the Open Source Vulnerability Database
+Version: 0.0.1
+Authors@R: 
+    person("Allen", "OBrien", , "allen.g.obrien@gmail.com", role = c("aut", "cre"))
+Description: A set of tools to connect, query, and operate on information available from 
+  the Open Source Vulnerability Database. Although CRAN has vulnerabilities listed, these are few compared 
+  to projects such as PyPI. With tighter integrations between R and Python, having an R specific package to 
+  access details about vulnerabilities from various sources is a worthwhile enterprise.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    digest,
+    jsonlite,
+    purrr
