@@ -3,11 +3,13 @@
 
 # rosv
 
-Use R to query the Open Source Vulnerability (OSV) database. This can be
-useful to cross check the database with packages used in
-`requirements.txt` (python) or `renv.lock` files (R). The generated
-content can also be used to create block lists for curated repositories
-with Posit Package Manager.
+Use R to query the [Open Source Vulnerability (OSV)
+database](https://osv.dev/). This can be useful to cross check the
+database with packages used in `requirements.txt` (python) or
+`renv.lock` files (R). The generated content can also be used to create
+block lists for curated repositories with Posit Package Manager. More
+details about the OSV project and associated API can be found here:
+<https://google.github.io/osv.dev/>
 
 ## Installation
 
