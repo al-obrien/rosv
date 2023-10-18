@@ -59,6 +59,7 @@ extract_vul_info <- function(file, delim = '\t', version_placeholder = ' ') {
 #'
 #' @param type Character value of either 'pypi' or 'cran'.
 #' @param delim The deliminator to separate the package and version details.
+#' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function.
 #'
@@ -102,6 +103,7 @@ create_osv_list <- function(type = 'pypi', delim = '\t', as.data.frame = FALSE, 
 #' @param osv_list Output from \code{create_osv_list()}.
 #' @param delim The delimiter used when creating \code{osv_list}.
 #' @param flags Global flag to apply to the rspm commands.
+#'
 #' @examples
 #' \dontrun{
 #' pypi_vul <- create_osv_list(delim = ',')
@@ -126,7 +128,8 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' Perform some formatting as PyPI is case insensitive and underscore, period, and hyphens
 #' as long runs are not recognized (- is same as --).
 #'
-#' @param pkg_name
+#' @param pkg_name Vector of package names.
+#'
 normalize_pypi_pkg <- function(pkg_name) {
 
   pypi_pattern <- "^([A-Z0-9]|[A-Z0-9][A-Z0-9._-]*[A-Z0-9])$"
@@ -143,6 +146,7 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list}.
 #' @param type Determine what type of OSV list is being used (currently only works with pypi).
+#' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @examples
 #' \dontrun{
