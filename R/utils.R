@@ -34,6 +34,9 @@ download_osv <- function(type = 'pypi', refresh = FALSE) {
 #' Extract key OSV information from JSON
 #'
 #' Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.
+#' Packages that do not have a listed version will have a blank space as the default placeholder.
+#' This makes it easier for \code{strsplit} to operate on the string in other steps,
+#' which will not perform as expected without some value coming after the delimiter.
 #'
 #' @param file File path to the folder containing the OSV JSON files.
 #' @param delim The deliminator to separate the package and version details.
@@ -73,7 +76,7 @@ extract_vul_info <- function(file, delim = '\t', version_placeholder = ' ') {
 #' future::plan(sequential)
 #' }
 #' @export
-create_osv_list <- function(type = 'pypi', delim = '\t', refresh = FALSE, clear_cache = FALSE) {
+create_osv_list <- function(type = 'pypi', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
   dir_loc <- download_osv(type = type, refresh = refresh)
   vul_files <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
 
@@ -84,13 +87,20 @@ create_osv_list <- function(type = 'pypi', delim = '\t', refresh = FALSE, clear_
 
   # Run in parallel if plan set by user, otherwise its sequential
   extracted_details <- furrr::future_map(vul_files, function(x) extract_vul_info(x, delim = delim))
+
+  if(as.data.frame) {
+    read.table(textConnection(unique(sort(unlist(extracted_details)))),
+               sep = delim,
+               col.names = c('package_name', 'version'))
+  } else {
     unique(sort(unlist(extracted_details)))
+  }
 }
 
 #' Create blacklist commands for Posit Package Manager from OSV data
 #'
 #' @param osv_list Output from \code{create_osv_list()}.
-#' @param delim The deliminter used when creating \code{osv_list}.
+#' @param delim The delimiter used when creating \code{osv_list}.
 #' @param flags Global flag to apply to the rspm commands.
 #' @examples
 #' \dontrun{
