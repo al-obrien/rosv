@@ -15,4 +15,7 @@ extract_vul_info(file, delim = "\\t", version_placeholder = " ")
 }
 \description{
 Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.
+Packages that do not have a listed version will have a blank space as the default placeholder.
+This makes it easier for \code{strsplit} to operate on the string in other steps,
+which will not perform as expected without some value coming after the delimiter.
 }

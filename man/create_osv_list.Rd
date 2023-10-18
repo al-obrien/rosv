@@ -7,6 +7,7 @@
 create_osv_list(
   type = "pypi",
   delim = "\\t",
+  as.data.frame = FALSE,
   refresh = FALSE,
   clear_cache = FALSE
 )
@@ -16,12 +17,19 @@ create_osv_list(
 
 \item{delim}{The deliminator to separate the package and version details.}
 
+\item{as.data.frame}{Boolean value to determine if a data.frame should be created instead of a list.}
+
 \item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
 
 \item{clear_cache}{Boolean value, to force clearing of the existing cache upon exiting function.}
 }
 \description{
 Create list of packages identified in OSV database
+}
+\details{
+This is the core calculation to extract details from the database. As such, if
+you set a \code{future::plan()} for parallelization, that will be respected via the
+\code{furrr} package. The default will be to run sequentially.
 }
 \examples{
 \dontrun{
@@ -30,5 +38,10 @@ writeLines(pypi_vul, 'pypi_vul.txt')
 
 cran_vul <- create_osv_list(type = 'cran', delim = ',')
 writeLines(cran_vul, 'cran_vul.csv')
+
+# In parallel
+future::plan(multisession, workers = 4)
+pypi_vul <- create_osv_list()
+future::plan(sequential)
 }
 }

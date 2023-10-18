@@ -9,7 +9,7 @@ create_ppm_blacklist(osv_list, delim, flags = NULL)
 \arguments{
 \item{osv_list}{Output from \code{create_osv_list()}.}
 
-\item{delim}{The deliminter used when creating \code{osv_list}.}
+\item{delim}{The delimiter used when creating \code{osv_list}.}
 
 \item{flags}{Global flag to apply to the rspm commands.}
 }
