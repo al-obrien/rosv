@@ -48,6 +48,12 @@ extract_vul_info <- function(file, delim = '\t', version_placeholder = ' ') {
 
 #' Create list of packages identified in OSV database
 #'
+#' @details
+#' This is the core calculation to extract details from the database. As such, if
+#' you set a \code{future::plan()} for parallelization, that will be respected via the
+#' \code{furrr} package. The default will be to run sequentially.
+#'
+#'
 #' @param type Character value of either 'pypi' or 'cran'.
 #' @param delim The deliminator to separate the package and version details.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
@@ -60,6 +66,11 @@ extract_vul_info <- function(file, delim = '\t', version_placeholder = ' ') {
 #'
 #' cran_vul <- create_osv_list(type = 'cran', delim = ',')
 #' writeLines(cran_vul, 'cran_vul.csv')
+#'
+#' # In parallel
+#' future::plan(multisession, workers = 4)
+#' pypi_vul <- create_osv_list()
+#' future::plan(sequential)
 #' }
 #' @export
 create_osv_list <- function(type = 'pypi', delim = '\t', refresh = FALSE, clear_cache = FALSE) {
@@ -71,7 +82,9 @@ create_osv_list <- function(type = 'pypi', delim = '\t', refresh = FALSE, clear_
     if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
   }, add = TRUE)
 
-  unique(sort(unlist(purrr::map(vul_files, function(x) extract_vul_info(x, delim = delim)))))
+  # Run in parallel if plan set by user, otherwise its sequential
+  extracted_details <- furrr::future_map(vul_files, function(x) extract_vul_info(x, delim = delim))
+    unique(sort(unlist(extracted_details)))
 }
 
 #' Create blacklist commands for Posit Package Manager from OSV data
