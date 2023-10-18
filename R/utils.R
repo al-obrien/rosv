@@ -120,3 +120,76 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
   if(!is.null(flags)) cmd_out <- paste(cmd_out, flags)
   cmd_out
 }
+
+#' Normalize package name to PyPI expectation
+#'
+#' Perform some formatting as PyPI is case insensitive and underscore, period, and hyphens
+#' as long runs are not recognized (- is same as --).
+#'
+#' @param pkg_name
+normalize_pypi_pkg <- function(pkg_name) {
+
+  pypi_pattern <- "^([A-Z0-9]|[A-Z0-9][A-Z0-9._-]*[A-Z0-9])$"
+  if(!all(grepl(x = pkg_name, pattern = pypi_pattern, ignore.case = TRUE))) {
+    stop('An invalid package name for Python has been provided')
+  }
+
+  tolower(gsub(x = pkg_name, "[-_.]+", replacement = "-"))
+
+}
+
+#' Cross reference a whitelist of packages to a vulnerability database
+#'
+#' @param packages Character vector of package names.
+#' @param osv_list OSV data/list created from \code{create_osv_list}.
+#' @param type Determine what type of OSV list is being used (currently only works with pypi).
+#' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
+#' @examples
+#' \dontrun{
+#' python_pkg <- c('dask', 'tensorflow', 'keras')
+#' pypi_vul <- create_osv_list(as.data.frame = TRUE)
+#' xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
+#' writeLines(xref_pkg_list, 'requirements.txt')
+#' }
+#' @export
+create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version_placeholder = ' ') {
+
+  if(type != 'pypi') stop('This function currently only works for pypi repos') else warning('This function currently only works for pypi repos')
+
+  packages <- data.frame(package_name = normalize_pypi_pkg(packages))
+
+  # If was using the non-data.frame format, convert to it for merges...
+  if(!is.data.frame(osv_list)) {
+    osv_list <-  read.table(textConnection(osv_list),
+                            sep = delim,
+                            col.names = c('package_name', 'version'))
+  }
+
+  # Left join to provided
+  packages_vul <- merge(packages, osv_list, by = 'package_name', all.x = TRUE, all.y = FALSE)
+
+  # Categorize package vul types
+  packages_vul$type <- NA
+  packages_vul[is.na(packages_vul$version),'type'] <- 'ALLOW'
+  packages_vul[is.na(packages_vul$type) & packages_vul$version == version_placeholder, 'type'] <- 'BLOCK'
+  packages_vul[is.na(packages_vul$type), 'type'] <- "VERSION"
+
+  # Remove all with a block name
+  block_pkg <- packages_vul$package_name[packages_vul$type == 'BLOCK']
+  packages_vul <- packages_vul[-(packages_vul$package_name %in% block_pkg),]
+
+  # Generate version exclusion
+  exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'version'],
+                        packages_vul[packages_vul$type == 'VERSION', 'package_name']),
+                  function(x){
+                    version_glue <- paste0(x, collapse = ', !=')
+                  })
+  exl_v <- paste0(names(exl_v), ' !=', exl_v)
+
+  # Add to allow list
+  xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'package_name'],
+                 exl_v)
+
+  xref_pkgs
+}
+
