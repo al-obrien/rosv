@@ -180,7 +180,9 @@ create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version
 
   # Remove all with a block name
   block_pkg <- packages_vul$package_name[packages_vul$type == 'BLOCK']
-  packages_vul <- packages_vul[-(packages_vul$package_name %in% block_pkg),]
+  packages_vul <- packages_vul[!(packages_vul$package_name %in% block_pkg),]
+
+  if(nrow(packages_vul) > 0) {
 
   # Generate version exclusion
   exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'version'],
@@ -193,7 +195,10 @@ create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version
   # Add to allow list
   xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'package_name'],
                  exl_v)
+  return(xref_pkgs)
+  }
 
-  xref_pkgs
+  packages_vul[packages_vul$type == 'ALLOW', 'package_name']
+
 }
 
