@@ -116,6 +116,12 @@ normalize_pypi_pkg <- function(pkg_name) {
 
 #' Cross reference a whitelist of packages to a vulnerability database
 #'
+#' @details
+#' Note that some version suffixes may have compatibility issues. For example, the use of
+#' *-git as a suffix may not be recognized and may need to be dropped. For more details on
+#' PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
+#'
+#'
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list}.
 #' @param type Determine what type of OSV list is being used (currently only works with pypi).
@@ -161,9 +167,9 @@ create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version
   exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'version'],
                         packages_vul[packages_vul$type == 'VERSION', 'package_name']),
                   function(x){
-                    version_glue <- paste0(x, collapse = ', !=')
+                    version_glue <- paste0(x, collapse = ', != ')
                   })
-  exl_v <- paste0(names(exl_v), ' !=', exl_v)
+  exl_v <- paste0(names(exl_v), ' != ', exl_v)
 
   # Add to allow list
   xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'package_name'],
