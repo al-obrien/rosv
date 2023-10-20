@@ -37,7 +37,7 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' \code{furrr} package. The default will be to run sequentially.
 #'
 #'
-#' @param type Character value of either 'pypi' or 'cran'.
+#' @param ecosystem Character value of either 'pypi' or 'cran'.
 #' @param delim The deliminator to separate the package and version details.
 #' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
@@ -48,7 +48,7 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' pypi_vul <- create_osv_list()
 #' writeLines(pypi_vul, 'pypi_vul.txt')
 #'
-#' cran_vul <- create_osv_list(type = 'cran', delim = ',')
+#' cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
 #' writeLines(cran_vul, 'cran_vul.csv')
 #'
 #' # In parallel
@@ -131,7 +131,7 @@ normalize_pypi_pkg <- function(pkg_name) {
 #'
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list}.
-#' @param type Determine what type of OSV list is being used (currently only works with pypi).
+#' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with pypi).
 #' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @examples
@@ -142,9 +142,9 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' writeLines(xref_pkg_list, 'requirements.txt')
 #' }
 #' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version_placeholder = ' ') {
+create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'pypi', version_placeholder = ' ') {
 
-  if(type != 'pypi') stop('This function currently only works for pypi repos') else warning('This function currently only works for pypi repos')
+  if(ecosystem != 'pypi') stop('This function currently only works for pypi repos') else warning('This function currently only works for pypi repos')
 
   packages <- data.frame(package_name = normalize_pypi_pkg(packages))
 

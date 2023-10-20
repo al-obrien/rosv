@@ -2,23 +2,23 @@
 #'
 #' Helper function to assist in downloading vulnerabilities information from OSV database.
 #'
-#' @param type Character value of either 'pypi' or 'cran'.
+#' @param ecosystem Character value of either 'pypi' or 'cran'.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #'
 #' @export
-download_osv <- function(type = 'pypi', refresh = FALSE) {
+download_osv <- function(ecosystem = 'pypi', refresh = FALSE) {
 
   # Specific database URLs
-  vul_url <- if(type == 'pypi') {
+  vul_url <- if(ecosystem == 'pypi') {
     'https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip'
-  } else if (type == 'cran') {
+  } else if (ecosystem == 'cran') {
     'https://osv-vulnerabilities.storage.googleapis.com/CRAN/all.zip'
   }
 
   # Cache setup, only DL zip if not done today or in live session
   time_stamp <- Sys.time()
   date_stamp_hash <- digest::digest(as.Date(time_stamp))
-  osv_cache <- file.path(tempdir(), paste0(type, '-', date_stamp_hash, '.zip'))
+  osv_cache <- file.path(tempdir(), paste0(ecosystem, '-', date_stamp_hash, '.zip'))
 
   if(!file.exists(osv_cache) || refresh) {
     message('Downloading from OSV online database...')
@@ -26,7 +26,7 @@ download_osv <- function(type = 'pypi', refresh = FALSE) {
   }
 
   # Unzip for use...
-  dl_dir <- file.path(tempdir(), paste0(type,'-unzipped-',date_stamp_hash))
+  dl_dir <- file.path(tempdir(), paste0(ecosystem,'-unzipped-',date_stamp_hash))
   unzip(osv_cache, exdir = dl_dir)
 
   return(list('osv_cache' = osv_cache,
