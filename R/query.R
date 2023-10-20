@@ -45,6 +45,8 @@ download_osv <- function(ecosystem = 'pypi', refresh = FALSE) {
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @export
 osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
+  if(ecosystem == 'PyPI') packages <- normalize_pypi_pkg(packages)
+
   constructed_query <- list(commit = NA,
                             version = version,
                             package = list(name = packages, ecosystem = ecosystem, purl = NA),
@@ -83,6 +85,8 @@ osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token 
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @export
 osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
+
+  if(ecosystem == 'PyPI') packages <- normalize_pypi_pkg(packages)
 
   # Loop through to create each set
   batch_query <- furrr::future_pmap(list(packages, version, ecosystem, page_token),
@@ -154,12 +158,11 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @examples
 #' \dontrun{
+#' # Single package
 #' pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
-#' extract_vul_info(pkg_vul)
 #'
 #' # Batch query
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
-#' extract_vul_info(pkg_vul)
 #' }
 #' @export
 osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA,...) {
