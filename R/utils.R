@@ -52,6 +52,10 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 #' future::plan(multisession, workers = 4)
 #' pypi_vul <- create_osv_list()
 #' future::plan(sequential)
+#'
+#' # Use from query instead of entire database
+#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+#' create_osv_list(vulns_list = pkg_vul)
 #' }
 #' @export
 create_osv_list <- function(vulns_list = NULL, ecosystem = 'pypi', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
