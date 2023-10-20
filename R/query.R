@@ -41,10 +41,10 @@ download_osv <- function(type = 'pypi', refresh = FALSE) {
 #' @param ... Additional parameters, for future development.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
-osv_query_1 <- function(packages = NULL, version = NULL, ecosystem = NULL, page_token = NULL, body_only = TRUE, ...) {
-  constructed_query <- list(commit = NULL,
+osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
+  constructed_query <- list(commit = NA,
                             version = version,
-                            package = list(name = packages, ecosystem = ecosystem, purl = NULL),
+                            package = list(name = packages, ecosystem = ecosystem, purl = NA),
                             page_token = page_token)
 
   req <- httr2::request('https://api.osv.dev/v1/query')
@@ -64,8 +64,9 @@ osv_query_1 <- function(packages = NULL, version = NULL, ecosystem = NULL, page_
 #' Query OSV API for vulnerabilities given a vector of packages
 #'
 #' Each query needs to be constructed from the provided set of vectors. Default
-#' will be NULL and thereby empty in the JSON request. For large queries, the
-#' conversion to a formatted JSON request can be parallelized via {future}.
+#' will be \code{NA} and thereby empty/null in the JSON request. If some values in the vector
+#' are missing, use NA For large queries, the conversion to a formatted JSON
+#' request can be parallelized via {future}.
 #'
 #' @param packages Name of package.
 #' @param version Version of package.
@@ -75,18 +76,14 @@ osv_query_1 <- function(packages = NULL, version = NULL, ecosystem = NULL, page_
 #' @param ... Additional parameters, for future development.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
-osv_querybatch <- function(packages = NULL, version = NULL, ecosystem = NULL, page_token = NULL, body_only = TRUE, ...) {
-
-  # Allow NULL inputs by forcing into an iterable list from vectors/scalars
-  format_inputs <- purrr::map(list(packages, version, ecosystem, page_token),
-                              function(x) if(is.null(x) || !is.list(x)) list(x) else x)
-
+osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
+browser()
   # Loop through to create each set
-  batch_query <- furrr::future_pmap(format_inputs,
+  batch_query <- furrr::future_pmap(list(packages, version, ecosystem, page_token),
                                     function(packages, version, ecosystem, page_token) {
-                                      list(commit = NULL,
+                                      list(commit = NA,
                                            version = version,
-                                           package = list(name = packages, ecosystem = ecosystem, purl = NULL),
+                                           package = list(name = packages, ecosystem = ecosystem, purl = NA),
                                            page_token = page_token)
                                     })
 
@@ -122,23 +119,27 @@ osv_querybatch <- function(packages = NULL, version = NULL, ecosystem = NULL, pa
 #' \dontrun{
 #' pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 #' extract_vul_info(pkg_vul)
+#'
+#' # Batch query
+#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+#' extract_vul_info(pkg_vul)
 #' }
 #' @export
-osv_query <- function(packages = NULL, version = NULL, ecosystem = NULL, page_token = NULL, body_only = TRUE,...) {
+osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE,...) {
 
   if(length(packages) > 1) {
     osv_querybatch(packages = packages,
-                version = version,
-                ecosystem = ecosystem,
-                page_token = page_token,
-                body_only = body_only,
-                ...)
-  } else {
-    osv_query_1(packages = packages,
                    version = version,
                    ecosystem = ecosystem,
                    page_token = page_token,
                    body_only = body_only,
                    ...)
+  } else {
+    osv_query_1(packages = packages,
+                version = version,
+                ecosystem = ecosystem,
+                page_token = page_token,
+                body_only = body_only,
+                ...)
   }
 }
