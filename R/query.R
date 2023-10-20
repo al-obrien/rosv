@@ -4,6 +4,8 @@
 #'
 #' @param type Character value of either 'pypi' or 'cran'.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
+#'
+#' @export
 download_osv <- function(type = 'pypi', refresh = FALSE) {
 
   # Specific database URLs
@@ -41,6 +43,7 @@ download_osv <- function(type = 'pypi', refresh = FALSE) {
 #' @param ... Additional parameters, for future development.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
+#' @export
 osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
   constructed_query <- list(commit = NA,
                             version = version,
@@ -68,6 +71,8 @@ osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token 
 #' are missing, use NA For large queries, the conversion to a formatted JSON
 #' request can be parallelized via {future}.
 #'
+#' This returns the vulnerability ID and modified fields only, as per API instruction.
+#'
 #' @param packages Name of package.
 #' @param version Version of package.
 #' @param ecosystem Ecosystem package lives within.
@@ -76,6 +81,7 @@ osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token 
 #' @param ... Additional parameters, for future development.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
+#' @export
 osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
 
   # Loop through to create each set
