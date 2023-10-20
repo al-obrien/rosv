@@ -77,7 +77,7 @@ osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token 
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
-browser()
+
   # Loop through to create each set
   batch_query <- furrr::future_pmap(list(packages, version, ecosystem, page_token),
                                     function(packages, version, ecosystem, page_token) {
@@ -103,15 +103,46 @@ browser()
   }
 }
 
+#' Query OSV API for vulnerabilities based on ID
+#'
+#' @param vulns_ids Vector of vulnerability IDs.
+#' @param body_only Boolean value to return entire response or just the body content.
+#'
+#' Is usually paired with the batch outputs to grab more specific information.
+#' @export
+osv_vulns <- function(vulns_ids, body_only = TRUE) {
+
+  req <- httr2::request('https://api.osv.dev/v1/vulns')
+  req <- httr2::req_headers(req, Accept = "application/json")
+  req <- httr2::req_retry(req, 3, backoff = ~10)
+  req_list <- purrr::map(vulns_ids, function(x) httr2::req_url_path_append(req, x))
+
+  resp_list <- purrr::map(req_list, httr2::req_perform)
+
+  if(body_only) {
+    purrr::map(resp_list, httr2::resp_body_json)
+  } else {
+    resp
+  }
+}
+
+
 #' Query OSV API for individual package vulnerabilities
 #'
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
+#' Unlike the other query functions, \code{osv_query} will only return content and not
+#' the response object.
+#'
+#' @details
+#' Since the 'query' and 'batchquery' API endpoints have different outputs, this
+#' function will align their contents to be a list of vulnerabilities. For 'query' this
+#' meant flattening once, and for 'batchquery' it meant using IDs to fetch the additional
+#' vulnerability information and then flattening the list.
 #'
 #' @param packages Name of package.
 #' @param version Version of package.
 #' @param ecosystem Ecosystem package lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
-#' @param body_only Boolean value to return entire response or just the body content.
 #' @param ... Any other parameters to pass to nested functions, currently not used.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
@@ -125,21 +156,26 @@ browser()
 #' extract_vul_info(pkg_vul)
 #' }
 #' @export
-osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE,...) {
+osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA,...) {
 
   if(length(packages) > 1) {
-    osv_querybatch(packages = packages,
-                   version = version,
-                   ecosystem = ecosystem,
-                   page_token = page_token,
-                   body_only = body_only,
-                   ...)
+    batch_vulns <- osv_querybatch(packages = packages,
+                                  version = version,
+                                  ecosystem = ecosystem,
+                                  page_token = page_token,
+                                  body_only = TRUE,
+                                  ...)
+
+    # Grab IDs for all Vulns and return the more details vulns info
+    osv_vulns(unlist(map_depth(batch_vulns, 4, 'id'), use.names = FALSE), body_only = TRUE)
+
   } else {
-    osv_query_1(packages = packages,
-                version = version,
-                ecosystem = ecosystem,
-                page_token = page_token,
-                body_only = body_only,
-                ...)
+    # Align by pre-plucking the vulnerability label
+    purrr::pluck(osv_query_1(packages = packages,
+                             version = version,
+                             ecosystem = ecosystem,
+                             page_token = page_token,
+                             body_only = TRUE,
+                             ...), 1)
   }
 }
