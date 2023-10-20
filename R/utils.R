@@ -11,7 +11,7 @@
 extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
   if(file.exists(input)) {
     # Load from a file (if it exists), parse accordingly for affected set
-    aff_pkgs <- purrr::pluck(jsonlite::read_json(file), 'affected')
+    aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
   } else {
     # If not a file, assume its API response, and parse as such
     aff_pkgs <- purrr::pluck(input, 'vulns', 1, 'affected')
