@@ -8,20 +8,15 @@
 #' @param input File path to the folder or API response content containing the OSV JSON info
 #' @param delim The deliminator to separate the package and version details.
 #' @param version_placeholder Value to fill if no versions are listed for package.
-extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
+#' @param file_flag Boolean to determine if the input was a file or already a list format in R memory.
+extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', file_flag = FALSE) {
 
-  file_check <- tryCatch(file.exists(pkg_vul),
-                         error = function(e) {
-                           message('Input was not a filepath, assuming JSON in memory')
-                           FALSE
-                           })
-
-  if(file_check) {
+  if(file_flag) {
     # Load from a file (if it exists), parse accordingly for affected set
     aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
   } else {
     # If not a file, assume its API response, and parse as such (batch needs to be parsed similar)
-    aff_pkgs <- purrr::pluck(input, 1, 'affected')
+    aff_pkgs <- purrr::pluck(input, 'affected')
   }
 
   pkg_names <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'package', 'name'))
@@ -70,8 +65,16 @@ create_osv_list <- function(vulns_list = NULL, ecosystem = 'pypi', delim = '\t',
     }, add = TRUE)
   }
 
+  # Logic to switch file or memory based creation
+  file_flag <- is.null(vulns_list)
+    # file_flag <- tryCatch(all(file.exists(vulns_list)),
+    #                       error = function(e) {
+    #                         message('Input was not a filepath, assuming JSON in memory')
+    #                         FALSE
+    #                         })
+
   # Run in parallel if plan set by user, otherwise its sequential
-  extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim))
+  extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim, file_flag = file_flag))
 
   if(as.data.frame) {
     read.table(textConnection(unique(sort(unlist(extracted_details)))),
