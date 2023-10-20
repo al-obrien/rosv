@@ -141,7 +141,8 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
 #'
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
 #' Unlike the other query functions, \code{osv_query} will only return content and not
-#' the response object.
+#' the response object. All vulnerabilities are returned for any versions of the package flagged
+#' in OSV.
 #'
 #' @details
 #' Since the 'query' and 'batchquery' API endpoints have different outputs, this
@@ -150,7 +151,6 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
 #' vulnerability information and then flattening the list.
 #'
 #' @param packages Name of package.
-#' @param version Version of package.
 #' @param ecosystem Ecosystem package lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param ... Any other parameters to pass to nested functions, currently not used.
@@ -165,11 +165,11 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
 #' }
 #' @export
-osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA,...) {
+osv_query <- function(packages = NA, ecosystem = NA, page_token = NA,...) {
 
   if(length(packages) > 1) {
     batch_vulns <- osv_querybatch(packages = packages,
-                                  version = version,
+                                  version = NA,
                                   ecosystem = ecosystem,
                                   page_token = page_token,
                                   body_only = TRUE,
@@ -181,7 +181,7 @@ osv_query <- function(packages = NA, version = NA, ecosystem = NA, page_token = 
   } else {
     # Align by pre-plucking the vulnerability label
     purrr::pluck(osv_query_1(packages = packages,
-                             version = version,
+                             version = NA,
                              ecosystem = ecosystem,
                              page_token = page_token,
                              body_only = TRUE,
