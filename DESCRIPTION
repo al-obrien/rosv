@@ -1,6 +1,6 @@
 Package: rosv
 Title: An R Interface to the Open Source Vulnerability Database
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: 
     person("Allen", "OBrien", , "allen.g.obrien@gmail.com", role = c("aut", "cre"))
 Description: A set of tools to connect, query, and operate on information available from 
@@ -17,5 +17,6 @@ Config/testthat/edition: 3
 Imports: 
     digest,
     furrr,
+    httr2,
     jsonlite,
     purrr

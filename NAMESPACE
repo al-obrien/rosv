@@ -3,3 +3,8 @@
 export(create_osv_list)
 export(create_ppm_blacklist)
 export(create_ppm_xref_whitelist)
+export(download_osv)
+export(osv_query)
+export(osv_query_1)
+export(osv_querybatch)
+export(osv_vulns)

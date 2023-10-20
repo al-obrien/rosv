@@ -32,18 +32,19 @@ remotes::install_github('al-obrien/rosv')
 The most basic usage of {rosv} is to pull all versions of PyPI or CRAN packages listed 
 on the OSV database.
 
-```{r example, eval = FALSE}
+```{r, eval = FALSE}
 library(rosv)
 
-# PUll the PyPI vulnerability data
-pypi_vul <- create_osv_list(ecosystem = 'pypi')
-pypi_vul
-
-# Query one package in PyPI
+# Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 create_osv_list(pkg_vul)
 ```
 
+```{r example, eval = FALSE}
+# Pull the entire set of PyPI vulnerability data
+pypi_vul <- create_osv_list(ecosystem = 'pypi')
+pypi_vul
+```
 ## Creating a cross-referenced whitelist
 
 When using a product such as {miniCRAN} or Posit Package Manager, there may be 
@@ -70,4 +71,6 @@ writeLines(xref_pkg_list, 'requirements.txt')
 ## Development notes
 
 {rosv} is still a young project. There are plans to extend its use to other ecosystems. 
-Furthermore, to support any future growth, the project structure will likely leverage R6 classes.
+Furthermore, to support any future growth, the project structure will likely leverage R6 classes. 
+There are also plans to have more types of returned details, such as returning just the version 
+input for functions like `osv_query()`.

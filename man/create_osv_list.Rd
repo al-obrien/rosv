@@ -5,7 +5,8 @@
 \title{Create list of packages identified in OSV database}
 \usage{
 create_osv_list(
-  type = "pypi",
+  vulns_list = NULL,
+  ecosystem = "pypi",
   delim = "\\t",
   as.data.frame = FALSE,
   refresh = FALSE,
@@ -13,7 +14,9 @@ create_osv_list(
 )
 }
 \arguments{
-\item{type}{Character value of either 'pypi' or 'cran'.}
+\item{vulns_list}{A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.}
+
+\item{ecosystem}{Character value of either 'pypi' or 'cran'.}
 
 \item{delim}{The deliminator to separate the package and version details.}
 
@@ -36,12 +39,16 @@ you set a \code{future::plan()} for parallelization, that will be respected via 
 pypi_vul <- create_osv_list()
 writeLines(pypi_vul, 'pypi_vul.txt')
 
-cran_vul <- create_osv_list(type = 'cran', delim = ',')
+cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
 writeLines(cran_vul, 'cran_vul.csv')
 
 # In parallel
 future::plan(multisession, workers = 4)
 pypi_vul <- create_osv_list()
 future::plan(sequential)
+
+# Use from query instead of entire database
+pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+create_osv_list(vulns_list = pkg_vul)
 }
 }

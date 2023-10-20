@@ -27,13 +27,15 @@ packages listed on the OSV database.
 ``` r
 library(rosv)
 
-# PUll the PyPI vulnerability data
-pypi_vul <- create_osv_list(ecosystem = 'pypi')
-pypi_vul
-
-# Query one package in PyPI
+# Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 create_osv_list(pkg_vul)
+```
+
+``` r
+# Pull the entire set of PyPI vulnerability data
+pypi_vul <- create_osv_list(ecosystem = 'pypi')
+pypi_vul
 ```
 
 ## Creating a cross-referenced whitelist
@@ -64,4 +66,6 @@ writeLines(xref_pkg_list, 'requirements.txt')
 
 {rosv} is still a young project. There are plans to extend its use to
 other ecosystems. Furthermore, to support any future growth, the project
-structure will likely leverage R6 classes.
+structure will likely leverage R6 classes. There are also plans to have
+more types of returned details, such as returning just the version input
+for functions like `osv_query()`.
