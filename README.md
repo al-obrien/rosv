@@ -28,12 +28,12 @@ packages listed on the OSV database.
 library(rosv)
 
 # PUll the PyPI vulnerability data
-pypi_vul <- create_osv_list()
+pypi_vul <- create_osv_list(ecosystem = 'pypi')
 pypi_vul
 
 # Query one package in PyPI
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
-extract_vul_info(pkg_vul)
+create_osv_list(pkg_vul)
 ```
 
 ## Creating a cross-referenced whitelist
