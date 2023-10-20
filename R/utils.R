@@ -9,7 +9,14 @@
 #' @param delim The deliminator to separate the package and version details.
 #' @param version_placeholder Value to fill if no versions are listed for package.
 extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
-  if(file.exists(input)) {
+
+  file_check <- tryCatch(file.exists(pkg_vul),
+                         error = function(e) {
+                           message('Input was not a filepath, assuming JSON in memory')
+                           FALSE
+                           })
+
+  if(file_check) {
     # Load from a file (if it exists), parse accordingly for affected set
     aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
   } else {
