@@ -1,36 +1,3 @@
-#' Download helper for OSV data
-#'
-#' Helper function to assist in downloading vulnerabilities information from OSV database.
-#'
-#' @param type Character value of either 'pypi' or 'cran'.
-#' @param refresh Force refresh of the cache to grab latest details from OSV databases.
-download_osv <- function(type = 'pypi', refresh = FALSE) {
-
-  # Specific database URLs
-  vul_url <- if(type == 'pypi') {
-    'https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip'
-  } else if (type == 'cran') {
-    'https://osv-vulnerabilities.storage.googleapis.com/CRAN/all.zip'
-  }
-
-  # Cache setup, only DL zip if not done today or in live session
-  time_stamp <- Sys.time()
-  date_stamp_hash <- digest::digest(as.Date(time_stamp))
-  osv_cache <- file.path(tempdir(), paste0(type, '-', date_stamp_hash, '.zip'))
-
-  if(!file.exists(osv_cache) || refresh) {
-    message('Downloading from OSV online database...')
-    download.file(url = vul_url, destfile = osv_cache)
-  }
-
-  # Unzip for use...
-  dl_dir <- file.path(tempdir(), paste0(type,'-unzipped-',date_stamp_hash))
-  unzip(osv_cache, exdir = dl_dir)
-
-  return(list('osv_cache' = osv_cache,
-              'dl_dir' = dl_dir))
-}
-
 #' Extract key OSV information from JSON
 #'
 #' Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.
@@ -38,11 +5,17 @@ download_osv <- function(type = 'pypi', refresh = FALSE) {
 #' This makes it easier for \code{strsplit} to operate on the string in other steps,
 #' which will not perform as expected without some value coming after the delimiter.
 #'
-#' @param file File path to the folder containing the OSV JSON files.
+#' @param input File path to the folder or API response content containing the OSV JSON info
 #' @param delim The deliminator to separate the package and version details.
 #' @param version_placeholder Value to fill if no versions are listed for package.
-extract_vul_info <- function(file, delim = '\t', version_placeholder = ' ') {
-  aff_pkgs <- purrr::pluck(jsonlite::read_json(file), 'affected')
+extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
+  if(file.exists(input)) {
+    # Load from a file (if it exists), parse accordingly for affected set
+    aff_pkgs <- purrr::pluck(jsonlite::read_json(file), 'affected')
+  } else {
+    # If not a file, assume its API response, and parse as such
+    aff_pkgs <- purrr::pluck(input, 'vulns', 1, 'affected')
+  }
   pkg_names <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'package', 'name'))
   pkg_versions <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'versions'))
   if(length(pkg_versions) == 1 && length(pkg_versions[[1]]) < 1) pkg_versions <- version_placeholder
@@ -202,3 +175,6 @@ create_ppm_xref_whitelist <- function(packages, osv_list, type = 'pypi', version
 
 }
 
+# Incomplete... for helping if affected array is nested at different depths in API resp
+locate_min_depth <- function(list, target) {
+}
