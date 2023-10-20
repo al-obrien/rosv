@@ -20,13 +20,15 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
     # Load from a file (if it exists), parse accordingly for affected set
     aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
   } else {
-    # If not a file, assume its API response, and parse as such
-    aff_pkgs <- purrr::pluck(input, 'vulns', 1, 'affected')
+    # If not a file, assume its API response, and parse as such (batch needs to be parsed similar)
+    aff_pkgs <- purrr::pluck(input, 1, 'affected')
   }
+
   pkg_names <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'package', 'name'))
   pkg_versions <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'versions'))
   if(length(pkg_versions) == 1 && length(pkg_versions[[1]]) < 1) pkg_versions <- version_placeholder
   unlist(purrr::map2(pkg_names, pkg_versions, function(x,y) paste(x, y, sep = delim)))
+
 }
 
 #' Create list of packages identified in OSV database
@@ -36,7 +38,7 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' you set a \code{future::plan()} for parallelization, that will be respected via the
 #' \code{furrr} package. The default will be to run sequentially.
 #'
-#'
+#' @param vulns_list A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
 #' @param ecosystem Character value of either 'pypi' or 'cran'.
 #' @param delim The deliminator to separate the package and version details.
 #' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
@@ -57,17 +59,19 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' future::plan(sequential)
 #' }
 #' @export
-create_osv_list <- function(type = 'pypi', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
-  dir_loc <- download_osv(type = type, refresh = refresh)
-  vul_files <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
+create_osv_list <- function(vulns_list = NULL, ecosystem = 'pypi', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+  if(is.null(vulns_list)) {
+    dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
+    vulns_list <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
 
-  on.exit({
-    unlink(dir_loc$dl_dir, recursive = TRUE, force = TRUE)
-    if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
-  }, add = TRUE)
+    on.exit({
+      unlink(dir_loc$dl_dir, recursive = TRUE, force = TRUE)
+      if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
+    }, add = TRUE)
+  }
 
   # Run in parallel if plan set by user, otherwise its sequential
-  extracted_details <- furrr::future_map(vul_files, function(x) extract_vul_info(x, delim = delim))
+  extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim))
 
   if(as.data.frame) {
     read.table(textConnection(unique(sort(unlist(extracted_details)))),
