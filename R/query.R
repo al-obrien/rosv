@@ -54,6 +54,7 @@ osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token 
 
   req <- httr2::request('https://api.osv.dev/v1/query')
   req <- httr2::req_headers(req, Accept = "application/json")
+  req <- httr2::req_user_agent('{rosv} (https://github.com/al-obrien/rosv)')
   req <- httr2::req_body_json(req, constructed_query)
   req <- httr2::req_retry(req, 3, backoff = ~10)
 
@@ -101,6 +102,7 @@ osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_tok
 
   req <- httr2::request('https://api.osv.dev/v1/querybatch')
   req <- httr2::req_headers(req, Accept = "application/json")
+  req <- httr2::req_user_agent('{rosv} (https://github.com/al-obrien/rosv)')
   req <- httr2::req_body_json(req, constructed_query)
   req <- httr2::req_retry(req, 3, backoff = ~10)
 
@@ -125,6 +127,8 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
   req <- httr2::request('https://api.osv.dev/v1/vulns')
   req <- httr2::req_headers(req, Accept = "application/json")
   req <- httr2::req_retry(req, 3, backoff = ~10)
+  req <- httr2::req_user_agent('{rosv} (https://github.com/al-obrien/rosv)')
+
   req_list <- purrr::map(vulns_ids, function(x) httr2::req_url_path_append(req, x))
 
   resp_list <- purrr::map(req_list, httr2::req_perform)
