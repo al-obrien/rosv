@@ -16,6 +16,10 @@ create_ppm_blacklist(osv_list, delim, flags = NULL)
 \description{
 Create blacklist commands for Posit Package Manager from OSV data
 }
+\details{
+Although OSV has many databases for open source software, this function really is
+only relevant for CRAN/Bioconductor and PyPI.
+}
 \examples{
 \dontrun{
 pypi_vul <- create_osv_list(delim = ',')

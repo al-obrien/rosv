@@ -4,13 +4,16 @@
 \alias{download_osv}
 \title{Download helper for OSV data}
 \usage{
-download_osv(ecosystem = "pypi", refresh = FALSE)
+download_osv(ecosystem = "PyPI", refresh = FALSE)
 }
 \arguments{
-\item{ecosystem}{Character value of either 'pypi' or 'cran'.}
+\item{ecosystem}{Character value of ecosystem, any listed on OSV database.}
 
 \item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
 }
 \description{
 Helper function to assist in downloading vulnerabilities information from OSV database.
+}
+\details{
+Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
 }

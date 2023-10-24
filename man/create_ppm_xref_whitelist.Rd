@@ -7,7 +7,7 @@
 create_ppm_xref_whitelist(
   packages,
   osv_list,
-  ecosystem = "pypi",
+  ecosystem = "PyPI",
   version_placeholder = " "
 )
 }
@@ -16,7 +16,7 @@ create_ppm_xref_whitelist(
 
 \item{osv_list}{OSV data/list created from \code{create_osv_list}.}
 
-\item{ecosystem}{Determine what ecosystem of OSV list is being used (currently only works with pypi).}
+\item{ecosystem}{Determine what ecosystem of OSV list is being used (currently only works with PyPI).}
 
 \item{version_placeholder}{Value used when creating the \code{osv_list} from \code{create_osv_list}.}
 }
@@ -27,6 +27,9 @@ Cross reference a whitelist of packages to a vulnerability database
 Note that some version suffixes may have compatibility issues. For example, the use of
 *-git as a suffix may not be recognized and may need to be dropped. For more details on
 PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
+
+Due to variations in formatting from the API, not all responses have versions associated and
+are not directly compatible with this function.
 }
 \examples{
 \dontrun{

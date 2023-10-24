@@ -6,7 +6,7 @@
 \usage{
 create_osv_list(
   vulns_list = NULL,
-  ecosystem = "pypi",
+  ecosystem = "PyPI",
   delim = "\\t",
   as.data.frame = FALSE,
   refresh = FALSE,
@@ -16,7 +16,7 @@ create_osv_list(
 \arguments{
 \item{vulns_list}{A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.}
 
-\item{ecosystem}{Character value of either 'pypi' or 'cran'.}
+\item{ecosystem}{Character value of either 'PyPI' or 'CRAN'.}
 
 \item{delim}{The deliminator to separate the package and version details.}
 
@@ -33,6 +33,8 @@ Create list of packages identified in OSV database
 This is the core calculation to extract details from the database. As such, if
 you set a \code{future::plan()} for parallelization, that will be respected via the
 \code{furrr} package. The default will be to run sequentially.
+
+NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
 }
 \examples{
 \dontrun{
