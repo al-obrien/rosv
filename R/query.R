@@ -33,6 +33,42 @@ download_osv <- function(ecosystem = 'pypi', refresh = FALSE) {
               'dl_dir' = dl_dir))
 }
 
+#' Fetch all available ecosystems
+#'
+#' @param offline Boolean, determine if use list bundled with package.
+#' @param refresh Boolean, force refresh of cache when using online list.
+#'
+fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
+
+  time_stamp <- Sys.time()
+  date_stamp_hash <- digest::digest(as.Date(time_stamp))
+  osv_cache <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), 'ecosystem_list', paste0('ecosystems', '-', date_stamp_hash, '.txt'))
+
+  # Break out if offline
+  if(offline) {
+
+    return(osv_ecosystems)
+
+  }
+
+  # If not in cache or force refresh, otherwise use prior pulled
+  if(!file.exists(osv_cache) || refresh ) {
+
+    if(!dir.exists(dirname(osv_cache))) dir.create(dirname(osv_cache), recursive = TRUE)
+
+    ecosystems <- read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
+    try(write.table(ecosystems, file = osv_cache, ))
+
+    return(ecosystems)
+
+  } else {
+
+    return(read.table(file = osv_cache, col.names = 'ecosystem'))
+
+  }
+}
+
+
 #' Query OSV API for individual package vulnerabilities
 #'
 #' @param packages Name of package.
