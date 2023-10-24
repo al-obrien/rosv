@@ -34,8 +34,21 @@ create_osv_list(pkg_vul)
 
 ``` r
 # Pull the entire set of PyPI vulnerability data
-pypi_vul <- create_osv_list(ecosystem = 'pypi')
+pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 pypi_vul
+```
+
+## Use API helpers directly
+
+``` r
+# Returns entire response object to parse as you please.
+osv_query_1('dask', ecosystem = 'PyPI')
+
+# Returns the vulnerability IDs for packages in list
+osv_querybatch('dask', ecosystem = 'PyPI')
+
+# Grab details by vulns ID
+osv_vulns('PYSEC-2021-387')
 ```
 
 ## Creating a cross-referenced whitelist
