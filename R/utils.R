@@ -28,13 +28,16 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 
 #' Create list of packages identified in OSV database
 #'
+#'
 #' @details
 #' This is the core calculation to extract details from the database. As such, if
 #' you set a \code{future::plan()} for parallelization, that will be respected via the
 #' \code{furrr} package. The default will be to run sequentially.
 #'
+#' NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
+#'
 #' @param vulns_list A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
-#' @param ecosystem Character value of either 'pypi' or 'cran'.
+#' @param ecosystem Character value of either 'PyPI' or 'CRAN'.
 #' @param delim The deliminator to separate the package and version details.
 #' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
@@ -58,7 +61,7 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 #' create_osv_list(vulns_list = pkg_vul)
 #' }
 #' @export
-create_osv_list <- function(vulns_list = NULL, ecosystem = 'pypi', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
   if(is.null(vulns_list)) {
     dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
     vulns_list <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
@@ -90,6 +93,10 @@ create_osv_list <- function(vulns_list = NULL, ecosystem = 'pypi', delim = '\t',
 }
 
 #' Create blacklist commands for Posit Package Manager from OSV data
+#'
+#' @details
+#' Although OSV has many databases for open source software, this function really is
+#' only relevant for CRAN/Bioconductor and PyPI.
 #'
 #' @param osv_list Output from \code{create_osv_list()}.
 #' @param delim The delimiter used when creating \code{osv_list}.
@@ -139,10 +146,13 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' *-git as a suffix may not be recognized and may need to be dropped. For more details on
 #' PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
 #'
+#' Due to variations in formatting from the API, not all responses have versions associated and
+#' are not directly compatible with this function.
+#'
 #'
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list}.
-#' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with pypi).
+#' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
 #' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @examples
@@ -153,9 +163,9 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' writeLines(xref_pkg_list, 'requirements.txt')
 #' }
 #' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'pypi', version_placeholder = ' ') {
+create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', version_placeholder = ' ') {
 
-  if(ecosystem != 'pypi') stop('This function currently only works for pypi repos') else warning('This function currently only works for pypi repos')
+  if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
 
   packages <- data.frame(package_name = normalize_pypi_pkg(packages))
 
