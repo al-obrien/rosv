@@ -2,18 +2,26 @@
 #'
 #' Helper function to assist in downloading vulnerabilities information from OSV database.
 #'
-#' @param ecosystem Character value of either 'pypi' or 'cran'.
+#' Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
+#'
+#' @param ecosystem Character value of ecosystem, any listed on OSV database.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #'
 #' @export
-download_osv <- function(ecosystem = 'pypi', refresh = FALSE) {
+download_osv <- function(ecosystem = 'PyPI', refresh = FALSE) {
+
+  ecosystems <- tryCatch({
+    fetch_ecosystems(offline = FALSE)
+    },
+    error = function(e) {
+      message('Using offline version of ecosystem list...')
+      fetch_ecosystems(offline = TRUE, refresh = refresh)
+    })
+
+  ecosystem <- match.arg(ecosystem, ecosystems$ecosystem, several.ok = FALSE)
 
   # Specific database URLs
-  vul_url <- if(ecosystem == 'pypi') {
-    'https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip'
-  } else if (ecosystem == 'cran') {
-    'https://osv-vulnerabilities.storage.googleapis.com/CRAN/all.zip'
-  }
+  vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, 'all.zip')
 
   # Cache setup, only DL zip if not done today or in live session
   time_stamp <- Sys.time()
@@ -57,7 +65,7 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
     if(!dir.exists(dirname(osv_cache))) dir.create(dirname(osv_cache), recursive = TRUE)
 
     ecosystems <- read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
-    try(write.table(ecosystems, file = osv_cache, ))
+    try(write.table(ecosystems, file = osv_cache))
 
     return(ecosystems)
 
