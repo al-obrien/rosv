@@ -8,6 +8,7 @@ create_ppm_xref_whitelist(
   packages,
   osv_list,
   ecosystem = "PyPI",
+  delim = "\\\\t",
   version_placeholder = " "
 )
 }
@@ -17,6 +18,8 @@ create_ppm_xref_whitelist(
 \item{osv_list}{OSV data/list created from \code{create_osv_list}.}
 
 \item{ecosystem}{Determine what ecosystem of OSV list is being used (currently only works with PyPI).}
+
+\item{delim}{The delimiter used when creating \code{osv_list}.}
 
 \item{version_placeholder}{Value used when creating the \code{osv_list} from \code{create_osv_list}.}
 }

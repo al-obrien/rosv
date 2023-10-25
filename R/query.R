@@ -30,12 +30,12 @@ download_osv <- function(ecosystem = 'PyPI', refresh = FALSE) {
 
   if(!file.exists(osv_cache) || refresh) {
     message('Downloading from OSV online database...')
-    download.file(url = vul_url, destfile = osv_cache)
+    utils::download.file(url = vul_url, destfile = osv_cache)
   }
 
   # Unzip for use...
   dl_dir <- file.path(tempdir(), paste0(ecosystem,'-unzipped-',date_stamp_hash))
-  unzip(osv_cache, exdir = dl_dir)
+  utils::unzip(osv_cache, exdir = dl_dir)
 
   return(list('osv_cache' = osv_cache,
               'dl_dir' = dl_dir))
@@ -64,14 +64,14 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 
     if(!dir.exists(dirname(osv_cache))) dir.create(dirname(osv_cache), recursive = TRUE)
 
-    ecosystems <- read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
-    try(write.table(ecosystems, file = osv_cache))
+    ecosystems <- utils::read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
+    try(utils::write.table(ecosystems, file = osv_cache))
 
     return(ecosystems)
 
   } else {
 
-    return(read.table(file = osv_cache, col.names = 'ecosystem'))
+    return(utils::read.table(file = osv_cache, col.names = 'ecosystem'))
 
   }
 }
@@ -180,7 +180,7 @@ osv_vulns <- function(vulns_ids, body_only = TRUE) {
   if(body_only) {
     purrr::map(resp_list, httr2::resp_body_json)
   } else {
-    resp
+    resp_list
   }
 }
 
@@ -224,7 +224,7 @@ osv_query <- function(packages = NA, ecosystem = NA, page_token = NA,...) {
                                   ...)
 
     # Grab IDs for all Vulns and return the more details vulns info
-    osv_vulns(unlist(map_depth(batch_vulns, 4, 'id'), use.names = FALSE), body_only = TRUE)
+    osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE), body_only = TRUE)
 
   } else {
     # Align by pre-plucking the vulnerability label

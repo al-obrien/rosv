@@ -84,9 +84,9 @@ create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t',
   extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim, file_flag = file_flag))
 
   if(as.data.frame) {
-    read.table(textConnection(unique(sort(unlist(extracted_details)))),
-               sep = delim,
-               col.names = c('package_name', 'version'))
+    utils::read.table(textConnection(unique(sort(unlist(extracted_details)))),
+                      sep = delim,
+                      col.names = c('package_name', 'version'))
   } else {
     unique(sort(unlist(extracted_details)))
   }
@@ -153,6 +153,7 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list}.
 #' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
+#' @param delim The delimiter used when creating \code{osv_list}.
 #' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @examples
@@ -163,7 +164,7 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' writeLines(xref_pkg_list, 'requirements.txt')
 #' }
 #' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', version_placeholder = ' ') {
+create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ') {
 
   if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
 
@@ -171,9 +172,9 @@ create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', ve
 
   # If was using the non-data.frame format, convert to it for merges...
   if(!is.data.frame(osv_list)) {
-    osv_list <-  read.table(textConnection(osv_list),
-                            sep = delim,
-                            col.names = c('package_name', 'version'))
+    osv_list <-  utils::read.table(textConnection(osv_list),
+                                   sep = delim,
+                                   col.names = c('package_name', 'version'))
   }
 
   # Left join to provided
