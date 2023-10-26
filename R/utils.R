@@ -43,23 +43,28 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function.
 #'
-#' @examples
-#' \dontrun{
+#' @returns A vector object containing the package and version details; if \code{as.data.frame} is selected
+#' this vector will be reformatted into a \code{data.frame} object.
+#'
+#' @examplesIf interactive()
+#'
 #' pypi_vul <- create_osv_list()
-#' writeLines(pypi_vul, 'pypi_vul.txt')
+#' writeLines(pypi_vul, file.path(tempdir(), 'pypi_vul.txt'))
 #'
 #' cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
-#' writeLines(cran_vul, 'cran_vul.csv')
-#'
-#' # In parallel
-#' future::plan(multisession, workers = 4)
-#' pypi_vul <- create_osv_list()
-#' future::plan(sequential)
+#' writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
 #'
 #' # Use from query instead of entire database
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
 #' create_osv_list(vulns_list = pkg_vul)
+#'
+#' \dontrun{
+#' # In parallel
+#' future::plan(multisession, workers = 4)
+#' pypi_vul <- create_osv_list()
+#' future::plan(sequential)
 #' }
+#'
 #' @export
 create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
   if(is.null(vulns_list)) {
@@ -102,11 +107,10 @@ create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t',
 #' @param delim The delimiter used when creating \code{osv_list}.
 #' @param flags Global flag to apply to the rspm commands.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf interactive()
 #' pypi_vul <- create_osv_list(delim = ',')
 #' cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
-#' }
+#'
 #' @export
 create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
   split_list <- unlist(strsplit(osv_list, delim)) #strsplit doesnt recognize empty after delim, perhaps use str_split

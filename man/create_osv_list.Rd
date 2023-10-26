@@ -26,6 +26,10 @@ create_osv_list(
 
 \item{clear_cache}{Boolean value, to force clearing of the existing cache upon exiting function.}
 }
+\value{
+A vector object containing the package and version details; if \code{as.data.frame} is selected
+this vector will be reformatted into a \code{data.frame} object.
+}
 \description{
 Create list of packages identified in OSV database
 }
@@ -37,20 +41,23 @@ you set a \code{future::plan()} for parallelization, that will be respected via 
 NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
 pypi_vul <- create_osv_list()
 writeLines(pypi_vul, 'pypi_vul.txt')
 
 cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
 writeLines(cran_vul, 'cran_vul.csv')
 
+# Use from query instead of entire database
+pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+create_osv_list(vulns_list = pkg_vul)
+
+\dontrun{
 # In parallel
 future::plan(multisession, workers = 4)
 pypi_vul <- create_osv_list()
 future::plan(sequential)
-
-# Use from query instead of entire database
-pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
-create_osv_list(vulns_list = pkg_vul)
 }
+\dontshow{\}) # examplesIf}
 }
