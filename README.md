@@ -3,6 +3,11 @@
 
 # rosv
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 Use R to query the [Open Source Vulnerability (OSV)
 database](https://osv.dev/). This can be useful to cross check the
 database with packages used in `requirements.txt` (python) or
