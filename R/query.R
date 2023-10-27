@@ -86,36 +86,28 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 
 #' Query OSV API for individual package vulnerabilities
 #'
-#' @param packages Name of package.
+#' @param name Name of package.
 #' @param version Version of package.
-#' @param ecosystem Ecosystem package lives within.
+#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
+#' @param commit Commit hash to query against (do not use when version set).
+#' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
-#' @param body_only Boolean value to return entire response or just the body content.
 #' @param ... Additional parameters, for future development.
+#'
+#' @returns A list containing API query contents.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @export
-osv_query_1 <- function(packages = NA, version = NA, ecosystem = NA, page_token = NA, body_only = TRUE, ...) {
-  if(ecosystem == 'PyPI') packages <- normalize_pypi_pkg(packages)
+osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
 
-  constructed_query <- list(commit = NA,
-                            version = version,
-                            package = list(name = packages, ecosystem = ecosystem, purl = NA),
-                            page_token = page_token)
+  query_1 <- RosvQuery1()$run(commit,
+                              version,
+                              name,
+                              ecosystem,
+                              purl,
+                              page_token)
 
-  req <- httr2::request('https://api.osv.dev/v1/query')
-  req <- httr2::req_headers(req, Accept = "application/json")
-  req <- httr2::req_user_agent(req, '{rosv} (https://github.com/al-obrien/rosv)')
-  req <- httr2::req_body_json(req, constructed_query)
-  req <- httr2::req_retry(req, 3, backoff = ~10)
-
-  resp <- httr2::req_perform(req)
-
-  if(body_only) {
-    httr2::resp_body_json(resp)
-  } else {
-    resp
-  }
+  query_1$content
 }
 
 #' Query OSV API for vulnerabilities given a vector of packages
@@ -153,7 +145,7 @@ osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_tok
 
   req <- httr2::request('https://api.osv.dev/v1/querybatch')
   req <- httr2::req_headers(req, Accept = "application/json")
-  req <- httr2::req_user_agent(req, '{rosv} (https://github.com/al-obrien/rosv)')
+  req <- httr2::req_user_agent(req, '{{rosv}} (https://github.com/al-obrien/rosv)')
   req <- httr2::req_body_json(req, constructed_query)
   req <- httr2::req_retry(req, 3, backoff = ~10)
 
@@ -168,27 +160,15 @@ osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_tok
 
 #' Query OSV API for vulnerabilities based on ID
 #'
-#' @param vulns_ids Vector of vulnerability IDs.
-#' @param body_only Boolean value to return entire response or just the body content.
+#' @param vuln_ids Vector of vulnerability IDs.
 #'
 #' Is usually paired with the batch outputs to grab more specific information.
 #' @export
-osv_vulns <- function(vulns_ids, body_only = TRUE) {
+osv_vulns <- function(vuln_ids) {
 
-  req <- httr2::request('https://api.osv.dev/v1/vulns')
-  req <- httr2::req_headers(req, Accept = "application/json")
-  req <- httr2::req_retry(req, 3, backoff = ~10)
-  req <- httr2::req_user_agent(req, '{rosv} (https://github.com/al-obrien/rosv)')
+  query_vulns <- RosvQueryVulns()$run(vuln_ids)
 
-  req_list <- purrr::map(vulns_ids, function(x) httr2::req_url_path_append(req, x))
-
-  resp_list <- purrr::map(req_list, httr2::req_perform)
-
-  if(body_only) {
-    purrr::map(resp_list, httr2::resp_body_json)
-  } else {
-    resp_list
-  }
+  query_vulns
 }
 
 
