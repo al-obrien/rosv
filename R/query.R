@@ -100,12 +100,13 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 #' @export
 osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
 
-  query_1 <- RosvQuery1()$run(commit,
-                              version,
-                              name,
-                              ecosystem,
-                              purl,
-                              page_token)
+  query_1 <- RosvQuery1$new()
+  query_1$run(commit,
+              version,
+              name,
+              ecosystem,
+              purl,
+              page_token)
 
   query_1$content
 }
@@ -166,9 +167,10 @@ osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_tok
 #' @export
 osv_vulns <- function(vuln_ids) {
 
-  vulns <- RosvVulns()$run(vuln_ids)
+  vulns <- RosvVulns$new()
+  vulns$run(vuln_ids)
 
-  vulns
+  vulns$content
 }
 
 
