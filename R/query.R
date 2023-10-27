@@ -166,9 +166,9 @@ osv_querybatch <- function(packages = NA, version = NA, ecosystem = NA, page_tok
 #' @export
 osv_vulns <- function(vuln_ids) {
 
-  query_vulns <- RosvQueryVulns()$run(vuln_ids)
+  vulns <- RosvVulns()$run(vuln_ids)
 
-  query_vulns
+  vulns
 }
 
 

@@ -86,42 +86,47 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                           )
 
 
-RosvQueryVulns <- R6::R6Class('RosvQueryVulns',
-                              inherit = RosvQuery1,
-                              public = list(
+                          ))
 
-                                run = function(vuln_ids) {
+#' R6 class for query_vulns
+#'
+#' @export
+RosvVulns <- R6::R6Class('RosvVulns',
+                         inherit = RosvQuery1,
+                         public = list(
 
-                                  stopifnot(is.character(vuln_ids))
+                           run = function(vuln_ids) {
 
-                                  # Perform request, get response
-                                  req <- private$core_query()
-                                  req <- httr2::req_url_path_append(req, 'vulns')
+                             stopifnot(is.character(vuln_ids))
 
-                                  reqs <- purrr::map(vuln_ids, function(x) httr2::req_url_path_append(req, x))
-                                  resps <- purrr::map(reqs, httr2::req_perform)
+                             # Perform request, get response
+                             req <- private$core_query()
+                             req <- httr2::req_url_path_append(req, 'vulns')
 
-                                  # Assign to main variables
-                                  self$request <- reqs
-                                  self$content <- purrr::map(resps, httr2::resp_body_json)
-                                  self$response <- resps
-                                },
+                             reqs <- purrr::map(vuln_ids, function(x) httr2::req_url_path_append(req, x))
+                             resps <- purrr::map(reqs, httr2::req_perform)
 
-                                print = function(...) {
-                                  if(!is.null(self$response)) {
-                                    cat('Requests made to "https://api.osv.dev/v1/vulns":', length(self$request) , '\n')
-                                    cat('Responses with status of "200":', sum(purrr::map_dbl(self$response, function(x) purrr::pluck(x, 'status_code')) == 200), '\n')
-                                  } else {
-                                    cat('Request made to:', NA , '\n')
-                                    cat('Response status of:', NA, '\n')
-                                  }
-                                  invisible(self)
-                                }
+                             # Assign to main variables
+                             self$request <- reqs
+                             self$content <- purrr::map(resps, httr2::resp_body_json)
+                             self$response <- resps
+                           },
 
-                              ),
-                              private = list(
+                           print = function(...) {
+                             if(!is.null(self$response)) {
+                               cat('Requests made to "https://api.osv.dev/v1/vulns":', length(self$request) , '\n')
+                               cat('Responses with status of "200":', sum(purrr::map_dbl(self$response, function(x) purrr::pluck(x, 'status_code')) == 200), '\n')
+                             } else {
+                               cat('Request made to:', NA , '\n')
+                               cat('Response status of:', NA, '\n')
+                             }
+                             invisible(self)
+                           }
 
-                                validate_query = function() {
-                                  NULL
-                                }
-                              ))
+                         ),
+                         private = list(
+
+                           # Placeholder for future use, override base class
+                           validate_query = function() {
+                             NULL
+                           }
