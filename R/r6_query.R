@@ -1,4 +1,7 @@
-# Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
+#' R6 class for query_1
+#' Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
+#'
+#' @export
 RosvQuery1 <- R6::R6Class('RosvQuery1',
                           public = list(
                             request = NULL,
@@ -32,8 +35,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                                                         page_token = page_token)
 
                               # Perform request, get response
-                              req <- private$core_query()
-                              req <- httr2::req_url_path_append(req, 'query')
+                              req <- private$core_query('query')
                               req <- httr2::req_body_json(req, constructed_query)
                               resp <- httr2::req_perform(req)
 
@@ -57,10 +59,12 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               invisible(self)
                             }
                           ),
+
                           private = list(
-                            core_query = function() {
+                            core_query = function(endpoint) {
 
                               req <- httr2::request('https://api.osv.dev/v1')
+                              req <- httr2::req_url_path_append(req, endpoint)
                               req <- httr2::req_user_agent(req, '{{rosv}} (https://github.com/al-obrien/rosv)')
                               req <- httr2::req_headers(req, Accept = "application/json")
                               req <- httr2::req_retry(req, 3, backoff = ~10)
@@ -86,8 +90,6 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                           )
 
 
-                          ))
-
 #' R6 class for query_vulns
 #'
 #' @export
@@ -100,8 +102,7 @@ RosvVulns <- R6::R6Class('RosvVulns',
                              stopifnot(is.character(vuln_ids))
 
                              # Perform request, get response
-                             req <- private$core_query()
-                             req <- httr2::req_url_path_append(req, 'vulns')
+                             req <- private$core_query('vulns')
 
                              reqs <- purrr::map(vuln_ids, function(x) httr2::req_url_path_append(req, x))
                              resps <- purrr::map(reqs, httr2::req_perform)
@@ -130,3 +131,4 @@ RosvVulns <- R6::R6Class('RosvVulns',
                            validate_query = function() {
                              NULL
                            }
+                         )
