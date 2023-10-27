@@ -10,15 +10,7 @@
 #' @export
 download_osv <- function(ecosystem = 'PyPI', refresh = FALSE) {
 
-  ecosystems <- tryCatch({
-    fetch_ecosystems(offline = FALSE)
-    },
-    error = function(e) {
-      message('Using offline version of ecosystem list...')
-      fetch_ecosystems(offline = TRUE, refresh = refresh)
-    })
-
-  ecosystem <- match.arg(ecosystem, ecosystems$ecosystem, several.ok = FALSE)
+  ecosystem <- check_ecosystem(ecosystem)
 
   # Specific database URLs
   vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, 'all.zip')
@@ -39,6 +31,21 @@ download_osv <- function(ecosystem = 'PyPI', refresh = FALSE) {
 
   return(list('osv_cache' = osv_cache,
               'dl_dir' = dl_dir))
+}
+
+#' Check input against possible ecosystems available
+check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
+
+  ecosystems <- tryCatch({
+    fetch_ecosystems(offline = FALSE)
+  },
+  error = function(e) {
+    if(!suppressMessages) message('Using offline version of ecosystem list...')
+    fetch_ecosystems(offline = TRUE, refresh = refresh)
+  })
+
+  ecosystem <- match.arg(ecosystem, ecosystems$ecosystem, several.ok = FALSE)
+  ecosystem
 }
 
 #' Fetch all available ecosystems
