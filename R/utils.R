@@ -51,11 +51,11 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 #' pypi_vul <- create_osv_list()
 #' writeLines(pypi_vul, file.path(tempdir(), 'pypi_vul.txt'))
 #'
-#' cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
+#' cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
 #' writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
 #'
 #' # Use from query instead of entire database
-#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 #' create_osv_list(vulns_list = pkg_vul)
 #'
 #' \dontrun{
@@ -67,6 +67,15 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 #'
 #' @export
 create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+
+  # Logic to switch file or memory based creation
+  file_flag <- is.null(vulns_list)
+  # file_flag <- tryCatch(all(file.exists(vulns_list)),
+  #                       error = function(e) {
+  #                         message('Input was not a filepath, assuming JSON in memory')
+  #                         FALSE
+  #                         })
+
   if(is.null(vulns_list)) {
     dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
     vulns_list <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
@@ -76,14 +85,6 @@ create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t',
       if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
     }, add = TRUE)
   }
-
-  # Logic to switch file or memory based creation
-  file_flag <- is.null(vulns_list)
-    # file_flag <- tryCatch(all(file.exists(vulns_list)),
-    #                       error = function(e) {
-    #                         message('Input was not a filepath, assuming JSON in memory')
-    #                         FALSE
-    #                         })
 
   # Run in parallel if plan set by user, otherwise its sequential
   extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim, file_flag = file_flag))
