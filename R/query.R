@@ -5,33 +5,53 @@
 #' Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
 #'
 #' @param ecosystem Character value of ecosystem, any listed on OSV database.
+#' @param id Vulnerability ID, default set to NULL to download all for provided ecosystem.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #'
 #' @export
-download_osv <- function(ecosystem = 'PyPI', refresh = FALSE) {
+download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 
   ecosystem <- check_ecosystem(ecosystem)
-
-  # Specific database URLs
-  vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, 'all.zip')
-
-  # Cache setup, only DL zip if not done today or in live session
   time_stamp <- Sys.time()
   date_stamp_hash <- digest::digest(as.Date(time_stamp))
-  osv_cache <- file.path(tempdir(), paste0(ecosystem, '-', date_stamp_hash, '.zip'))
 
-  if(!file.exists(osv_cache) || refresh) {
-    message('Downloading from OSV online database...')
-    utils::download.file(url = vul_url, destfile = osv_cache)
+  # If providing specific ID
+  if(!is.null(id)) {
+    vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, paste0(id, '.json'))
+    osv_cache_dir <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem, '-', date_stamp_hash))
+    osv_cache_file <- file.path(osv_cache_dir, paste0(id, '.json'))
+    if(!dir.exists(osv_cache_dir)) dir.create(osv_cache_dir)
+
+    if(!file.exists(osv_cache_file) || refresh) {
+      message('Downloading from OSV online database...')
+      utils::download.file(url = vul_url, destfile = osv_cache_file)
+    }
+
+    return(list('osv_cache' = osv_cache_file,
+                'dl_dir' = osv_cache_dir))
+
+  # If downloading all JSON for ecosystem
+  } else {
+    vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, 'all.zip')
+
+    # Cache setup, only DL zip if not done today or in live session
+    osv_cache <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem, '-', date_stamp_hash, '-', 'all.zip'))
+
+    if(!file.exists(osv_cache) || refresh) {
+      message('Downloading from OSV online database...')
+      utils::download.file(url = vul_url, destfile = osv_cache)
+    }
+
+    # Unzip for use...
+    dl_dir <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem,'-unzipped-',date_stamp_hash))
+    utils::unzip(osv_cache, exdir = dl_dir)
+
+    return(list('osv_cache' = osv_cache,
+                'dl_dir' = dl_dir))
+
   }
-
-  # Unzip for use...
-  dl_dir <- file.path(tempdir(), paste0(ecosystem,'-unzipped-',date_stamp_hash))
-  utils::unzip(osv_cache, exdir = dl_dir)
-
-  return(list('osv_cache' = osv_cache,
-              'dl_dir' = dl_dir))
 }
+
 
 #' Check input against possible ecosystems available
 check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
