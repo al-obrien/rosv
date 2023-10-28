@@ -80,14 +80,20 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                                 if(any(ecosystem == 'PyPI') & !is.null(name)) name[ecosystem == 'PyPI'] <- normalize_pypi_pkg(name[ecosystem == 'PyPI'])
                               }
 
-                              # Invalid combinations
+                              # Invalid combinations (as defined in API)
                               if(!is.null(commit) & !is.null(version)) stop('Cannot provide commit hash and version at the same time.')
                               if(!is.null(purl) & (!is.null(name) | !is.null(ecosystem))) stop('Cannot provide purl with name or ecosystem also set.')
                               if(!is.null(name) & is.null(ecosystem)) stop('If using package name, ecosystem must also be set')
 
+                              # Enforce stricter limits to simplify batch and mental model (vectors that can occur together should be same length or not provided)
+                              if(!is.null(commit) & (!is.null(name) | !is.null(purl))) stop('Separate commit hash queries from package based queries.')
+                              if(length(name) != length(ecosystem)) stop('Package name and ecosystem must be same length for vectorized operations.')
+                              if(!is.null(version) & !is.null(name)) {
+                                if(length(version) != length(ecosystem)) stop('Package name and versions must be same length for vectorized operations.')
                               }
-                            )
+                            }
                           )
+)
 
 
 #' R6 class for query_vulns
