@@ -4,12 +4,12 @@
 \alias{osv_query}
 \title{Query OSV API for individual package vulnerabilities}
 \usage{
-osv_query(packages = NA, ecosystem = NA, page_token = NA, ...)
+osv_query(name = NULL, ecosystem = NULL, page_token = NULL, ...)
 }
 \arguments{
-\item{packages}{Name of package.}
+\item{name}{Name of package(s).}
 
-\item{ecosystem}{Ecosystem package lives within.}
+\item{ecosystem}{Ecosystem(s) package(s) lives within.}
 
 \item{page_token}{When large number of results, next response to complete set requires a page_token.}
 
@@ -33,7 +33,9 @@ vulnerability information and then flattening the list.
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 
 # Batch query
-pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+name_vec <- c('dask', 'dash')
+ecosystem_vec <- rep('PyPI', length(name_vec))
+pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
 }
 }
 \seealso{

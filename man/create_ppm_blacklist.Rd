@@ -21,8 +21,8 @@ Although OSV has many databases for open source software, this function really i
 only relevant for CRAN/Bioconductor and PyPI.
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 pypi_vul <- create_osv_list(delim = ',')
 cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
-}
+\dontshow{\}) # examplesIf}
 }

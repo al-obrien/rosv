@@ -4,10 +4,12 @@
 \alias{download_osv}
 \title{Download helper for OSV data}
 \usage{
-download_osv(ecosystem = "PyPI", refresh = FALSE)
+download_osv(ecosystem = "PyPI", id = NULL, refresh = FALSE)
 }
 \arguments{
 \item{ecosystem}{Character value of ecosystem, any listed on OSV database.}
+
+\item{id}{Vulnerability ID, default set to NULL to download all for provided ecosystem.}
 
 \item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
 }

@@ -5,26 +5,32 @@
 \title{Query OSV API for individual package vulnerabilities}
 \usage{
 osv_query_1(
-  packages = NA,
-  version = NA,
-  ecosystem = NA,
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
   page_token = NA,
-  body_only = TRUE,
   ...
 )
 }
 \arguments{
-\item{packages}{Name of package.}
+\item{name}{Name of package.}
 
 \item{version}{Version of package.}
 
-\item{ecosystem}{Ecosystem package lives within.}
+\item{ecosystem}{Ecosystem package lives within (must be set if using \code{name}).}
+
+\item{commit}{Commit hash to query against (do not use when version set).}
+
+\item{purl}{URL for package (do not use if name or ecosystem set).}
 
 \item{page_token}{When large number of results, next response to complete set requires a page_token.}
 
-\item{body_only}{Boolean value to return entire response or just the body content.}
-
 \item{...}{Additional parameters, for future development.}
+}
+\value{
+A list containing API query contents.
 }
 \description{
 Query OSV API for individual package vulnerabilities

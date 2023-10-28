@@ -1,6 +1,6 @@
 Package: rosv
 Title: Client to Access and Operate on the 'Open Source Vulnerability' API
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person("Allen", "OBrien", , "allen.g.obrien@gmail.com", role = c("aut", "cre", "cph"))
 Description: Connect, query, and operate on information available from the 

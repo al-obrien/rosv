@@ -44,13 +44,13 @@ NOTE: Currently, returns more packages than just subset if using query approach 
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 pypi_vul <- create_osv_list()
-writeLines(pypi_vul, 'pypi_vul.txt')
+writeLines(pypi_vul, file.path(tempdir(), 'pypi_vul.txt'))
 
-cran_vul <- create_osv_list(ecosystem = 'cran', delim = ',')
-writeLines(cran_vul, 'cran_vul.csv')
+cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
+writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
 
 # Use from query instead of entire database
-pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 create_osv_list(vulns_list = pkg_vul)
 
 \dontrun{

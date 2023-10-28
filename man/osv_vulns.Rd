@@ -4,12 +4,10 @@
 \alias{osv_vulns}
 \title{Query OSV API for vulnerabilities based on ID}
 \usage{
-osv_vulns(vulns_ids, body_only = TRUE)
+osv_vulns(vuln_ids)
 }
 \arguments{
-\item{vulns_ids}{Vector of vulnerability IDs.}
-
-\item{body_only}{Boolean value to return entire response or just the body content.
+\item{vuln_ids}{Vector of vulnerability IDs.
 
 Is usually paired with the batch outputs to grab more specific information.}
 }
