@@ -15,11 +15,17 @@ endpoint of the OSV API.
 \itemize{
 \item \href{#method-RosvVulns-new}{\code{RosvVulns$new()}}
 \item \href{#method-RosvVulns-run}{\code{RosvVulns$run()}}
-\item \href{#method-RosvVulns-parse}{\code{RosvVulns$parse()}}
 \item \href{#method-RosvVulns-print}{\code{RosvVulns$print()}}
 \item \href{#method-RosvVulns-clone}{\code{RosvVulns$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="rosv" data-topic="RosvQuery1" data-id="parse"><a href='../../rosv/html/RosvQuery1.html#method-RosvQuery1-parse'><code>rosv::RosvQuery1$parse()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvVulns-new"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvVulns-new}{}}}
@@ -44,16 +50,6 @@ Set the core request details for subsequent use when called in \code{run()} meth
 Perform the request and return response for OSV API call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvVulns$run()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-RosvVulns-parse"></a>}}
-\if{latex}{\out{\hypertarget{method-RosvVulns-parse}{}}}
-\subsection{Method \code{parse()}}{
-Parse the contents returned into a tidier format.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RosvVulns$parse()}\if{html}{\out{</div>}}
 }
 
 }

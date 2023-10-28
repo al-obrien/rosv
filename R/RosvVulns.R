@@ -37,13 +37,6 @@ RosvVulns <- R6::R6Class('RosvVulns',
                            },
 
                            #' @description
-                           #' Parse the contents returned into a tidier format.
-                           parse = function() {
-                             stopifnot(!is.null(self$content))
-
-                           },
-
-                           #' @description
                            #' Print basic details of query object to screen.
                            #' @param ... Reserved for possible future use.
                            print = function(...) {
