@@ -174,8 +174,8 @@ osv_vulns <- function(vuln_ids) {
 #' meant flattening once, and for 'batchquery' it meant using IDs to fetch the additional
 #' vulnerability information and then flattening the list.
 #'
-#' @param packages Name of package.
-#' @param ecosystem Ecosystem package lives within.
+#' @param name Name of package(s).
+#' @param ecosystem Ecosystem(s) package(s) lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param ... Any other parameters to pass to nested functions, currently not used.
 #'
@@ -186,29 +186,26 @@ osv_vulns <- function(vuln_ids) {
 #' pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 #'
 #' # Batch query
-#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = 'PyPI')
+#' name_vec <- c('dask', 'dash')
+#' ecosystem_vec <- rep('PyPI', length(name_vec))
+#' pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
 #' }
 #' @export
-osv_query <- function(packages = NA, ecosystem = NA, page_token = NA,...) {
+osv_query <- function(name = NULL, ecosystem = NULL, page_token = NULL, ...) {
 
-  if(length(packages) > 1) {
-    batch_vulns <- osv_querybatch(packages = packages,
-                                  version = NA,
+  if(length(name) > 1) {
+    batch_vulns <- osv_querybatch(name = name,
                                   ecosystem = ecosystem,
                                   page_token = page_token,
-                                  body_only = TRUE,
                                   ...)
 
     # Grab IDs for all Vulns and return the more details vulns info
-    osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE), body_only = TRUE)
+    osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE))
 
   } else {
     # Align by pre-plucking the vulnerability label
-    purrr::pluck(osv_query_1(packages = packages,
-                             version = NA,
+    purrr::pluck(osv_query_1(name = name,
                              ecosystem = ecosystem,
-                             page_token = page_token,
-                             body_only = TRUE,
                              ...), 1)
   }
 }
