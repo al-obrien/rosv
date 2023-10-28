@@ -4,11 +4,16 @@
 \alias{RosvQueryBatch}
 \title{R6 Class for OSV Querybatch Endpoint}
 \description{
+R6 Class for OSV Querybatch Endpoint
+
+R6 Class for OSV Querybatch Endpoint
+}
+\details{
 Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 This avoids some confusion as to which is taken preferentially and simplifies query creation.
 }
 \section{Super class}{
-\code{rosv::RosvQuery1} -> \code{RosvQueryBatch}
+\code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvQueryBatch}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -28,6 +33,7 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
 \if{html}{\out{<a id="method-RosvQueryBatch-run"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvQueryBatch-run}{}}}
 \subsection{Method \code{run()}}{
+Perform the request and return response for OSV API call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvQueryBatch$run(
   commit = NULL,
@@ -39,6 +45,23 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{commit}}{Commit hash to query against (do not use when version set).}
+
+\item{\code{version}}{Version of package.}
+
+\item{\code{name}}{Name of package.}
+
+\item{\code{ecosystem}}{Ecosystem package lives within (must be set if using \code{name}).}
+
+\item{\code{purl}}{URL for package (do not use if name or ecosystem set).}
+
+\item{\code{page_token}}{When large number of results, next response to complete set requires a page_token.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQueryBatch-clone"></a>}}

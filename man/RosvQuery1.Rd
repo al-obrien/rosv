@@ -6,6 +6,17 @@
 \description{
 Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{request}}{Request object made by \code{httr2}.}
+
+\item{\code{content}}{Body contents of response from OSV API.}
+
+\item{\code{response}}{Response object returned from OSV API.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -18,6 +29,7 @@ Pageination not implemetned yet, waiting for httr2 updates to add, then will han
 \if{html}{\out{<a id="method-RosvQuery1-run"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvQuery1-run}{}}}
 \subsection{Method \code{run()}}{
+Perform the request and return response for OSV API call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvQuery1$run(
   commit = NULL,
@@ -29,15 +41,40 @@ Pageination not implemetned yet, waiting for httr2 updates to add, then will han
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{commit}}{Commit hash to query against (do not use when version set).}
+
+\item{\code{version}}{Version of package.}
+
+\item{\code{name}}{Name of package.}
+
+\item{\code{ecosystem}}{Ecosystem package lives within (must be set if using \code{name}).}
+
+\item{\code{purl}}{URL for package (do not use if name or ecosystem set).}
+
+\item{\code{page_token}}{When large number of results, next response to complete set requires a page_token.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQuery1-print"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvQuery1-print}{}}}
 \subsection{Method \code{print()}}{
+Print basic details of query object to screen.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvQuery1$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Reserved for possible future use.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQuery1-clone"></a>}}

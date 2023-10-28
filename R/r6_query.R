@@ -1,18 +1,34 @@
 #' R6 Class for OSV Query Endpoint
 #'
+#' @description
 #' Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
+#'
+#' @param commit Commit hash to query against (do not use when version set).
+#' @param version Version of package.
+#' @param name Name of package.
+#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
+#' @param purl URL for package (do not use if name or ecosystem set).
+#' @param page_token When large number of results, next response to complete set requires a page_token.
 #'
 #' @export
 RosvQuery1 <- R6::R6Class('RosvQuery1',
                           public = list(
+
+                            #' @field request Request object made by \code{httr2}.
                             request = NULL,
+
+                            #' @field content Body contents of response from OSV API.
                             content = NULL,
+
+                            #' @field response Response object returned from OSV API.
                             response = NULL,
 
                             # initialize = function() {
                             #
                             # },
 
+                            #' @description
+                            #' Perform the request and return response for OSV API call.
                             run = function(commit = NULL,
                                            version = NULL,
                                            name = NULL,
@@ -47,6 +63,9 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
                             },
 
+                            #' @description
+                            #' Print basic details of query object to screen.
+                            #' @param ... Reserved for possible future use.
                             print = function(...) {
                               if(!is.null(self$response)) {
                                 cat('Request made to:', self$request$url , '\n')
@@ -62,6 +81,10 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                           ),
 
                           private = list(
+
+                            # @description
+                            # Create the core query to use across specific endpoints.
+                            # @param endpoint Character value for name of endpoint in OSV API.
                             core_query = function(endpoint) {
 
                               req <- httr2::request('https://api.osv.dev/v1')
@@ -101,11 +124,21 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 #' Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 #' This avoids some confusion as to which is taken preferentially and simplifies query creation.
 #'
+#' @param commit Commit hash to query against (do not use when version set).
+#' @param version Version of package.
+#' @param name Name of package.
+#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
+#' @param purl URL for package (do not use if name or ecosystem set).
+#' @param page_token When large number of results, next response to complete set requires a page_token.
+#'
 #' @export
 RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                               inherit = RosvQuery1,
 
                               public = list(
+
+                                #' @description
+                                #' Perform the request and return response for OSV API call.
                                 run = function(commit = NULL,
                                                version = NULL,
                                                name = NULL,
@@ -150,11 +183,15 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
 
 #' R6 Class for OSV Vulns Endpoint
 #'
+#' @param vuln_ids Character vector of vulnerability IDs.
+#'
 #' @export
 RosvVulns <- R6::R6Class('RosvVulns',
                          inherit = RosvQuery1,
                          public = list(
 
+                           #' @description
+                           #' Perform the request and return response for OSV API call.
                            run = function(vuln_ids) {
 
                              stopifnot(is.character(vuln_ids))
@@ -171,6 +208,9 @@ RosvVulns <- R6::R6Class('RosvVulns',
                              self$response <- resps
                            },
 
+                           #' @description
+                           #' Print basic details of query object to screen.
+                           #' @param ... Reserved for possible future use.
                            print = function(...) {
                              if(!is.null(self$response)) {
                                cat('Requests made to "https://api.osv.dev/v1/vulns":', length(self$request) , '\n')

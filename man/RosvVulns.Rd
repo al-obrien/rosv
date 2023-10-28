@@ -9,7 +9,7 @@ R6 Class for OSV Vulns Endpoint
 R6 Class for OSV Vulns Endpoint
 }
 \section{Super class}{
-\code{rosv::RosvQuery1} -> \code{RosvVulns}
+\code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvVulns}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -23,19 +23,35 @@ R6 Class for OSV Vulns Endpoint
 \if{html}{\out{<a id="method-RosvVulns-run"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvVulns-run}{}}}
 \subsection{Method \code{run()}}{
+Perform the request and return response for OSV API call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvVulns$run(vuln_ids)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vuln_ids}}{Character vector of vulnerability IDs.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvVulns-print"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvVulns-print}{}}}
 \subsection{Method \code{print()}}{
+Print basic details of query object to screen.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvVulns$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Reserved for possible future use.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvVulns-clone"></a>}}
