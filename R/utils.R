@@ -26,105 +26,6 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', fil
 
 }
 
-#' Create list of packages identified in OSV database
-#'
-#'
-#' @details
-#' This is the core calculation to extract details from the database. As such, if
-#' you set a \code{future::plan()} for parallelization, that will be respected via the
-#' \code{furrr} package. The default will be to run sequentially.
-#'
-#' NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
-#'
-#' @param vulns_list A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
-#' @param ecosystem Character value of either 'PyPI' or 'CRAN'.
-#' @param delim The deliminator to separate the package and version details.
-#' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
-#' @param refresh Force refresh of the cache to grab latest details from OSV databases.
-#' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function.
-#'
-#' @returns A vector object containing the package and version details; if \code{as.data.frame} is selected
-#' this vector will be reformatted into a \code{data.frame} object.
-#'
-#' @examplesIf interactive()
-#'
-#' pypi_vul <- create_osv_list()
-#' writeLines(pypi_vul, file.path(tempdir(), 'pypi_vul.txt'))
-#'
-#' cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
-#' writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
-#'
-#' # Use from query instead of entire database
-#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
-#' create_osv_list(vulns_list = pkg_vul)
-#'
-#' \dontrun{
-#' # In parallel
-#' future::plan(multisession, workers = 4)
-#' pypi_vul <- create_osv_list()
-#' future::plan(sequential)
-#' }
-#'
-#' @export
-create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
-
-  # Logic to switch file or memory based creation
-  file_flag <- is.null(vulns_list)
-  # file_flag <- tryCatch(all(file.exists(vulns_list)),
-  #                       error = function(e) {
-  #                         message('Input was not a filepath, assuming JSON in memory')
-  #                         FALSE
-  #                         })
-
-  if(is.null(vulns_list)) {
-    dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
-    vulns_list <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
-
-    on.exit({
-      unlink(dir_loc$dl_dir, recursive = TRUE, force = TRUE)
-      if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
-    }, add = TRUE)
-  }
-
-  # Run in parallel if plan set by user, otherwise its sequential
-  extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim, file_flag = file_flag))
-
-  if(as.data.frame) {
-    utils::read.table(textConnection(unique(sort(unlist(extracted_details)))),
-                      sep = delim,
-                      col.names = c('package_name', 'version'))
-  } else {
-    unique(sort(unlist(extracted_details)))
-  }
-}
-
-#' Create blacklist commands for Posit Package Manager from OSV data
-#'
-#' @details
-#' Although OSV has many databases for open source software, this function really is
-#' only relevant for CRAN/Bioconductor and PyPI.
-#'
-#' @param osv_list Output from \code{create_osv_list()}.
-#' @param delim The delimiter used when creating \code{osv_list}.
-#' @param flags Global flag to apply to the rspm commands.
-#'
-#' @examplesIf interactive()
-#' pypi_vul <- create_osv_list(delim = ',')
-#' cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
-#'
-#' @export
-create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
-  split_list <- unlist(strsplit(osv_list, delim)) #strsplit doesnt recognize empty after delim, perhaps use str_split
-  cmd_out <- paste0('rspm create blocklist-rule ',
-                    '--package-name=', split_list[seq(1,length(split_list), by = 2)])
-
-  versions <- split_list[seq(2,length(split_list), by = 2)]
-  inx_v <- versions != ' '
-
-  cmd_out[inx_v] <- paste0(cmd_out[inx_v], ' --version=', versions[inx_v])
-  if(!is.null(flags)) cmd_out <- paste(cmd_out, flags)
-  cmd_out
-}
 
 #' Normalize package name to PyPI expectation
 #'
@@ -144,75 +45,91 @@ normalize_pypi_pkg <- function(pkg_name) {
 
 }
 
-#' Cross reference a whitelist of packages to a vulnerability database
+
+#' Check input against possible ecosystems available
 #'
-#' @details
-#' Note that some version suffixes may have compatibility issues. For example, the use of
-#' *-git as a suffix may not be recognized and may need to be dropped. For more details on
-#' PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
+#' Ensures that inputs for ecosystem are valid based upon what is available in OSV database.
 #'
-#' Due to variations in formatting from the API, not all responses have versions associated and
-#' are not directly compatible with this function.
+#' Will attempt to grab latest file and cache for the session. If cannot access
+#' the online version, will use a local copy that is shipped with the package.
 #'
+#' @param ecosystem Character value for ecosystem(s) to check.
+#' @param suppressMessages Boolean value whether or not to suppress any messages.
 #'
-#' @param packages Character vector of package names.
-#' @param osv_list OSV data/list created from \code{create_osv_list}.
-#' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
-#' @param delim The delimiter used when creating \code{osv_list}.
-#' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
-#' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
+#' @returns A character vector of the same input if all are valid ecosystem names.
+#'
+#' @seealso \code{\link{check_ecosystem}}
+#'
 #' @examples
-#' \dontrun{
-#' python_pkg <- c('dask', 'tensorflow', 'keras')
-#' pypi_vul <- create_osv_list(as.data.frame = TRUE)
-#' xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
-#' writeLines(xref_pkg_list, 'requirements.txt')
-#' }
-#' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ') {
+#' # Passes
+#' rosv:::check_ecosystem(c('PyPI', 'CRAN'))
+#'
+#' # Fails
+#' try(rosv:::check_ecosystem(c('notvalid', 'pypi')))
+#'
+check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
 
-  if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
+  ecosystems <- tryCatch({
+    fetch_ecosystems(offline = FALSE)
+  },
+  error = function(e) {
+    if(!suppressMessages) message('Using offline version of ecosystem list...')
+    fetch_ecosystems(offline = TRUE)
+  })
 
-  packages <- data.frame(package_name = normalize_pypi_pkg(packages))
+  # Vectorize for batch based checks
+  ecosystem <- purrr::map_chr(ecosystem, function(x) match.arg(x, ecosystems$ecosystem, several.ok = FALSE))
+  ecosystem
+}
 
-  # If was using the non-data.frame format, convert to it for merges...
-  if(!is.data.frame(osv_list)) {
-    osv_list <-  utils::read.table(textConnection(osv_list),
-                                   sep = delim,
-                                   col.names = c('package_name', 'version'))
+
+#' Fetch all available ecosystems
+#'
+#' Internal function used to fetch the available ecosystems in the OSV API.
+#'
+#' The \code{refresh} parameter can be used to force the data to be pulled again
+#' even if one is available in the cached location. Since a fresh pull is performed
+#' for each R session, it is unlikely that this parameter is required and is primarily
+#' reserved for future use if functionality necessitates.
+#'
+#' @param offline Boolean, determine if use list bundled with package.
+#' @param refresh Boolean, force refresh of cache when using online list.
+#'
+#' @returns A data.frame containing all the ecosystem names available in the OSV database.
+#'
+#' @seealso \code{\link{check_ecosystem}}
+#'
+#' @examples
+#' rosv:::fetch_ecosystems(offline = TRUE)
+#'
+fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
+
+  time_stamp <- Sys.time()
+  date_stamp_hash <- digest::digest(as.Date(time_stamp))
+  osv_cache <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), 'ecosystem_list', paste0('ecosystems', '-', date_stamp_hash, '.txt'))
+
+  # Break out if offline
+  if(offline) {
+
+    return(osv_ecosystems)
+
   }
 
-  # Left join to provided
-  packages_vul <- merge(packages, osv_list, by = 'package_name', all.x = TRUE, all.y = FALSE)
+  # If not in cache or force refresh, otherwise use prior pulled
+  if(!file.exists(osv_cache) || refresh ) {
 
-  # Categorize package vul types
-  packages_vul$type <- NA
-  packages_vul[is.na(packages_vul$version),'type'] <- 'ALLOW'
-  packages_vul[is.na(packages_vul$type) & packages_vul$version == version_placeholder, 'type'] <- 'BLOCK'
-  packages_vul[is.na(packages_vul$type), 'type'] <- "VERSION"
+    if(!dir.exists(dirname(osv_cache))) dir.create(dirname(osv_cache), recursive = TRUE)
 
-  # Remove all with a block name
-  block_pkg <- packages_vul$package_name[packages_vul$type == 'BLOCK']
-  packages_vul <- packages_vul[!(packages_vul$package_name %in% block_pkg),]
+    ecosystems <- utils::read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
+    try(utils::write.table(ecosystems, file = osv_cache))
 
-  if(nrow(packages_vul) > 0) {
+    return(ecosystems)
 
-  # Generate version exclusion
-  exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'version'],
-                        packages_vul[packages_vul$type == 'VERSION', 'package_name']),
-                  function(x){
-                    version_glue <- paste0(x, collapse = ', != ')
-                  })
-  exl_v <- paste0(names(exl_v), ' != ', exl_v)
+  } else {
 
-  # Add to allow list
-  xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'package_name'],
-                 exl_v)
-  return(xref_pkgs)
+    return(utils::read.table(file = osv_cache, col.names = 'ecosystem'))
+
   }
-
-  packages_vul[packages_vul$type == 'ALLOW', 'package_name']
-
 }
 
 # Incomplete... for helping if affected array is nested at different depths in API resp

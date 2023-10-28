@@ -8,6 +8,15 @@
 #' @param id Vulnerability ID, default set to NULL to download all for provided ecosystem.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
 #'
+#' @returns A list containing the cache and download locations for the vulnerability files.
+#'
+#' @examples
+#' osv_dl <- download_osv('CRAN')
+#'
+#' # Clean up
+#' try(unlink(osv_dl$osv_cache, recursive = TRUE))
+#' try(unlink(osv_dl$dl_dir, recursive = TRUE))
+#'
 #' @export
 download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 
@@ -48,58 +57,6 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 
     return(list('osv_cache' = osv_cache,
                 'dl_dir' = dl_dir))
-
-  }
-}
-
-
-#' Check input against possible ecosystems available
-check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
-
-  ecosystems <- tryCatch({
-    fetch_ecosystems(offline = FALSE)
-  },
-  error = function(e) {
-    if(!suppressMessages) message('Using offline version of ecosystem list...')
-    fetch_ecosystems(offline = TRUE, refresh = refresh)
-  })
-
-  # Vectorize for batch based checks
-  ecosystem <- purrr::map_chr(ecosystem, function(x) match.arg(x, ecosystems$ecosystem, several.ok = FALSE))
-  ecosystem
-}
-
-#' Fetch all available ecosystems
-#'
-#' @param offline Boolean, determine if use list bundled with package.
-#' @param refresh Boolean, force refresh of cache when using online list.
-#'
-fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
-
-  time_stamp <- Sys.time()
-  date_stamp_hash <- digest::digest(as.Date(time_stamp))
-  osv_cache <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), 'ecosystem_list', paste0('ecosystems', '-', date_stamp_hash, '.txt'))
-
-  # Break out if offline
-  if(offline) {
-
-    return(osv_ecosystems)
-
-  }
-
-  # If not in cache or force refresh, otherwise use prior pulled
-  if(!file.exists(osv_cache) || refresh ) {
-
-    if(!dir.exists(dirname(osv_cache))) dir.create(dirname(osv_cache), recursive = TRUE)
-
-    ecosystems <- utils::read.table('https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt', col.names = 'ecosystem')
-    try(utils::write.table(ecosystems, file = osv_cache))
-
-    return(ecosystems)
-
-  } else {
-
-    return(utils::read.table(file = osv_cache, col.names = 'ecosystem'))
 
   }
 }
