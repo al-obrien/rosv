@@ -1,5 +1,6 @@
 .onLoad <- function(libname, pkgname) {
   Sys.setenv(ROSV_CACHE_GLOBAL = file.path(tempdir(), 'rosv'))
+  dir.create(Sys.getenv('ROSV_CACHE_GLOBAL'), recursive = TRUE)
 }
 
 .onUnload <- function(libpath) {
