@@ -4,12 +4,8 @@
 \alias{RosvQueryBatch}
 \title{R6 Class for OSV Querybatch Endpoint}
 \description{
-R6 Class for OSV Querybatch Endpoint
-
-R6 Class for OSV Querybatch Endpoint
-}
-\details{
-Batches are enforced to only process by commit hash, purl, or name+ecosystem.
+An R6 class to provide a lower-level interface to the querybatch
+endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 This avoids some confusion as to which is taken preferentially and simplifies query creation.
 }
 \section{Super class}{

@@ -1,7 +1,10 @@
 #' R6 Class for OSV Query Endpoint
 #'
 #' @description
-#' Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
+#' An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
+#'
+#' @details
+#' Pageination not implemented yet, waiting for httr2 updates to add, then will handle automatically
 #'
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param version Version of package.
@@ -121,7 +124,9 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
 #' R6 Class for OSV Querybatch Endpoint
 #'
-#' Batches are enforced to only process by commit hash, purl, or name+ecosystem.
+#' @description
+#' An R6 class to provide a lower-level interface to the querybatch
+#' endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 #' This avoids some confusion as to which is taken preferentially and simplifies query creation.
 #'
 #' @param commit Commit hash to query against (do not use when version set).
@@ -182,6 +187,11 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
 )
 
 #' R6 Class for OSV Vulns Endpoint
+#'
+#' @description
+#' An R6 class to provide a lower-level interface to the vulnearbility
+#' endpoint of the OSV API.
+#'
 #'
 #' @param vuln_ids Character vector of vulnerability IDs.
 #'

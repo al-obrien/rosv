@@ -4,9 +4,8 @@
 \alias{RosvVulns}
 \title{R6 Class for OSV Vulns Endpoint}
 \description{
-R6 Class for OSV Vulns Endpoint
-
-R6 Class for OSV Vulns Endpoint
+An R6 class to provide a lower-level interface to the vulnearbility
+endpoint of the OSV API.
 }
 \section{Super class}{
 \code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvVulns}
