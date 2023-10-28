@@ -487,6 +487,22 @@
       ],
       "Hash": "a865aa85bcb2697f47505bfd70422471"
     },
+    "httptest2": {
+      "Package": "httptest2",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "digest",
+        "httr2",
+        "jsonlite",
+        "rlang",
+        "stats",
+        "testthat",
+        "utils"
+      ],
+      "Hash": "50b4125f558e7fc28b73dec16633b27b"
+    },
     "httpuv": {
       "Package": "httpuv",
       "Version": "1.6.12",
@@ -1148,7 +1164,7 @@
     },
     "testthat": {
       "Package": "testthat",
-      "Version": "3.1.10",
+      "Version": "3.2.0",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -1174,7 +1190,7 @@
         "waldo",
         "withr"
       ],
-      "Hash": "6f403dc49295610a3a67ea1a9ca64346"
+      "Hash": "877508719fcb8c9525eccdadf07a5102"
     },
     "textshaping": {
       "Package": "textshaping",
