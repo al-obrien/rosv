@@ -147,6 +147,33 @@ is_rosv <- function(x) {
       inherits(x, 'RosvVulns'))
 }
 
+#' Validate if object is made by {{rosv}}
+#' @inheritParams is_rosv
+#' @returns Invisibly returns TRUE if validation is successful, otherwise will error.
+#' @examples
+#' # example code
+#' validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+validate_rosv <- function(x) {
+  if(!is_rosv(x)) stop('Object is not a class created by {rosv}.')
+  invisible(TRUE)
+}
+
+#' Create a copy of the {{rosv}} object
+#'
+#' Since R6 classes have reference semantics, to escape updating original objects,
+#' a clone should be made.
+#'
+#' @param x Object to copy.
+#' @param ... Additional parameters sent to R6's clone method.
+#' @results An R6 class object.
+#' @examples
+#' original_obj <- osvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+#' new_obj <- copy_rosv(original_obj)
+copy_rosv <- function(x, ...) {
+  validate_rosv(x)
+  x$clone(...)
+}
+
 # Incomplete... for helping if affected array is nested at different depths in API resp
 locate_min_depth <- function(list, target) {
 
