@@ -95,6 +95,57 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                           )
 )
 
+#' R6 class for query_batch
+#'
+#' Batches are enforced to only process by commit hash, purl, or name+ecosystem.
+#' This avoids some confusion as to which is taken preferentially and simplifies query creation.
+#'
+#' @export
+RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
+                              inherit = RosvQuery1,
+
+                              public = list(
+                                run = function(commit = NULL,
+                                               version = NULL,
+                                               name = NULL,
+                                               ecosystem = NULL,
+                                               purl = NULL,
+                                               page_token = NULL) {
+
+                                  # Validate
+                                  private$validate_query(commit, version, name, ecosystem, purl)
+
+                                  # Identify nulls, drop where that exists, and allow nested function to carry through null values based upon named list
+                                  not_null <- unlist(purrr::map(list(commit, version, name, ecosystem, purl, page_token), function(x) !is.null(x)))
+                                  valid_input <- list(commit = commit, version = version, name = name, ecosystem = ecosystem, purl = purl, page_token = page_token)
+                                  valid_input <- valid_input[not_null]
+
+                                  # Loop through to create each set using template
+                                  batch_query <- furrr::future_pmap(valid_input, private$create_batch_list)
+
+                                  constructed_query <- list(queries = batch_query)
+
+                                  # Perform request, get response
+                                  req <- private$core_query('querybatch')
+                                  req <- httr2::req_body_json(req, constructed_query)
+                                  resp <- httr2::req_perform(req)
+
+                                  # Assign to main variables
+                                  self$request <- req
+                                  self$content <- httr2::resp_body_json(resp)
+                                  self$response <- resp
+
+                                }
+                              ),
+                              private = list(
+                                create_batch_list = function(commit = NULL, version = NULL, name = NULL, ecosystem = NULL, purl = NULL, page_token = NULL) {
+                                  list(commit = commit,
+                                       version = version,
+                                       package = list(name = name, ecosystem = ecosystem, purl = purl),
+                                       page_token = page_token)
+                                }
+                              )
+)
 
 #' R6 class for query_vulns
 #'
@@ -138,3 +189,4 @@ RosvVulns <- R6::R6Class('RosvVulns',
                              NULL
                            }
                          )
+)
