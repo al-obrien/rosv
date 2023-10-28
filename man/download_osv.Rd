@@ -13,9 +13,20 @@ download_osv(ecosystem = "PyPI", id = NULL, refresh = FALSE)
 
 \item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
 }
+\value{
+A list containing the cache and download locations for the vulnerability files.
+}
 \description{
 Helper function to assist in downloading vulnerabilities information from OSV database.
 }
 \details{
 Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
+}
+\examples{
+osv_dl <- download_osv('CRAN')
+
+# Clean up
+try(unlink(osv_dl$osv_cache, recursive = TRUE))
+try(unlink(osv_dl$dl_dir, recursive = TRUE))
+
 }
