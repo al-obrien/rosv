@@ -1,4 +1,5 @@
-#' R6 class for query_1
+#' R6 Class for OSV Query Endpoint
+#'
 #' Pageination not implemetned yet, waiting for httr2 updates to add, then will handle automatically
 #'
 #' @export
@@ -95,7 +96,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                           )
 )
 
-#' R6 class for query_batch
+#' R6 Class for OSV Querybatch Endpoint
 #'
 #' Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 #' This avoids some confusion as to which is taken preferentially and simplifies query creation.
@@ -147,7 +148,7 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                               )
 )
 
-#' R6 class for query_vulns
+#' R6 Class for OSV Vulns Endpoint
 #'
 #' @export
 RosvVulns <- R6::R6Class('RosvVulns',

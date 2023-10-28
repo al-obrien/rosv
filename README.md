@@ -52,6 +52,9 @@ osv_query_1('dask', ecosystem = 'PyPI')
 # Returns the vulnerability IDs for packages in list
 osv_querybatch('dask', ecosystem = 'PyPI')
 
+# Return Vulns from difference ecosystems as vectors
+osv_querybatch(c('dask', 'readxl'), ecosystem = c('PyPI', 'CRAN'))
+
 # Grab details by vulns ID
 osv_vulns('PYSEC-2021-387')
 ```
