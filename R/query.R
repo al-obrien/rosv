@@ -44,7 +44,8 @@ check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
     fetch_ecosystems(offline = TRUE, refresh = refresh)
   })
 
-  ecosystem <- match.arg(ecosystem, ecosystems$ecosystem, several.ok = FALSE)
+  # Vectorize for batch based checks
+  ecosystem <- purrr::map_chr(ecosystem, function(x) match.arg(x, ecosystems$ecosystem, several.ok = FALSE))
   ecosystem
 }
 

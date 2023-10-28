@@ -77,7 +77,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               # Valid ecosystem selection
                               if(!is.null(ecosystem)) {
                                 ecosystem <- check_ecosystem(ecosystem)
-                                if(ecosystem == 'PyPI' & !is.null(name)) name <- normalize_pypi_pkg(name)
+                                if(any(ecosystem == 'PyPI') & !is.null(name)) name[ecosystem == 'PyPI'] <- normalize_pypi_pkg(name[ecosystem == 'PyPI'])
                               }
 
                               # Invalid combinations
