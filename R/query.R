@@ -75,16 +75,21 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @returns A list containing API query contents.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
+#'
+#' @examples
+#' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
+#'
+#'
 #' @export
 osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
 
-  query_1 <- RosvQuery1$new()
-  query_1$run(commit,
-              version,
-              name,
-              ecosystem,
-              purl,
-              page_token)
+  query_1 <- RosvQuery1$new(commit,
+                            version,
+                            name,
+                            ecosystem,
+                            purl,
+                            page_token)
+  query_1$run()
 
   query_1$content
 
@@ -110,15 +115,15 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @export
 osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
-  RosvQueryBatch
-  querybatch <- RosvQueryBatch$new()
 
-  querybatch$run(commit,
-              version,
-              name,
-              ecosystem,
-              purl,
-              page_token)
+  querybatch <- RosvQueryBatch$new(commit,
+                                   version,
+                                   name,
+                                   ecosystem,
+                                   purl,
+                                   page_token)
+
+  querybatch$run()
 
   querybatch$content
 }
@@ -131,8 +136,8 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 #' @export
 osv_vulns <- function(vuln_ids) {
 
-  vulns <- RosvVulns$new()
-  vulns$run(vuln_ids)
+  vulns <- RosvVulns$new(vuln_ids)
+  vulns$run()
 
   vulns$content
 }

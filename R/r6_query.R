@@ -28,18 +28,12 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
                             #' @description
                             #' Set the core request details for subsequent use when called in \code{run()} method.
-                            initialize = function() {
-                              self$request <- private$core_query('query')
-                            },
-
-                            #' @description
-                            #' Perform the request and return response for OSV API call.
-                            run = function(commit = NULL,
-                                           version = NULL,
-                                           name = NULL,
-                                           ecosystem = NULL,
-                                           purl = NULL,
-                                           page_token = NULL) {
+                            initialize = function(commit = NULL,
+                                                  version = NULL,
+                                                  name = NULL,
+                                                  ecosystem = NULL,
+                                                  purl = NULL,
+                                                  page_token = NULL) {
 
                               # Checks on input lengths (NULLs are 0), specific to osv_query_1
                               if(length(commit) > 1) stop('Only provide one commit.')
@@ -57,14 +51,30 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                                                         page_token = page_token)
 
                               # Perform request, get response
-                              req <- self$request
+                              req <- private$core_query('query')
                               req <- httr2::req_body_json(req, constructed_query)
-                              resp <- httr2::req_perform(req)
+
+                              self$request <- req
+                            },
+
+                            #' @description
+                            #' Perform the request and return response for OSV API call.
+                            run = function() {
+
+                              resp <- httr2::req_perform(self$request)
 
                               # Assign to main variables
-                              self$request <- req
                               self$content <- httr2::resp_body_json(resp)
                               self$response <- resp
+
+                            },
+
+                            #' @description
+                            #' Parse the contents returned into a tidier format.
+                            parse = function() {
+                              stopifnot(!is.null(self$content))
+
+
 
                             },
 
@@ -146,18 +156,12 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
 
                                 #' @description
                                 #' Set the core request details for subsequent use when called in \code{run()} method.
-                                initialize = function() {
-                                  self$request <- private$core_query('querybatch')
-                                },
-
-                                #' @description
-                                #' Perform the request and return response for OSV API call.
-                                run = function(commit = NULL,
-                                               version = NULL,
-                                               name = NULL,
-                                               ecosystem = NULL,
-                                               purl = NULL,
-                                               page_token = NULL) {
+                                initialize = function(commit = NULL,
+                                                      version = NULL,
+                                                      name = NULL,
+                                                      ecosystem = NULL,
+                                                      purl = NULL,
+                                                      page_token = NULL) {
 
                                   # Validate
                                   private$validate_query(commit, version, name, ecosystem, purl)
@@ -173,12 +177,20 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                                   constructed_query <- list(queries = batch_query)
 
                                   # Perform request, get response
-                                  req <- self$request
+                                  req <- private$core_query('querybatch')
                                   req <- httr2::req_body_json(req, constructed_query)
-                                  resp <- httr2::req_perform(req)
+
+                                  self$request <- req
+
+                                },
+
+                                #' @description
+                                #' Perform the request and return response for OSV API call.
+                                run = function() {
+
+                                  resp <- httr2::req_perform(self$request)
 
                                   # Assign to main variables
-                                  self$request <- req
                                   self$content <- httr2::resp_body_json(resp)
                                   self$response <- resp
 
@@ -210,24 +222,24 @@ RosvVulns <- R6::R6Class('RosvVulns',
 
                            #' @description
                            #' Set the core request details for subsequent use when called in \code{run()} method.
-                           initialize = function() {
-                             self$request <- private$core_query('vulns')
-                           },
-
-                           #' @description
-                           #' Perform the request and return response for OSV API call.
-                           run = function(vuln_ids) {
+                           initialize = function(vuln_ids) {
 
                              stopifnot(is.character(vuln_ids))
 
                              # Perform request, get response
-                             req <- self$request
-
+                             req <- private$core_query('vulns')
                              reqs <- purrr::map(vuln_ids, function(x) httr2::req_url_path_append(req, x))
-                             resps <- purrr::map(reqs, httr2::req_perform)
+
+                             self$request <- reqs
+                           },
+
+                           #' @description
+                           #' Perform the request and return response for OSV API call.
+                           run = function() {
+
+                             resps <- purrr::map(self$request, httr2::req_perform)
 
                              # Assign to main variables
-                             self$request <- reqs
                              self$content <- purrr::map(resps, httr2::resp_body_json)
                              self$response <- resps
                            },
