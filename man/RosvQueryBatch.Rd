@@ -14,6 +14,7 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-RosvQueryBatch-new}{\code{RosvQueryBatch$new()}}
 \item \href{#method-RosvQueryBatch-run}{\code{RosvQueryBatch$run()}}
 \item \href{#method-RosvQueryBatch-clone}{\code{RosvQueryBatch$clone()}}
 }
@@ -25,6 +26,16 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
 </ul>
 </details>
 }}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RosvQueryBatch-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RosvQueryBatch-new}{}}}
+\subsection{Method \code{new()}}{
+Set the core request details for subsequent use when called in \code{run()} method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RosvQueryBatch$new()}\if{html}{\out{</div>}}
+}
+
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQueryBatch-run"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvQueryBatch-run}{}}}

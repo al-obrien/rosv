@@ -13,10 +13,21 @@ endpoint of the OSV API.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-RosvVulns-new}{\code{RosvVulns$new()}}
 \item \href{#method-RosvVulns-run}{\code{RosvVulns$run()}}
 \item \href{#method-RosvVulns-print}{\code{RosvVulns$print()}}
 \item \href{#method-RosvVulns-clone}{\code{RosvVulns$clone()}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RosvVulns-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RosvVulns-new}{}}}
+\subsection{Method \code{new()}}{
+Set the core request details for subsequent use when called in \code{run()} method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RosvVulns$new()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvVulns-run"></a>}}

@@ -23,10 +23,21 @@ Pageination not implemented yet, waiting for httr2 updates to add, then will han
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-RosvQuery1-new}{\code{RosvQuery1$new()}}
 \item \href{#method-RosvQuery1-run}{\code{RosvQuery1$run()}}
 \item \href{#method-RosvQuery1-print}{\code{RosvQuery1$print()}}
 \item \href{#method-RosvQuery1-clone}{\code{RosvQuery1$clone()}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RosvQuery1-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RosvQuery1-new}{}}}
+\subsection{Method \code{new()}}{
+Set the core request details for subsequent use when called in \code{run()} method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RosvQuery1$new()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQuery1-run"></a>}}
