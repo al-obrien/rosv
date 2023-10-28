@@ -1,0 +1,96 @@
+#' R6 Class for OSV Querybatch Endpoint
+#'
+#' @description
+#' An R6 class to provide a lower-level interface to the querybatch
+#' endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
+#' This avoids some confusion as to which is taken preferentially and simplifies query creation.
+#'
+#' @param commit Commit hash to query against (do not use when version set).
+#' @param version Version of package.
+#' @param name Name of package.
+#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
+#' @param purl URL for package (do not use if name or ecosystem set).
+#' @param page_token When large number of results, next response to complete set requires a page_token.
+#'
+#' @export
+RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
+                              inherit = RosvQuery1,
+
+                              public = list(
+
+                                #' @description
+                                #' Set the core request details for subsequent use when called in \code{run()} method.
+                                initialize = function(commit = NULL,
+                                                      version = NULL,
+                                                      name = NULL,
+                                                      ecosystem = NULL,
+                                                      purl = NULL,
+                                                      page_token = NULL) {
+
+                                  # Validate
+                                  private$validate_query(commit, version, name, ecosystem, purl)
+
+                                  # Identify nulls, drop where that exists, and allow nested function to carry through null values based upon named list
+                                  not_null <- unlist(purrr::map(list(commit, version, name, ecosystem, purl, page_token), function(x) !is.null(x)))
+                                  valid_input <- list(commit = commit, version = version, name = name, ecosystem = ecosystem, purl = purl, page_token = page_token)
+                                  valid_input <- valid_input[not_null]
+
+                                  # Loop through to create each set using template
+                                  batch_query <- furrr::future_pmap(valid_input, private$create_batch_list)
+
+                                  constructed_query <- list(queries = batch_query)
+
+                                  # Perform request, get response
+                                  req <- private$core_query('querybatch')
+                                  req <- httr2::req_body_json(req, constructed_query)
+
+                                  self$request <- req
+
+                                },
+
+                                #' @description
+                                #' Perform the request and return response for OSV API call.
+                                run = function() {
+
+                                  resp <- httr2::req_perform(self$request)
+
+                                  # Assign to main variables
+                                  self$content <- httr2::resp_body_json(resp)
+                                  self$response <- resp
+
+                                },
+
+                                #' @description
+                                #' Parse the contents returned into a tidier format.
+                                parse = function() {
+                                  stopifnot(!is.null(self$content))
+
+                                  # Check if only 1 result passed in for edge case handling
+                                  rslt_n <- map_int(self$content, length)
+
+                                  # Flatten content 2x to get into results list and use number for naming
+                                  flat_results_list <- list_flatten(list_flatten(self$content, name_spec =  '{inner}'), name_spec = '{outer}')
+
+                                  # Expand result name vector
+                                  rslt_lengths <- map_int(flat_results_list, length)
+                                  if(rslt_n > 1) rslt_names <- names(flat_results_list) else rslt_names <- 1
+                                  rslt_vec <- rep(rslt_names, rslt_lengths)
+
+                                  # Create the formatted data.frame
+                                  ids <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'id'))))
+                                  modified <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'modified'))))
+
+                                  self$content <- data.frame(result = rslt_vec,
+                                                             id = ids,
+                                                             modified = modified)
+                                }
+                              ),
+                              private = list(
+                                create_batch_list = function(commit = NULL, version = NULL, name = NULL, ecosystem = NULL, purl = NULL, page_token = NULL) {
+                                  list(commit = commit,
+                                       version = version,
+                                       package = list(name = name, ecosystem = ecosystem, purl = purl),
+                                       page_token = page_token)
+                                }
+                              )
+)

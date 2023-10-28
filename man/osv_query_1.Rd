@@ -35,6 +35,11 @@ A list containing API query contents.
 \description{
 Query OSV API for individual package vulnerabilities
 }
+\examples{
+osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
+
+
+}
 \seealso{
 \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 }
