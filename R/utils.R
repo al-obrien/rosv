@@ -132,6 +132,21 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
   }
 }
 
+
+#' Determine if object is an {{rosv}} type R6 class
+#'
+#' @param x Object to check.
+#' @returns Boolean value based on if \code{x} is an R6 class made by {{rosv}}.
+#' @examples
+#' is_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+#'
+#' @export
+is_rosv <- function(x) {
+  any(inherits(x, 'RosvQuery1'),
+      inherits(x, 'RosvQueryBatch'),
+      inherits(x, 'RosvVulns'))
+}
+
 # Incomplete... for helping if affected array is nested at different depths in API resp
 locate_min_depth <- function(list, target) {
 
