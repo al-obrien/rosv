@@ -125,7 +125,10 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 
   querybatch$run()
 
-  querybatch$content
+  # Parse the content field, if user needs raw lists, still available to extract in resp field.
+  querybatch$parse()
+
+  querybatch
 }
 
 #' Query OSV API for vulnerabilities based on ID

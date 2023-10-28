@@ -74,8 +74,6 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             parse = function() {
                               stopifnot(!is.null(self$content))
 
-
-
                             },
 
                             #' @description
@@ -194,6 +192,27 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                                   self$content <- httr2::resp_body_json(resp)
                                   self$response <- resp
 
+                                },
+
+                                #' @description
+                                #' Parse the contents returned into a tidier format.
+                                parse = function() {
+                                  stopifnot(!is.null(self$content))
+
+                                  # Flatten content 2x to get into results list and use number for naming
+                                  flat_results_list <- list_flatten(list_flatten(self$content, name_spec =  '{inner}'), name_spec = '{outer}')
+
+                                  # Expand result name vector
+                                  rslt_lengths <- map_int(flat_results_list, length)
+                                  rslt_vec <- rep(names(flat_results_list), rslt_lengths)
+
+                                  # Create the formatted data.frame
+                                  ids <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'id'))))
+                                  modified <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'modified'))))
+
+                                  self$content <- data.frame(result = rslt_vec,
+                                                             id = ids,
+                                                             modified = modified)
                                 }
                               ),
                               private = list(
