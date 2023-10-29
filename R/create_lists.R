@@ -8,7 +8,7 @@
 #'
 #' NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
 #'
-#' @param vulns_list A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
+#' @param rosv_query A table of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
 #' @param ecosystem Character value of either 'PyPI' or 'CRAN'.
 #' @param delim The deliminator to separate the package and version details.
 #' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
@@ -28,7 +28,7 @@
 #'
 #' # Use from query instead of entire database
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
-#' create_osv_list(vulns_list = pkg_vul)
+#' create_osv_list(rosv_query = pkg_vul)
 #'
 #' \dontrun{
 #' # In parallel
@@ -38,37 +38,41 @@
 #' }
 #'
 #' @export
-create_osv_list <- function(vulns_list = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+create_osv_list <- function(rosv_query = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
 
-  # Logic to switch file or memory based creation
-  file_flag <- is.null(vulns_list)
-  # file_flag <- tryCatch(all(file.exists(vulns_list)),
-  #                       error = function(e) {
-  #                         message('Input was not a filepath, assuming JSON in memory')
-  #                         FALSE
-  #                         })
+  # If used downloaded JSONs...
+  if(is.null(rosv_query)) {
 
-  if(is.null(vulns_list)) {
     dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
-    vulns_list <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
+    rosv_query <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
 
     on.exit({
       unlink(dir_loc$dl_dir, recursive = TRUE, force = TRUE)
       if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
     }, add = TRUE)
-  }
 
-  # Run in parallel if plan set by user, otherwise its sequential
-  extracted_details <- furrr::future_map(vulns_list, function(x) extract_vul_info(x, delim = delim, file_flag = file_flag))
+    # Run in parallel if plan set by user, otherwise its sequential
+    extracted_details <- furrr::future_map(rosv_query, function(x) extract_vul_info(x, delim = delim))
 
-  if(as.data.frame) {
-    utils::read.table(textConnection(unique(sort(unlist(extracted_details)))),
-                      sep = delim,
-                      col.names = c('package_name', 'version'))
+    if(as.data.frame) {
+      return(utils::read.table(textConnection(unique(sort(unlist(extracted_details)))),
+                        sep = delim,
+                        col.names = c('name', 'versions')))
+    } else {
+      return(unique(sort(unlist(extracted_details))))
+    }
+
+  # If used a query...
   } else {
-    unique(sort(unlist(extracted_details)))
+    stopifnot(inherits(rosv_query, 'rosv_query'))
+    if(as.data.frame) {
+      return(rosv_query[,c('name', 'versions')])
+    } else {
+      return(unique(sort(paste(rosv_query$name, rosv_query$versions, sep = delim))))
+    }
   }
 }
+
 
 #' Create blacklist commands for Posit Package Manager from OSV data
 #'
@@ -128,44 +132,44 @@ create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', de
 
   if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
 
-  packages <- data.frame(package_name = normalize_pypi_pkg(packages))
+  packages <- data.frame(name = normalize_pypi_pkg(packages))
 
   # If was using the non-data.frame format, convert to it for merges...
   if(!is.data.frame(osv_list)) {
     osv_list <-  utils::read.table(textConnection(osv_list),
                                    sep = delim,
-                                   col.names = c('package_name', 'version'))
+                                   col.names = c('name', 'versions'))
   }
 
   # Left join to provided
-  packages_vul <- merge(packages, osv_list, by = 'package_name', all.x = TRUE, all.y = FALSE)
+  packages_vul <- merge(packages, osv_list, by = 'name', all.x = TRUE, all.y = FALSE)
 
   # Categorize package vul types
   packages_vul$type <- NA
-  packages_vul[is.na(packages_vul$version),'type'] <- 'ALLOW'
-  packages_vul[is.na(packages_vul$type) & packages_vul$version == version_placeholder, 'type'] <- 'BLOCK'
+  packages_vul[is.na(packages_vul$versions),'type'] <- 'ALLOW'
+  packages_vul[is.na(packages_vul$type) & packages_vul$versions == version_placeholder, 'type'] <- 'BLOCK'
   packages_vul[is.na(packages_vul$type), 'type'] <- "VERSION"
 
   # Remove all with a block name
-  block_pkg <- packages_vul$package_name[packages_vul$type == 'BLOCK']
-  packages_vul <- packages_vul[!(packages_vul$package_name %in% block_pkg),]
+  block_pkg <- packages_vul$name[packages_vul$type == 'BLOCK']
+  packages_vul <- packages_vul[!(packages_vul$name %in% block_pkg),]
 
   if(nrow(packages_vul) > 0) {
 
     # Generate version exclusion
-    exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'version'],
-                          packages_vul[packages_vul$type == 'VERSION', 'package_name']),
+    exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'versions'],
+                          packages_vul[packages_vul$type == 'VERSION', 'name']),
                     function(x){
                       version_glue <- paste0(x, collapse = ', != ')
                     })
     exl_v <- paste0(names(exl_v), ' != ', exl_v)
 
     # Add to allow list
-    xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'package_name'],
+    xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'name'],
                    exl_v)
     return(xref_pkgs)
   }
 
-  packages_vul[packages_vul$type == 'ALLOW', 'package_name']
+  packages_vul[packages_vul$type == 'ALLOW', 'name']
 
 }

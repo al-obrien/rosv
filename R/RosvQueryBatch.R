@@ -77,6 +77,7 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                                   rslt_vec <- rep(rslt_names, rslt_lengths)
 
                                   # Create the formatted data.frame
+                                  # Another method could be: unlist(purrr::map_depth(self$content, 4, 'id'), use.names = FALSE)
                                   ids <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'id'))))
                                   modified <- purrr::list_c(purrr::map(flat_results_list, ~purrr::map_chr(., ~purrr::pluck(., 'modified'))))
 

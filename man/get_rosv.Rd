@@ -6,6 +6,11 @@
 \usage{
 get_rosv(x, field)
 }
+\arguments{
+\item{x}{An object made by {{rosv}}}
+
+\item{field}{Name of the field to extract from}
+}
 \description{
 Internal function to assist with extracting details fro {{rosv}} objects
 }

@@ -89,7 +89,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
                               # Combine summary details per vulns with nested affected details and collapse into 1 dataframe
                               self$content <- purrr::list_rbind(
-                                purrr::map2(purrr::map(self$content, extract_summary),
+                                purrr::map2(purrr::map(self$content, private$extract_summary),
                                             affected_versions,
                                             function(x,y) cbind(data.frame(x), y)))
 
@@ -134,6 +134,15 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               purrr::modify_if(input, is.null,
                                                function(x) NA_character_,
                                                .else = function(x) x)
+                            },
+
+                            # Extract summary info into a list for subsequent combination with nested
+                            extract_summary = function(x) {
+                              summary_list <- list(id = purrr::pluck(x, 'id'),
+                                                   summary = purrr::pluck(x, 'summary'),
+                                                   modified = purrr::pluck(x, 'modified'),
+                                                   published = purrr::pluck(x, 'published'))
+                              private$modify_helper(summary_list)
                             },
 
                             # Extract package and version details and append into a data.frame all at once for lowest levels

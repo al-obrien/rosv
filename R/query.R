@@ -187,16 +187,19 @@ osv_query <- function(name = NULL, ecosystem = NULL, page_token = NULL, ...) {
                                               ...))
 
     # Grab IDs for all Vulns and return the more details vulns info
-    get_content(osv_vulns(batch_vulns$id))
+    structure(get_content(osv_vulns(batch_vulns$id)), class = c('rosv_query', 'data.frame'))
     #osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE))
 
   } else {
     # Align by pre-plucking the vulnerability label
-    get_content(osv_query_1(name = name,
+    structure(get_content(osv_query_1(name = name,
                             ecosystem = ecosystem,
-                            ...))
+                            ...)),
+              class = c('rosv_query', 'data.frame'))
+
     # purrr::pluck(osv_query_1(name = name,
     #                          ecosystem = ecosystem,
     #                          ...), 1)
   }
 }
+

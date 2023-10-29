@@ -5,7 +5,7 @@
 \title{Create list of packages identified in OSV database}
 \usage{
 create_osv_list(
-  vulns_list = NULL,
+  rosv_query = NULL,
   ecosystem = "PyPI",
   delim = "\\t",
   as.data.frame = FALSE,
@@ -14,7 +14,7 @@ create_osv_list(
 )
 }
 \arguments{
-\item{vulns_list}{A list of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.}
+\item{rosv_query}{A table of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.}
 
 \item{ecosystem}{Character value of either 'PyPI' or 'CRAN'.}
 
@@ -51,7 +51,7 @@ writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
 
 # Use from query instead of entire database
 pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
-create_osv_list(vulns_list = pkg_vul)
+create_osv_list(rosv_query = pkg_vul)
 
 \dontrun{
 # In parallel

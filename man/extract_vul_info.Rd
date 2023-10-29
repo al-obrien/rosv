@@ -4,12 +4,7 @@
 \alias{extract_vul_info}
 \title{Extract key OSV information from JSON}
 \usage{
-extract_vul_info(
-  input,
-  delim = "\\t",
-  version_placeholder = " ",
-  file_flag = FALSE
-)
+extract_vul_info(input, delim = "\\t", version_placeholder = " ")
 }
 \arguments{
 \item{input}{File path to the folder or API response content containing the OSV JSON info}
@@ -17,8 +12,6 @@ extract_vul_info(
 \item{delim}{The deliminator to separate the package and version details.}
 
 \item{version_placeholder}{Value to fill if no versions are listed for package.}
-
-\item{file_flag}{Boolean to determine if the input was a file or already a list format in R memory.}
 }
 \description{
 Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.

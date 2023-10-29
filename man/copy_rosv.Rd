@@ -11,6 +11,9 @@ copy_rosv(x, ...)
 
 \item{...}{Additional parameters sent to R6's clone method.}
 }
+\value{
+An R6 class object.
+}
 \description{
 Since R6 classes have reference semantics, to escape updating original objects,
 a clone should be made.

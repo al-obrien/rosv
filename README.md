@@ -88,6 +88,6 @@ writeLines(xref_pkg_list, 'requirements.txt')
 {rosv} is still a young project. There are plans to extend its use.
 Currently it uses R6 classes for its lower-level interface to the OSV
 API. Pagination functionality will be added once it is offered by
-{httr2}, which at time of writing is avaiable but experimental. There
+{httr2}, which at time of writing is available but experimental. There
 are also plans to have more types of returned details, such as returning
 just the version input for functions like `osv_query()`.

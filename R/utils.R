@@ -8,16 +8,11 @@
 #' @param input File path to the folder or API response content containing the OSV JSON info
 #' @param delim The deliminator to separate the package and version details.
 #' @param version_placeholder Value to fill if no versions are listed for package.
-#' @param file_flag Boolean to determine if the input was a file or already a list format in R memory.
-extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ', file_flag = FALSE) {
+extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 
-  if(file_flag) {
-    # Load from a file (if it exists), parse accordingly for affected set
-    aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
-  } else {
-    # If not a file, assume its API response, and parse as such (batch needs to be parsed similar)
-    aff_pkgs <- purrr::pluck(input, 'affected')
-  }
+
+  # Load from a file (if it exists), parse accordingly for affected set
+  aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
 
   pkg_names <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'package', 'name'))
   pkg_versions <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'versions'))
@@ -165,7 +160,7 @@ validate_rosv <- function(x) {
 #'
 #' @param x Object to copy.
 #' @param ... Additional parameters sent to R6's clone method.
-#' @results An R6 class object.
+#' @returns An R6 class object.
 #' @examples
 #' original_obj <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 #' new_obj <- copy_rosv(original_obj)
@@ -181,6 +176,7 @@ copy_rosv <- function(x, ...) {
 #' @examples
 #' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 #' get_content(test)
+#' @export
 get_content <- function(x) {
   get_rosv(x, 'content')
 }
