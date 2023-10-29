@@ -78,7 +78,8 @@ Perform the request and return response for OSV API call.
 \if{html}{\out{<a id="method-RosvQuery1-parse"></a>}}
 \if{latex}{\out{\hypertarget{method-RosvQuery1-parse}{}}}
 \subsection{Method \code{parse()}}{
-Parse the contents returned into a tidier format.
+Parse the contents returned into a tidier format. Can
+use \code{future} plans to help parallelize.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvQuery1$parse()}\if{html}{\out{</div>}}
 }

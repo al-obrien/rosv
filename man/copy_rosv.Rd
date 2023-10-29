@@ -16,6 +16,6 @@ Since R6 classes have reference semantics, to escape updating original objects,
 a clone should be made.
 }
 \examples{
-original_obj <- osvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+original_obj <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 new_obj <- copy_rosv(original_obj)
 }

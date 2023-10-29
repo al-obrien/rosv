@@ -70,7 +70,8 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             },
 
                             #' @description
-                            #' Parse the contents returned into a tidier format.
+                            #' Parse the contents returned into a tidier format. Can
+                            #' use \code{future} plans to help parallelize.
                             parse = function() {
                               stopifnot(!is.null(self$content))
 

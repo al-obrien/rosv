@@ -152,7 +152,7 @@ is_rosv <- function(x) {
 #' @returns Invisibly returns TRUE if validation is successful, otherwise will error.
 #' @examples
 #' # example code
-#' validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+#' rosv:::validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
 validate_rosv <- function(x) {
   if(!is_rosv(x)) stop('Object is not a class created by {rosv}.')
   invisible(TRUE)
@@ -167,8 +167,9 @@ validate_rosv <- function(x) {
 #' @param ... Additional parameters sent to R6's clone method.
 #' @results An R6 class object.
 #' @examples
-#' original_obj <- osvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+#' original_obj <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 #' new_obj <- copy_rosv(original_obj)
+#' @export
 copy_rosv <- function(x, ...) {
   validate_rosv(x)
   x$clone(...)

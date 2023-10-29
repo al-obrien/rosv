@@ -17,5 +17,5 @@ Validate if object is made by {{rosv}}
 }
 \examples{
 # example code
-validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+rosv:::validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
 }
