@@ -74,6 +74,25 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             parse = function() {
                               stopifnot(!is.null(self$content))
 
+                              if(length(self$content) == 1 & (!is.null(names(self$content)) && names(self$content) == 'vulns')) {
+                                self$content <- purrr::pluck(self$content, 'vulns')
+                              }
+
+                              # Extract all nested details of interests for versions of packages under affected array
+                              affected_versions <- furrr::future_map(self$content,
+                                                                     ~purrr::map(purrr::pluck(., 'affected'), private$extract_details))
+
+
+                              # Collapse within each pkg set (e.g. tensorflow can have several affected per vulns)
+                              affected_versions <- purrr::map(affected_versions, list_rbind)
+
+                              # Combine summary details per vulns with nested affected details and collapse into 1 dataframe
+                              self$content <- purrr::list_rbind(
+                                purrr::map2(purrr::map(self$content, extract_summary),
+                                            affected_versions,
+                                            function(x,y) cbind(data.frame(x), y)))
+
+
                             },
 
                             #' @description
@@ -107,6 +126,29 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               req <- httr2::req_retry(req, 3, backoff = ~10)
                               req
 
+                            },
+
+                            # Helper function to check for NULLS and replace with NA in lists
+                            modify_helper = function(input) {
+                              purrr::modify_if(input, is.null,
+                                               function(x) NA_character_,
+                                               .else = function(x) x)
+                            },
+
+                            # Extract package and version details and append into a data.frame all at once for lowest levels
+                            # Specific for query1 or vulns extractions
+                            extract_details = function(x) {
+
+                              # Pkg details
+                              pkg_details <- purrr::pluck(x, 'package')
+
+                              # Versions unlisted
+                              versions <- unlist(purrr::pluck(x, 'versions'))
+
+                              # Combine list with reformatted list and make a dataframe
+                              data.frame(
+                                private$modify_helper(append(pkg_details, list(versions = versions)))
+                              )
                             },
 
                             validate_query = function(commit, version, name, ecosystem, purl) {
