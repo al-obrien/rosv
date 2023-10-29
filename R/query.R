@@ -90,8 +90,9 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
                             purl,
                             page_token)
   query_1$run()
+  query_1$parse()
 
-  query_1$content
+  query_1
 
 }
 
@@ -141,8 +142,9 @@ osv_vulns <- function(vuln_ids) {
 
   vulns <- RosvVulns$new(vuln_ids)
   vulns$run()
+  vulns$parse()
 
-  vulns$content
+  vulns
 }
 
 
@@ -179,18 +181,22 @@ osv_vulns <- function(vuln_ids) {
 osv_query <- function(name = NULL, ecosystem = NULL, page_token = NULL, ...) {
 
   if(length(name) > 1) {
-    batch_vulns <- osv_querybatch(name = name,
-                                  ecosystem = ecosystem,
-                                  page_token = page_token,
-                                  ...)
+    batch_vulns <- get_content(osv_querybatch(name = name,
+                                              ecosystem = ecosystem,
+                                              page_token = page_token,
+                                              ...))
 
     # Grab IDs for all Vulns and return the more details vulns info
-    osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE))
+    get_content(osv_vulns(batch_vulns$id))
+    #osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE))
 
   } else {
     # Align by pre-plucking the vulnerability label
-    purrr::pluck(osv_query_1(name = name,
-                             ecosystem = ecosystem,
-                             ...), 1)
+    get_content(osv_query_1(name = name,
+                            ecosystem = ecosystem,
+                            ...))
+    # purrr::pluck(osv_query_1(name = name,
+    #                          ecosystem = ecosystem,
+    #                          ...), 1)
   }
 }
