@@ -174,6 +174,24 @@ copy_rosv <- function(x, ...) {
   x$clone(...)
 }
 
+#' Retrieve contents field from {{rosv}} R6 object
+#' @param x An object made by {{rosv}}
+#' @returns Values contained in the content field of the object (data.frame or list).
+#' @examples
+#' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
+#' get_content(test)
+get_content <- function(x) {
+  get_rosv(x, 'content')
+}
+
+#' Internal function to assist with extracting details fro {{rosv}} objects
+#' @param x An object made by {{rosv}}
+#' @param field Name of the field to extract from
+get_rosv <- function(x, field) {
+  validate_rosv(x)
+  x[[field]]
+}
+
 # Incomplete... for helping if affected array is nested at different depths in API resp
 locate_min_depth <- function(list, target) {
 
