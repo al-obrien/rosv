@@ -3,9 +3,17 @@
 \name{RosvVulns}
 \alias{RosvVulns}
 \title{R6 Class for OSV Vulns Endpoint}
+\value{
+An R6 object to operate with OSV vulns endpoint.
+}
 \description{
 An R6 class to provide a lower-level interface to the vulnerability
 endpoint of the OSV API.
+}
+\examples{
+vulns <- RosvQueryBatch$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
+vulns
+
 }
 \section{Super class}{
 \code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvVulns}

@@ -13,6 +13,9 @@ create_ppm_blacklist(osv_list, delim, flags = NULL)
 
 \item{flags}{Global flag to apply to the rspm commands.}
 }
+\value{
+Character vector containing blacklist commands.
+}
 \description{
 Create blacklist commands for Posit Package Manager from OSV data
 }

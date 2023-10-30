@@ -23,10 +23,12 @@ Helper function to assist in downloading vulnerabilities information from OSV da
 Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
 osv_dl <- download_osv('CRAN')
 
 # Clean up
 try(unlink(osv_dl$osv_cache, recursive = TRUE))
 try(unlink(osv_dl$dl_dir, recursive = TRUE))
-
+\dontshow{\}) # examplesIf}
 }

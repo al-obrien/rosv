@@ -23,6 +23,9 @@ create_ppm_xref_whitelist(
 
 \item{version_placeholder}{Value used when creating the \code{osv_list} from \code{create_osv_list}.}
 }
+\value{
+Character vector containing the information for a selective requirements.txt file.
+}
 \description{
 Cross reference a whitelist of packages to a vulnerability database
 }
@@ -35,12 +38,16 @@ Due to variations in formatting from the API, not all responses have versions as
 are not directly compatible with this function.
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 python_pkg <- c('dask', 'tensorflow', 'keras')
 pypi_vul <- create_osv_list(as.data.frame = TRUE)
 xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
-writeLines(xref_pkg_list, 'requirements.txt')
-}
+file_name <- file.path(tempdir(), 'requirements.txt')
+writeLines(xref_pkg_list, file_name)
+
+# Clean up
+try(unlink(file_name))
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}

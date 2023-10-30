@@ -8,7 +8,17 @@
   Sys.unsetenv("ROSV_CACHE_GLOBAL")
 }
 
-# Function to enforce httr2 use to remove CRAN note (most was nested in R6 methods)
+#' Enforce httr2 use to remove CRAN note
+#'
+#' Function to enforce httr2 use to remove CRAN note which occurred since most of
+#' these were embedded within R6 methods and not discovered automatically by R CMD Checks.
+#'
+#' @returns A dummy http request.
+#'
+#' @examples
+#' enforce_httr2_use()
+#'
+#' @noRd
 enforce_httr2_use <- function() {
   httr2::request('dummyURL')
 }

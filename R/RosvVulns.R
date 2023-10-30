@@ -4,8 +4,12 @@
 #' An R6 class to provide a lower-level interface to the vulnerability
 #' endpoint of the OSV API.
 #'
-#'
 #' @param vuln_ids Character vector of vulnerability IDs.
+#'
+#' @returns An R6 object to operate with OSV vulns endpoint.
+#' @examples
+#' vulns <- RosvQueryBatch$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
+#' vulns
 #'
 #' @export
 RosvVulns <- R6::R6Class('RosvVulns',

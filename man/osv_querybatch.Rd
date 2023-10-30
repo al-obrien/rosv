@@ -29,6 +29,9 @@ osv_querybatch(
 
 \item{...}{Additional parameters, for future development.}
 }
+\value{
+An R6 object containing API query contents.
+}
 \description{
 Each query needs to be constructed from the provided set of vectors. Default
 will be \code{NA} and thereby empty/null in the JSON request. If some values in the vector
@@ -37,6 +40,11 @@ request can be parallelized via {future}.
 }
 \details{
 This returns the vulnerability ID and modified fields only, as per API instruction.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}

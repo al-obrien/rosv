@@ -13,6 +13,11 @@
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #'
+#' @returns An R6 object to operate with OSV query endpoint.
+#'
+#' @examples
+#' query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')#'
+#' query
 #' @export
 RosvQuery1 <- R6::R6Class('RosvQuery1',
                           public = list(
@@ -66,6 +71,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               # Assign to main variables
                               self$content <- httr2::resp_body_json(resp)
                               self$response <- resp
+                              # invisible(self) # If want to be able to chain content at confusion of reference semantics
 
                             },
 
@@ -92,6 +98,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                                 purrr::map2(purrr::map(self$content, private$extract_summary),
                                             affected_versions,
                                             function(x,y) cbind(data.frame(x), y)))
+                              # invisible(self) # If want to be able to chain content at confusion of reference semantics
 
 
                             },

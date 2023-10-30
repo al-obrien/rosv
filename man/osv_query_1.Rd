@@ -30,14 +30,13 @@ osv_query_1(
 \item{...}{Additional parameters, for future development.}
 }
 \value{
-A list containing API query contents.
+An R6 object containing API query contents.
 }
 \description{
 Query OSV API for individual package vulnerabilities
 }
 \examples{
 osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
-
 
 }
 \seealso{

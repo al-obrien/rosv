@@ -7,10 +7,17 @@
 get_rosv(x, field)
 }
 \arguments{
-\item{x}{An object made by {{rosv}}}
+\item{x}{An object made by {{rosv}}.}
 
-\item{field}{Name of the field to extract from}
+\item{field}{Name of the field to extract from.}
+}
+\value{
+The specified field in the top hierarchy of the R6 class.
 }
 \description{
 Internal function to assist with extracting details fro {{rosv}} objects
+}
+\examples{
+test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
+rosv:::get_rosv(test, 'content')
 }

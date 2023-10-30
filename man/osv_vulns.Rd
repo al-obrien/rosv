@@ -7,10 +7,16 @@
 osv_vulns(vuln_ids)
 }
 \arguments{
-\item{vuln_ids}{Vector of vulnerability IDs.
-
-Is usually paired with the batch outputs to grab more specific information.}
+\item{vuln_ids}{Vector of vulnerability IDs.}
+}
+\value{
+An R6 object containing API query contents.
 }
 \description{
-Query OSV API for vulnerabilities based on ID
+Use vulnerability IDs to extract more details information. Usually is paired with \code{osv_querybatch}.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+osv_vulns("RSEC-2023-8")
+\dontshow{\}) # examplesIf}
 }

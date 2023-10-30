@@ -12,6 +12,14 @@
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #'
+#' @returns An R6 object to operate with OSV querybatch endpoint.
+#'
+#' @examples
+#' pkgs <- c('jinja2', 'dask')
+#' ecosystem <- rep('PyPI', length(pkgs))
+#' batchquery <- RosvQueryBatch$new(name = pkgs, ecosystem = ecosystem)
+#' batchquery
+#'
 #' @export
 RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                               inherit = RosvQuery1,

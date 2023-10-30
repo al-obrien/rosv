@@ -10,7 +10,8 @@
 #'
 #' @returns A list containing the cache and download locations for the vulnerability files.
 #'
-#' @examples
+#' @examplesIf interactive()
+#'
 #' osv_dl <- download_osv('CRAN')
 #'
 #' # Clean up
@@ -72,13 +73,12 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param ... Additional parameters, for future development.
 #'
-#' @returns A list containing API query contents.
+#' @returns An R6 object containing API query contents.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #'
 #' @examples
 #' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
-#'
 #'
 #' @export
 osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
@@ -113,7 +113,13 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param ... Additional parameters, for future development.
 #'
+#' @returns An R6 object containing API query contents.
+#'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
+#'
+#' @examplesIf interactive()
+#' osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))
+#'
 #' @export
 osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
 
@@ -134,9 +140,15 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 
 #' Query OSV API for vulnerabilities based on ID
 #'
+#' Use vulnerability IDs to extract more details information. Usually is paired with \code{osv_querybatch}.
+#'
 #' @param vuln_ids Vector of vulnerability IDs.
 #'
-#' Is usually paired with the batch outputs to grab more specific information.
+#' @returns An R6 object containing API query contents.
+#'
+#' @examplesIf interactive()
+#' osv_vulns("RSEC-2023-8")
+#'
 #' @export
 osv_vulns <- function(vuln_ids) {
 
@@ -152,8 +164,8 @@ osv_vulns <- function(vuln_ids) {
 #'
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
 #' Unlike the other query functions, \code{osv_query} will only return content and not
-#' the response object. All vulnerabilities are returned for any versions of the package flagged
-#' in OSV.
+#' the response object. By default all vulnerabilities are returned for any versions of the package flagged
+#' in OSV. This can be subset manually or via the parameter \code{all_affected_versions}.
 #'
 #' @details
 #' Since the 'query' and 'batchquery' API endpoints have different outputs, this

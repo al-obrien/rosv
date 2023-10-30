@@ -8,6 +8,13 @@
 #' @param input File path to the folder or API response content containing the OSV JSON info
 #' @param delim The deliminator to separate the package and version details.
 #' @param version_placeholder Value to fill if no versions are listed for package.
+#'
+#' @returns A character vector of package names and versions
+#'
+#' @examplesIf interactive()
+#' vul_json_file <- download_osv('CRAN', id = "RSEC-2023-8")
+#' rosv:::extract_vul_info(vul_json_file$osv_cache)
+#'
 extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 
 
@@ -28,6 +35,11 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' as long runs are not recognized (- is same as --).
 #'
 #' @param pkg_name Vector of package names.
+#'
+#' @returns Character vector of normalized PyPI package names
+#'
+#' @examples
+#' rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
 #'
 normalize_pypi_pkg <- function(pkg_name) {
 
@@ -171,19 +183,27 @@ copy_rosv <- function(x, ...) {
 }
 
 #' Retrieve contents field from {{rosv}} R6 object
-#' @param x An object made by {{rosv}}
+#'
+#' @param x An object made by {{rosv}}.
+#'
 #' @returns Values contained in the content field of the object (data.frame or list).
+#'
 #' @examples
 #' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 #' get_content(test)
+#'
 #' @export
 get_content <- function(x) {
   get_rosv(x, 'content')
 }
 
 #' Internal function to assist with extracting details fro {{rosv}} objects
-#' @param x An object made by {{rosv}}
-#' @param field Name of the field to extract from
+#' @param x An object made by {{rosv}}.
+#' @param field Name of the field to extract from.
+#' @returns The specified field in the top hierarchy of the R6 class.
+#' @examples
+#' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
+#' rosv:::get_rosv(test, 'content')
 get_rosv <- function(x, field) {
   validate_rosv(x)
   x[[field]]

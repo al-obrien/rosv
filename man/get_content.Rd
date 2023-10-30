@@ -7,7 +7,7 @@
 get_content(x)
 }
 \arguments{
-\item{x}{An object made by {{rosv}}}
+\item{x}{An object made by {{rosv}}.}
 }
 \value{
 Values contained in the content field of the object (data.frame or list).
@@ -18,4 +18,5 @@ Retrieve contents field from {{rosv}} R6 object
 \examples{
 test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 get_content(test)
+
 }

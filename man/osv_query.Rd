@@ -28,7 +28,8 @@ meant flattening once, and for 'batchquery' it meant using IDs to fetch the addi
 vulnerability information and then flattening the list.
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
 # Single package
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 
@@ -36,7 +37,7 @@ pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 name_vec <- c('dask', 'dash')
 ecosystem_vec <- rep('PyPI', length(name_vec))
 pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}

@@ -21,10 +21,15 @@
 #' @examplesIf interactive()
 #'
 #' pypi_vul <- create_osv_list()
-#' writeLines(pypi_vul, file.path(tempdir(), 'pypi_vul.txt'))
+#' file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
+#' writeLines(pypi_vul, file_name1)
 #'
 #' cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
-#' writeLines(cran_vul, file.path(tempdir(), 'cran_vul.csv'))
+#' file_name2 <- file.path(tempdir(), 'cran_vul.csv')
+#' writeLines(cran_vul, file_name2)
+#'
+#' # Clean up
+#' try(unlink(c(file_name1, file_name2)))
 #'
 #' # Use from query instead of entire database
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
@@ -84,6 +89,8 @@ create_osv_list <- function(rosv_query = NULL, ecosystem = 'PyPI', delim = '\t',
 #' @param delim The delimiter used when creating \code{osv_list}.
 #' @param flags Global flag to apply to the rspm commands.
 #'
+#' @returns Character vector containing blacklist commands.
+#'
 #' @examplesIf interactive()
 #' pypi_vul <- create_osv_list(delim = ',')
 #' cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
@@ -120,13 +127,17 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' @param delim The delimiter used when creating \code{osv_list}.
 #' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
-#' @examples
-#' \dontrun{
+#' @returns Character vector containing the information for a selective requirements.txt file.
+#' @examplesIf interactive()
 #' python_pkg <- c('dask', 'tensorflow', 'keras')
 #' pypi_vul <- create_osv_list(as.data.frame = TRUE)
 #' xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
-#' writeLines(xref_pkg_list, 'requirements.txt')
-#' }
+#' file_name <- file.path(tempdir(), 'requirements.txt')
+#' writeLines(xref_pkg_list, file_name)
+#'
+#' # Clean up
+#' try(unlink(file_name))
+#'
 #' @export
 create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ') {
 

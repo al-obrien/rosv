@@ -3,10 +3,20 @@
 \name{RosvQueryBatch}
 \alias{RosvQueryBatch}
 \title{R6 Class for OSV Querybatch Endpoint}
+\value{
+An R6 object to operate with OSV querybatch endpoint.
+}
 \description{
 An R6 class to provide a lower-level interface to the querybatch
 endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 This avoids some confusion as to which is taken preferentially and simplifies query creation.
+}
+\examples{
+pkgs <- c('jinja2', 'dask')
+ecosystem <- rep('PyPI', length(pkgs))
+batchquery <- RosvQueryBatch$new(name = pkgs, ecosystem = ecosystem)
+batchquery
+
 }
 \section{Super class}{
 \code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvQueryBatch}

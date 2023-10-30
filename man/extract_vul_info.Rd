@@ -13,9 +13,18 @@ extract_vul_info(input, delim = "\\t", version_placeholder = " ")
 
 \item{version_placeholder}{Value to fill if no versions are listed for package.}
 }
+\value{
+A character vector of package names and versions
+}
 \description{
 Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.
 Packages that do not have a listed version will have a blank space as the default placeholder.
 This makes it easier for \code{strsplit} to operate on the string in other steps,
 which will not perform as expected without some value coming after the delimiter.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+vul_json_file <- download_osv('CRAN', id = "RSEC-2023-8")
+rosv:::extract_vul_info(vul_json_file$osv_cache)
+\dontshow{\}) # examplesIf}
 }
