@@ -27,7 +27,8 @@ remotes::install_github('al-obrien/rosv')
 ## Basic Example
 
 The most basic usage of {rosv} is to pull all versions of PyPI or CRAN
-packages listed on the OSV database.
+packages listed on the OSV database using high-level functions such as
+`osv_query()` and `create_osv_list()`.
 
 ``` r
 library(rosv)
@@ -44,6 +45,10 @@ pypi_vul
 ```
 
 ## Use API helpers directly
+
+Lower-level functionality is available to return more details about the
+API request and response contained within the R6 object. These are more
+flexible than their higher-level alternatives.
 
 ``` r
 # Returns entire response object to parse as you please.
