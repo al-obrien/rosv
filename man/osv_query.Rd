@@ -4,22 +4,33 @@
 \alias{osv_query}
 \title{Query OSV API for individual package vulnerabilities}
 \usage{
-osv_query(name = NULL, ecosystem = NULL, page_token = NULL, ...)
+osv_query(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  page_token = NULL,
+  all_affected_versions = TRUE,
+  ...
+)
 }
 \arguments{
 \item{name}{Name of package(s).}
 
+\item{version}{Version of package.}
+
 \item{ecosystem}{Ecosystem(s) package(s) lives within.}
 
 \item{page_token}{When large number of results, next response to complete set requires a page_token.}
+
+\item{all_affected_versions}{Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.}
 
 \item{...}{Any other parameters to pass to nested functions, currently not used.}
 }
 \description{
 Will connect to OSV API and query vulnerabilities from the specified packages.
 Unlike the other query functions, \code{osv_query} will only return content and not
-the response object. All vulnerabilities are returned for any versions of the package flagged
-in OSV.
+the response object. By default all vulnerabilities are returned for any versions of the package flagged
+in OSV. This can be subset manually or via the parameter \code{all_affected_versions}.
 }
 \details{
 Since the 'query' and 'batchquery' API endpoints have different outputs, this

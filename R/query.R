@@ -174,13 +174,15 @@ osv_vulns <- function(vuln_ids) {
 #' vulnerability information and then flattening the list.
 #'
 #' @param name Name of package(s).
+#' @param version Version of package.
 #' @param ecosystem Ecosystem(s) package(s) lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
+#' @param all_affected_versions Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.
 #' @param ... Any other parameters to pass to nested functions, currently not used.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
-#' @examples
-#' \dontrun{
+#' @examplesIf interactive()
+#'
 #' # Single package
 #' pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 #'
@@ -188,30 +190,44 @@ osv_vulns <- function(vuln_ids) {
 #' name_vec <- c('dask', 'dash')
 #' ecosystem_vec <- rep('PyPI', length(name_vec))
 #' pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
-#' }
+#'
 #' @export
-osv_query <- function(name = NULL, ecosystem = NULL, page_token = NULL, ...) {
+osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected_versions = TRUE, ...) {
 
   if(length(name) > 1) {
     batch_vulns <- get_content(osv_querybatch(name = name,
+                                              version = version,
                                               ecosystem = ecosystem,
                                               page_token = page_token,
                                               ...))
 
+    batch_vulns <- get_content(osv_vulns(batch_vulns$id))
+
     # Grab IDs for all Vulns and return the more details vulns info
-    structure(get_content(osv_vulns(batch_vulns$id)), class = c('rosv_query', 'data.frame'))
-    #osv_vulns(unlist(purrr::map_depth(batch_vulns, 4, 'id'), use.names = FALSE))
+
+    if(!all_affected_versions) {
+      stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
+      batch_vulns <- subset(batch_vulns,
+                            (versions == version & name == name & ecosystem == ecosystem) | is.na(versions))
+    }
+
+    structure(batch_vulns, class = c('rosv_query', 'data.frame'))
 
   } else {
     # Align by pre-plucking the vulnerability label
-    structure(get_content(osv_query_1(name = name,
-                            ecosystem = ecosystem,
-                            ...)),
-              class = c('rosv_query', 'data.frame'))
+    query1 <- get_content(osv_query_1(name = name,
+                                      version = version,
+                                      ecosystem = ecosystem,
+                                      ...))
 
-    # purrr::pluck(osv_query_1(name = name,
-    #                          ecosystem = ecosystem,
-    #                          ...), 1)
+    if(!all_affected_versions) {
+      stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
+      query1 <- subset(query1,
+                       (versions == version & name == name & ecosystem == ecosystem) | is.na(versions))
+    }
+
+    structure(query1,
+              class = c('rosv_query', 'data.frame'))
   }
 }
 
