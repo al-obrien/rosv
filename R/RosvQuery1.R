@@ -18,7 +18,7 @@
 #' @returns An R6 object to operate with OSV query endpoint.
 #'
 #' @examples
-#' query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')#'
+#' query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 #' query
 #' @export
 RosvQuery1 <- R6::R6Class('RosvQuery1',
