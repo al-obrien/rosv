@@ -4,12 +4,12 @@ with_mock_dir('vulns_request', {
     # For single input
     vulns <- RosvVulns$new(c('RSEC-2023-6'))
     vulns$run()
-    expect_identical(vulns$request[[1]]$url,'https://api.osv.dev/v1/vulns/RSEC-2023-6')
+    expect_equal(vulns$request[[1]]$url,'https://api.osv.dev/v1/vulns/RSEC-2023-6')
 
     # For >1 input
     vulns <- RosvVulns$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
     vulns$run()
-    expect_identical(vulns$request[[1]]$url,'https://api.osv.dev/v1/vulns/RSEC-2023-6')
-    expect_identical(vulns$request[[2]]$url,'https://api.osv.dev/v1/vulns/GHSA-jq35-85cj-fj4p')
+    expect_equal(vulns$request[[1]]$url,'https://api.osv.dev/v1/vulns/RSEC-2023-6')
+    expect_equal(vulns$request[[2]]$url,'https://api.osv.dev/v1/vulns/GHSA-jq35-85cj-fj4p')
   })
 })
