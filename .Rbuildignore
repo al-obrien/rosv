@@ -8,3 +8,4 @@
 ^cran-comments\.md$
 ^_dependencies\.R$
 ^\.github$
+^codecov\.yml$
