@@ -11,6 +11,11 @@ An R6 class to provide a lower-level interface to the querybatch
 endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 This avoids some confusion as to which is taken preferentially and simplifies query creation.
 }
+\details{
+Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+For now, a warning will be provided and the first set returned. The response object can be used
+for subsequent queries if the user wants to handle the pagination themselves for the time being.
+}
 \examples{
 pkgs <- c('jinja2', 'dask')
 ecosystem <- rep('PyPI', length(pkgs))

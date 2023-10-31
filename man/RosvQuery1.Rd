@@ -10,10 +10,12 @@ An R6 object to operate with OSV query endpoint.
 An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 }
 \details{
-Pageination not implemented yet, waiting for httr2 updates to add, then will handle automatically
+Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+For now, a warning will be provided and the first set returned. The response object can be used
+for subsequent queries if the user wants to handle the pagination themselves for the time being.
 }
 \examples{
-query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')#'
+query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 query
 }
 \section{Public fields}{
