@@ -4,7 +4,9 @@
 #' An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 #'
 #' @details
-#' Pageination not implemented yet, waiting for httr2 updates to add, then will handle automatically
+#' Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+#' For now, a warning will be provided and the first set returned. The response object can be used
+#' for subsequent queries if the user wants to handle the pagination themselves for the time being.
 #'
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param version Version of package.
@@ -70,6 +72,10 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
                               # Assign to main variables
                               self$content <- httr2::resp_body_json(resp)
+                              if(length(purrr::pluck(self$content, 'next_page_token')) > 0) {
+                                warning('Pagination detected in API response; this is not directly supported yet. Only first set is returned.')
+                              }
+
                               self$response <- resp
                               # invisible(self) # If want to be able to chain content at confusion of reference semantics
 

@@ -5,6 +5,11 @@
 #' endpoint of the OSV API. Batches are enforced to only process by commit hash, purl, or name+ecosystem.
 #' This avoids some confusion as to which is taken preferentially and simplifies query creation.
 #'
+#' @details
+#' Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+#' For now, a warning will be provided and the first set returned. The response object can be used
+#' for subsequent queries if the user wants to handle the pagination themselves for the time being.
+#'
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param version Version of package.
 #' @param name Name of package.
@@ -64,6 +69,12 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
 
                                   # Assign to main variables
                                   self$content <- httr2::resp_body_json(resp)
+
+                                  # Check for pagination
+                                  if(length(unlist(purrr::map(purrr::list_flatten(self$content, name_spec = '{inner}'), function(x) purrr::pluck(x,  'next_page_token')))) > 0) {
+                                    warning('Pagination detected in API response; this is not directly supported yet. Only first set is returned.')
+                                  }
+
                                   self$response <- resp
 
                                 },
@@ -82,8 +93,8 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                                   # Check if only 1 result passed in for edge case handling
                                   rslt_n <- purrr::map_int(self$content, length)
 
-                                  # Flatten content 2x to get into results list and use number for naming
-                                  flat_results_list <- purrr::list_flatten(purrr::list_flatten(self$content, name_spec =  '{inner}'), name_spec = '{outer}')
+                                  # Flatten content and pulls vulns out to get into results list and use number for naming
+                                  flat_results_list <- purrr::map_depth(purrr::list_flatten(self$content, name_spec =  '{inner}'), 1, 'vulns')
 
                                   # Expand result name vector
                                   rslt_lengths <- purrr::map_int(flat_results_list, length)
