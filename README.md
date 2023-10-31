@@ -48,7 +48,9 @@ pypi_vul
 
 Lower-level functionality is available to return more details about the
 API request and response contained within the R6 object. These are more
-flexible than their higher-level alternatives.
+flexible than their higher-level alternatives. By default, the results
+of these functions will be cached using {memoise}. This can be overriden
+by specifying `cache = FALSE`.
 
 ``` r
 # Returns entire response object to parse as you please.
