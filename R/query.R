@@ -284,7 +284,7 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
     if(!all_affected_versions) {
       stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
       batch_vulns <- subset(batch_vulns,
-                            (versions == version & name == name & ecosystem == ecosystem) | is.na(versions))
+                            (batch_vulns$versions == version & batch_vulns$name == name & batch_vulns$ecosystem == ecosystem) | is.na(batch_vulns$versions))
     }
 
     structure(batch_vulns, class = c('rosv_query', 'data.frame'))
@@ -299,7 +299,7 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
     if(!all_affected_versions) {
       stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
       query1 <- subset(query1,
-                       (versions == version & name == name & ecosystem == ecosystem) | is.na(versions))
+                       (query1$versions == version & query1$name == name & query1$ecosystem == ecosystem) | is.na(query1$versions))
     }
 
     structure(query1,
