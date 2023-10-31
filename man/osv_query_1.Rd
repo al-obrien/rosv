@@ -11,6 +11,7 @@ osv_query_1(
   commit = NULL,
   purl = NULL,
   page_token = NA,
+  parse = TRUE,
   ...
 )
 }
@@ -26,6 +27,8 @@ osv_query_1(
 \item{purl}{URL for package (do not use if name or ecosystem set).}
 
 \item{page_token}{When large number of results, next response to complete set requires a page_token.}
+
+\item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
 
 \item{...}{Additional parameters, for future development.}
 }

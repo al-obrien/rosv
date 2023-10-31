@@ -71,6 +71,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
+#' @param parse Boolean value to set if the content field should be parsed from JSON list format.
 #' @param ... Additional parameters, for future development.
 #'
 #' @returns An R6 object containing API query contents.
@@ -81,7 +82,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 #'
 #' @export
-osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
+osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, ...) {
 
   query_1 <- RosvQuery1$new(commit,
                             version,
@@ -90,7 +91,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
                             purl,
                             page_token)
   query_1$run()
-  query_1$parse()
+  if(parse) query_1$parse()
 
   query_1
 
@@ -111,6 +112,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
+#' @param parse Boolean value to set if the content field should be parsed from JSON list format.
 #' @param ... Additional parameters, for future development.
 #'
 #' @returns An R6 object containing API query contents.
@@ -121,7 +123,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))
 #'
 #' @export
-osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, ...) {
+osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, ...) {
 
   querybatch <- RosvQueryBatch$new(commit,
                                    version,
@@ -133,7 +135,7 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
   querybatch$run()
 
   # Parse the content field, if user needs raw lists, still available to extract in resp field.
-  querybatch$parse()
+  if(parse) querybatch$parse()
 
   querybatch
 }
@@ -143,18 +145,20 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 #' Use vulnerability IDs to extract more details information. Usually is paired with \code{osv_querybatch}.
 #'
 #' @param vuln_ids Vector of vulnerability IDs.
+#' @param parse Boolean value to set if the content field should be parsed from JSON list format.
 #'
 #' @returns An R6 object containing API query contents.
 #'
 #' @examplesIf interactive()
-#' osv_vulns("RSEC-2023-8")
+#' vulns <- osv_vulns("RSEC-2023-8")
+#' get_content(vulns)
 #'
 #' @export
-osv_vulns <- function(vuln_ids) {
+osv_vulns <- function(vuln_ids, parse = TRUE) {
 
   vulns <- RosvVulns$new(vuln_ids)
   vulns$run()
-  vulns$parse()
+  if(parse) vulns$parse()
 
   vulns
 }
