@@ -70,6 +70,12 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
 
                                 #' @description
                                 #' Parse the contents returned into a tidier format.
+                                #'
+                                #' @details
+                                #' When no result is found, any empty list is returned by the API, which
+                                #' during parsing will be dropped as the list is flattened. However, the
+                                #' index of the list is still accessible and the dropped items can easily
+                                #' be identified from the results column.
                                 parse = function() {
                                   stopifnot(!is.null(self$content))
 

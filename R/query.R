@@ -235,3 +235,32 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
   }
 }
 
+#' Detect if package within ecosystem has reported vulnerabilities
+#'
+#' Search the OSV database, by package name and its respective ecosystem, to determine
+#' if a vulnerability has ever been listed. If a package has been listed as impacted by
+#' a vulnerability, this may warrant further queries to investigate specific versions
+#' that have been affected.
+#'
+#' @inheritParams osv_query
+#' @returns A named vector of logical values.
+#'
+#' @examplesIf interactive()
+#' is_pkg_vulnerable(c('dask', 'dplyr'), c('PyPI', 'CRAN'))
+#'
+is_pkg_vulnerable <- function(name, ecosystem, ...) {
+
+  # Initialize FALSE vector
+  results_vec <- logical(length = length(name))
+
+  # Find TRUE locations
+  index <- get_content(osv_querybatch(name = name,
+                                      ecosystem = ecosystem,
+                                      ...))
+
+  results_vec[as.integer(index$result)] <- TRUE
+  names(results_vec) <- name
+  results_vec
+
+}
+

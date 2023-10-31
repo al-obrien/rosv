@@ -90,6 +90,13 @@ Parse the contents returned into a tidier format.
 \if{html}{\out{<div class="r">}}\preformatted{RosvQueryBatch$parse()}\if{html}{\out{</div>}}
 }
 
+\subsection{Details}{
+When no result is found, any empty list is returned by the API, which
+during parsing will be dropped as the list is flattened. However, the
+index of the list is still accessible and the dropped items can easily
+be identified from the results column.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RosvQueryBatch-clone"></a>}}
