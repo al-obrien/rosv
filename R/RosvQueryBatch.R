@@ -74,13 +74,13 @@ RosvQueryBatch <- R6::R6Class('RosvQueryBatch',
                                   stopifnot(!is.null(self$content))
 
                                   # Check if only 1 result passed in for edge case handling
-                                  rslt_n <- map_int(self$content, length)
+                                  rslt_n <- purrr::map_int(self$content, length)
 
                                   # Flatten content 2x to get into results list and use number for naming
-                                  flat_results_list <- list_flatten(list_flatten(self$content, name_spec =  '{inner}'), name_spec = '{outer}')
+                                  flat_results_list <- purrr::list_flatten(purrr::list_flatten(self$content, name_spec =  '{inner}'), name_spec = '{outer}')
 
                                   # Expand result name vector
-                                  rslt_lengths <- map_int(flat_results_list, length)
+                                  rslt_lengths <- purrr::map_int(flat_results_list, length)
                                   if(rslt_n > 1) rslt_names <- names(flat_results_list) else rslt_names <- 1
                                   rslt_vec <- rep(rslt_names, rslt_lengths)
 
