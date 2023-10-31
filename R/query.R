@@ -72,7 +72,8 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param parse Boolean value to set if the content field should be parsed from JSON list format.
-#' @param ... Additional parameters, for future development.
+#' @param cache Boolean value to determine if should use a cached version of the function and API results.
+#' @param ... Additional parameters passed to nested functions.
 #'
 #' @returns An R6 object containing API query contents.
 #'
@@ -82,19 +83,50 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 #'
 #' @export
-osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, ...) {
+osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+
+  if(cache) {
+    .osv_query_1_cache(commit = commit,
+                       version = version,
+                       name = name,
+                       ecosystem = ecosystem,
+                       purl = purl,
+                       page_token = page_token,
+                       parse = parse,
+                       ...)
+  } else {
+    .osv_query_1(commit = commit,
+                 version = version,
+                 name = name,
+                 ecosystem = ecosystem,
+                 purl = purl,
+                 page_token = page_token,
+                 parse = parse,
+                 ...)
+  }
+}
+
+
+#' @describeIn osv_query_1 Internal function to run osv_query_1 without caching
+.osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
 
   query_1 <- RosvQuery1$new(commit,
                             version,
                             name,
                             ecosystem,
                             purl,
-                            page_token)
+                            page_token,
+                            ...)
   query_1$run()
   if(parse) query_1$parse()
 
   query_1
+}
 
+#' @describeIn osv_query_1 Internal function to run a memoise and cached version of osv_query_1
+#' @importFrom memoise memoise
+.osv_query_1_cache <- function() {
+  # Placeholder for documentation
 }
 
 #' Query OSV API for vulnerabilities given a vector of packages
@@ -106,15 +138,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #'
 #' This returns the vulnerability ID and modified fields only, as per API instruction.
 #'
-#' @param name Name of package.
-#' @param version Version of package.
-#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
-#' @param commit Commit hash to query against (do not use when version set).
-#' @param purl URL for package (do not use if name or ecosystem set).
-#' @param page_token When large number of results, next response to complete set requires a page_token.
-#' @param parse Boolean value to set if the content field should be parsed from JSON list format.
-#' @param cache Boolean value to determine if should use a cached version of the function and API results.
-#' @param ... Additional parameters, for future development.
+#' @inheritParams osv_query_1
 #'
 #' @returns An R6 object containing API query contents.
 #'
@@ -132,7 +156,8 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
                           ecosystem = ecosystem,
                           purl = purl,
                           page_token = page_token,
-                          parse = parse)
+                          parse = parse,
+                          ...)
   } else {
     .osv_querybatch(commit = commit,
                     version = version,
@@ -140,11 +165,12 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
                     ecosystem = ecosystem,
                     purl = purl,
                     page_token = page_token,
-                    parse = parse)
+                    parse = parse,
+                    ...)
   }
 }
 
-#' @describeIn osv_querybatch Internal function to run querybatch without caching
+#' @describeIn osv_querybatch Internal function to run osv_querybatch without caching
 .osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
 
   querybatch <- RosvQueryBatch$new(commit,
@@ -152,7 +178,8 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
                                    name,
                                    ecosystem,
                                    purl,
-                                   page_token)
+                                   page_token,
+                                   ...)
 
   querybatch$run()
 
@@ -162,8 +189,7 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
   querybatch
 }
 
-#' @describeIn osv_querybatch Internal function to run a memoise and cached version of querybatch
-#' @importFrom memoise memoise
+#' @describeIn osv_querybatch Internal function to run a memoise and cached version of osv_querybatch
 .osv_querybatch_cache <- function() {
  # Placeholder for documentation
 }
@@ -174,6 +200,7 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 #'
 #' @param vuln_ids Vector of vulnerability IDs.
 #' @param parse Boolean value to set if the content field should be parsed from JSON list format.
+#' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #'
 #' @returns An R6 object containing API query contents.
 #'
@@ -182,7 +209,19 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
 #' get_content(vulns)
 #'
 #' @export
-osv_vulns <- function(vuln_ids, parse = TRUE) {
+osv_vulns <- function(vuln_ids, parse = TRUE, cache = TRUE) {
+
+  if(cache) {
+    .osv_vulns_cache(vuln_ids = vuln_ids,
+                     parse = parse)
+  } else {
+    .osv_vulns(vuln_ids = vuln_ids,
+               parse = parse)
+  }
+}
+
+#' @describeIn osv_vulns Internal function to run osv_vulns without caching
+.osv_vulns <- function(vuln_ids, parse = TRUE) {
 
   vulns <- RosvVulns$new(vuln_ids)
   vulns$run()
@@ -191,6 +230,11 @@ osv_vulns <- function(vuln_ids, parse = TRUE) {
   vulns
 }
 
+
+#' @describeIn osv_vulns Internal function to run a memoise and cached version of osv_vulns
+.osv_vulns_cache <- function() {
+  # Placeholder for documentation
+}
 
 #' Query OSV API for individual package vulnerabilities
 #'
@@ -210,7 +254,7 @@ osv_vulns <- function(vuln_ids, parse = TRUE) {
 #' @param ecosystem Ecosystem(s) package(s) lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param all_affected_versions Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.
-#' @param ... Any other parameters to pass to nested functions, currently not used.
+#' @param ... Any other parameters to pass to nested functions.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @examplesIf interactive()

@@ -59,7 +59,7 @@ osv_querybatch(
 
 \item{cache}{Boolean value to determine if should use a cached version of the function and API results.}
 
-\item{...}{Additional parameters, for future development.}
+\item{...}{Additional parameters passed to nested functions.}
 }
 \value{
 An R6 object containing API query contents.
@@ -75,9 +75,9 @@ This returns the vulnerability ID and modified fields only, as per API instructi
 }
 \section{Functions}{
 \itemize{
-\item \code{.osv_querybatch()}: Internal function to run querybatch without caching
+\item \code{.osv_querybatch()}: Internal function to run osv_querybatch without caching
 
-\item \code{.osv_querybatch_cache()}: Internal function to run a memoise and cached version of querybatch
+\item \code{.osv_querybatch_cache()}: Internal function to run a memoise and cached version of osv_querybatch
 
 }}
 \examples{

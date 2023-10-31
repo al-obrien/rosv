@@ -11,7 +11,7 @@ is_pkg_vulnerable(name, ecosystem, ...)
 
 \item{ecosystem}{Ecosystem(s) package(s) lives within.}
 
-\item{...}{Any other parameters to pass to nested functions, currently not used.}
+\item{...}{Any other parameters to pass to nested functions.}
 }
 \value{
 A named vector of logical values.

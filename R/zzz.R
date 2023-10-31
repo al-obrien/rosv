@@ -2,7 +2,11 @@
   Sys.setenv(ROSV_CACHE_GLOBAL = file.path(tempdir(), 'rosv'))
   dir.create(Sys.getenv('ROSV_CACHE_GLOBAL'), recursive = TRUE)
 
+  # Caching versions generated upon load.
+  .osv_query_1 <<- memoise::memoise(.osv_query_1)
   .osv_querybatch_cache <<- memoise::memoise(.osv_querybatch)
+  .osv_vulns_cache <<- memoise::memoise(.osv_vulns)
+
 
 }
 
