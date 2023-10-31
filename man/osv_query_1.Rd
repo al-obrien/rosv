@@ -30,7 +30,17 @@ osv_query_1(
   ...
 )
 
-.osv_query_1_cache()
+.osv_query_1_cache(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
+  page_token = NA,
+  parse = TRUE,
+  cache = TRUE,
+  ...
+)
 }
 \arguments{
 \item{name}{Name of package.}

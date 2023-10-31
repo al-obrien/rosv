@@ -232,7 +232,7 @@ osv_vulns <- function(vuln_ids, parse = TRUE, cache = TRUE) {
 
 
 #' @describeIn osv_vulns Internal function to run a memoise and cached version of osv_vulns
-.osv_vulns_cache <- function() {
+.osv_vulns_cache <- function(vuln_ids, parse = TRUE) {
   # Placeholder for documentation
 }
 
