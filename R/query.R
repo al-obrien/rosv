@@ -106,8 +106,6 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #'
 #' This returns the vulnerability ID and modified fields only, as per API instruction.
 #'
-#' @describeIn osv_querybatch Run API calls without caching.
-#'
 #' @param name Name of package.
 #' @param version Version of package.
 #' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
@@ -115,6 +113,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' @param purl URL for package (do not use if name or ecosystem set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param parse Boolean value to set if the content field should be parsed from JSON list format.
+#' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Additional parameters, for future development.
 #'
 #' @returns An R6 object containing API query contents.
@@ -125,7 +124,28 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #' osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))
 #'
 #' @export
-osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, ...) {
+osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+  if(cache) {
+    .osv_querybatch_cache(commit = commit,
+                          version = version,
+                          name = name,
+                          ecosystem = ecosystem,
+                          purl = purl,
+                          page_token = page_token,
+                          parse = parse)
+  } else {
+    .osv_querybatch(commit = commit,
+                    version = version,
+                    name = name,
+                    ecosystem = ecosystem,
+                    purl = purl,
+                    page_token = page_token,
+                    parse = parse)
+  }
+}
+
+#' @describeIn osv_querybatch Internal function to run querybatch without caching
+.osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
 
   querybatch <- RosvQueryBatch$new(commit,
                                    version,
@@ -142,16 +162,10 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
   querybatch
 }
 
-#' @inherit osv_querybatch
-#' @param cache Boolean.
-osv_querybatch2 <- function(cache = TRUE, ...) {
-  if(cache) osv_querybatch_cache(...) else osv_querybatch(...)
-}
-
-#' @describeIn osv_querybatch Run a memoise and cached version of querybatch
-#' @param cache Boolean.
-osv_querybatch_cache <- function() {
-
+#' @describeIn osv_querybatch Internal function to run a memoise and cached version of querybatch
+#' @importFrom memoise memoise
+.osv_querybatch_cache <- function() {
+ # Placeholder for documentation
 }
 
 #' Query OSV API for vulnerabilities based on ID

@@ -2,7 +2,8 @@
 % Please edit documentation in R/query.R
 \name{osv_querybatch}
 \alias{osv_querybatch}
-\alias{osv_querybatch_cache}
+\alias{.osv_querybatch}
+\alias{.osv_querybatch_cache}
 \title{Query OSV API for vulnerabilities given a vector of packages}
 \usage{
 osv_querybatch(
@@ -13,10 +14,11 @@ osv_querybatch(
   purl = NULL,
   page_token = NA,
   parse = TRUE,
+  cache = TRUE,
   ...
 )
 
-osv_querybatch_cache(
+.osv_querybatch(
   name = NULL,
   version = NULL,
   ecosystem = NULL,
@@ -24,6 +26,19 @@ osv_querybatch_cache(
   purl = NULL,
   page_token = NA,
   parse = TRUE,
+  cache = TRUE,
+  ...
+)
+
+.osv_querybatch_cache(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
+  page_token = NA,
+  parse = TRUE,
+  cache = TRUE,
   ...
 )
 }
@@ -42,9 +57,9 @@ osv_querybatch_cache(
 
 \item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
 
-\item{...}{Additional parameters, for future development.}
+\item{cache}{Boolean value to determine if should use a cached version of the function and API results.}
 
-\item{cache}{Boolean.}
+\item{...}{Additional parameters, for future development.}
 }
 \value{
 An R6 object containing API query contents.
@@ -60,9 +75,9 @@ This returns the vulnerability ID and modified fields only, as per API instructi
 }
 \section{Functions}{
 \itemize{
-\item \code{osv_querybatch()}: Run API calls without caching.
+\item \code{.osv_querybatch()}: Internal function to run querybatch without caching
 
-\item \code{osv_querybatch_cache()}: Run a memoise and cached version of querybatch
+\item \code{.osv_querybatch_cache()}: Internal function to run a memoise and cached version of querybatch
 
 }}
 \examples{
