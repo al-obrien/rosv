@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/al-obrien/rosv/branch/master/graph/badge.svg)](https://app.codecov.io/gh/al-obrien/rosv?branch=master)
 <!-- badges: end -->
 
 Use R to query the [Open Source Vulnerability (OSV)
@@ -24,15 +26,29 @@ You can install {rosv} only from GitHub:
 remotes::install_github('al-obrien/rosv')
 ```
 
-## Basic Example
+## Basic Examples
+
+### Detect vulnerable packages
+
+One of the simplest queries is to provide a package and ecosystem and
+return a `TRUE`/`FALSE` response informing you if that package has ever
+been listed with a vulnerability.
+
+``` r
+library(rosv)
+
+is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'), cache = TRUE)
+#>  dask  dash 
+#>  TRUE FALSE
+```
+
+### List package vulnerabilities
 
 The most basic usage of {rosv} is to pull all versions of PyPI or CRAN
 packages listed on the OSV database using high-level functions such as
 `osv_query()` and `create_osv_list()`.
 
 ``` r
-library(rosv)
-
 # Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 create_osv_list(pkg_vul)

@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/al-obrien/rosv/branch/master/graph/badge.svg)](https://app.codecov.io/gh/al-obrien/rosv?branch=master)
 <!-- badges: end -->
 
 Use R to query the [Open Source Vulnerability (OSV) database](https://osv.dev/). This can be useful to 
@@ -31,14 +32,25 @@ remotes::install_github('al-obrien/rosv')
 ```
 
 
-## Basic Example
+## Basic Examples
+
+### Detect vulnerable packages
+
+One of the simplest queries is to provide a package and ecosystem and return a `TRUE`/`FALSE` response 
+informing you if that package has ever been listed with a vulnerability.
+
+```{r}
+library(rosv)
+
+is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'), cache = TRUE)
+```
+
+### List package vulnerabilities
 
 The most basic usage of {rosv} is to pull all versions of PyPI or CRAN packages listed 
 on the OSV database using high-level functions such as `osv_query()` and `create_osv_list()`.
 
 ```{r, eval = FALSE}
-library(rosv)
-
 # Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
 create_osv_list(pkg_vul)
@@ -49,6 +61,7 @@ create_osv_list(pkg_vul)
 pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 pypi_vul
 ```
+
 
 ## Use API helpers directly
 Lower-level functionality is available to return more details about the API request and response 

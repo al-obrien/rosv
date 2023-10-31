@@ -146,6 +146,7 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
 #' @examplesIf interactive()
 #' is_pkg_vulnerable(c('dask', 'dplyr'), c('PyPI', 'CRAN'))
 #'
+#' @export
 is_pkg_vulnerable <- function(name, ecosystem, ...) {
 
   # Initialize FALSE vector
