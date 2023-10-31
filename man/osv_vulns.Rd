@@ -2,14 +2,22 @@
 % Please edit documentation in R/query.R
 \name{osv_vulns}
 \alias{osv_vulns}
+\alias{.osv_vulns}
+\alias{.osv_vulns_cache}
 \title{Query OSV API for vulnerabilities based on ID}
 \usage{
-osv_vulns(vuln_ids, parse = TRUE)
+osv_vulns(vuln_ids, parse = TRUE, cache = TRUE)
+
+.osv_vulns(vuln_ids, parse = TRUE)
+
+.osv_vulns_cache(vuln_ids, parse = TRUE)
 }
 \arguments{
 \item{vuln_ids}{Vector of vulnerability IDs.}
 
 \item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
+
+\item{cache}{Boolean value to determine if should use a cached version of the function and API results.}
 }
 \value{
 An R6 object containing API query contents.
@@ -17,6 +25,13 @@ An R6 object containing API query contents.
 \description{
 Use vulnerability IDs to extract more details information. Usually is paired with \code{osv_querybatch}.
 }
+\section{Functions}{
+\itemize{
+\item \code{.osv_vulns()}: Internal function to run osv_vulns without caching
+
+\item \code{.osv_vulns_cache()}: Internal function to run a memoise and cached version of osv_vulns
+
+}}
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 vulns <- osv_vulns("RSEC-2023-8")

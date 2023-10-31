@@ -2,6 +2,8 @@
 % Please edit documentation in R/query.R
 \name{osv_query_1}
 \alias{osv_query_1}
+\alias{.osv_query_1}
+\alias{.osv_query_1_cache}
 \title{Query OSV API for individual package vulnerabilities}
 \usage{
 osv_query_1(
@@ -12,6 +14,31 @@ osv_query_1(
   purl = NULL,
   page_token = NA,
   parse = TRUE,
+  cache = TRUE,
+  ...
+)
+
+.osv_query_1(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
+  page_token = NA,
+  parse = TRUE,
+  cache = TRUE,
+  ...
+)
+
+.osv_query_1_cache(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
+  page_token = NA,
+  parse = TRUE,
+  cache = TRUE,
   ...
 )
 }
@@ -30,7 +57,9 @@ osv_query_1(
 
 \item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
 
-\item{...}{Additional parameters, for future development.}
+\item{cache}{Boolean value to determine if should use a cached version of the function and API results.}
+
+\item{...}{Additional parameters passed to nested functions.}
 }
 \value{
 An R6 object containing API query contents.
@@ -38,6 +67,13 @@ An R6 object containing API query contents.
 \description{
 Query OSV API for individual package vulnerabilities
 }
+\section{Functions}{
+\itemize{
+\item \code{.osv_query_1()}: Internal function to run osv_query_1 without caching
+
+\item \code{.osv_query_1_cache()}: Internal function to run a memoise and cached version of osv_query_1
+
+}}
 \examples{
 osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 

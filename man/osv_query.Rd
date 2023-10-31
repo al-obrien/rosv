@@ -24,7 +24,7 @@ osv_query(
 
 \item{all_affected_versions}{Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.}
 
-\item{...}{Any other parameters to pass to nested functions, currently not used.}
+\item{...}{Any other parameters to pass to nested functions.}
 }
 \description{
 Will connect to OSV API and query vulnerabilities from the specified packages.
