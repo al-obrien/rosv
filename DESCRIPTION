@@ -21,6 +21,7 @@ Imports:
     furrr,
     httr2,
     jsonlite,
+    memoise,
     purrr
 Depends: 
     R (>= 2.10)
