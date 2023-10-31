@@ -1,6 +1,9 @@
 .onLoad <- function(libname, pkgname) {
   Sys.setenv(ROSV_CACHE_GLOBAL = file.path(tempdir(), 'rosv'))
   dir.create(Sys.getenv('ROSV_CACHE_GLOBAL'), recursive = TRUE)
+
+  osv_querybatch_cache <<- memoise::memoise(osv_querybatch)
+
 }
 
 .onUnload <- function(libpath) {

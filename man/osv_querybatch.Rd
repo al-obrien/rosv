@@ -2,9 +2,21 @@
 % Please edit documentation in R/query.R
 \name{osv_querybatch}
 \alias{osv_querybatch}
+\alias{osv_querybatch_cache}
 \title{Query OSV API for vulnerabilities given a vector of packages}
 \usage{
 osv_querybatch(
+  name = NULL,
+  version = NULL,
+  ecosystem = NULL,
+  commit = NULL,
+  purl = NULL,
+  page_token = NA,
+  parse = TRUE,
+  ...
+)
+
+osv_querybatch_cache(
   name = NULL,
   version = NULL,
   ecosystem = NULL,
@@ -31,6 +43,8 @@ osv_querybatch(
 \item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
 
 \item{...}{Additional parameters, for future development.}
+
+\item{cache}{Boolean.}
 }
 \value{
 An R6 object containing API query contents.
@@ -44,6 +58,13 @@ request can be parallelized via {future}.
 \details{
 This returns the vulnerability ID and modified fields only, as per API instruction.
 }
+\section{Functions}{
+\itemize{
+\item \code{osv_querybatch()}: Run API calls without caching.
+
+\item \code{osv_querybatch_cache()}: Run a memoise and cached version of querybatch
+
+}}
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))

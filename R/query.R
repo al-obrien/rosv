@@ -106,6 +106,8 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 #'
 #' This returns the vulnerability ID and modified fields only, as per API instruction.
 #'
+#' @describeIn osv_querybatch Run API calls without caching.
+#'
 #' @param name Name of package.
 #' @param version Version of package.
 #' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
@@ -138,6 +140,18 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
   if(parse) querybatch$parse()
 
   querybatch
+}
+
+#' @inherit osv_querybatch
+#' @param cache Boolean.
+osv_querybatch2 <- function(cache = TRUE, ...) {
+  if(cache) osv_querybatch_cache(...) else osv_querybatch(...)
+}
+
+#' @describeIn osv_querybatch Run a memoise and cached version of querybatch
+#' @param cache Boolean.
+osv_querybatch_cache <- function() {
+
 }
 
 #' Query OSV API for vulnerabilities based on ID
