@@ -1,6 +1,6 @@
 .onLoad <- function(libname, pkgname) {
   Sys.setenv(ROSV_CACHE_GLOBAL = file.path(tempdir(), 'rosv'))
-  dir.create(Sys.getenv('ROSV_CACHE_GLOBAL'), recursive = TRUE)
+  dir.create(Sys.getenv('ROSV_CACHE_GLOBAL'), recursive = TRUE, showWarnings = FALSE)
 
   # Caching versions generated upon load.
   .osv_query_1_cache <<- memoise::memoise(.osv_query_1)
