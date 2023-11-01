@@ -80,6 +80,9 @@ osv_querybatch(c('dask', 'readxl'), ecosystem = c('PyPI', 'CRAN'))
 
 # Grab details by vulns ID
 osv_vulns('PYSEC-2021-387')
+
+# Clear cache, if needed
+clear_osv_cache()
 ```
 
 
