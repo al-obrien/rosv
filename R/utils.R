@@ -52,6 +52,19 @@ normalize_pypi_pkg <- function(pkg_name) {
 
 }
 
+#' Reset cached results of OSV calls
+#'
+#' A thin wrapper around \code{\link[memoise]{forget()}} to clear cached results
+#'
+#' @returns Invisibly returns a logical value of \code{TRUE} if cache clear occurred without error.
+#'
+#' @export
+clear_osv_cache <- function() {
+  purrr::walk(list(.osv_query_1_cache, .osv_querybatch_cache, .osv_vulns_cache),
+              function(x) memoise::forget(x))
+  invisible(TRUE)
+}
+
 
 #' Check input against possible ecosystems available
 #'
