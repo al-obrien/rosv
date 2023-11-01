@@ -3,6 +3,7 @@
 export(RosvQuery1)
 export(RosvQueryBatch)
 export(RosvVulns)
+export(clear_osv_cache)
 export(copy_rosv)
 export(create_osv_list)
 export(create_ppm_blacklist)

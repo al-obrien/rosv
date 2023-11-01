@@ -54,9 +54,12 @@ normalize_pypi_pkg <- function(pkg_name) {
 
 #' Reset cached results of OSV calls
 #'
-#' A thin wrapper around \code{\link[memoise]{forget()}} to clear cached results
+#' A thin wrapper around \code{\link[memoise]{forget}} to clear cached results.
 #'
 #' @returns Invisibly returns a logical value of \code{TRUE} if cache clear occurred without error.
+#'
+#' @examples
+#' clear_osv_cache()
 #'
 #' @export
 clear_osv_cache <- function() {
