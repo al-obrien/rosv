@@ -2,7 +2,7 @@
 #'
 #' Helper function to assist in downloading vulnerabilities information from OSV database.
 #'
-#' Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
+#' Any ecosystems listed \href{here}{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt} can be downloaded.
 #'
 #' @param ecosystem Character value of ecosystem, any listed on OSV database.
 #' @param id Vulnerability ID, default set to NULL to download all for provided ecosystem.
@@ -81,6 +81,8 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param all_affected_versions Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.
 #' @param ... Any other parameters to pass to nested functions.
+#'
+#' @returns A data.frame with query results parsed.
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #' @examplesIf interactive()
