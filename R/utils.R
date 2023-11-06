@@ -224,31 +224,3 @@ get_rosv <- function(x, field) {
   validate_rosv(x)
   x[[field]]
 }
-
-# Incomplete... for helping if affected array is nested at different depths in API resp
-locate_min_depth <- function(list, target) {
-
-  max_search_depth <- purrr::pluck_depth(list)
-  # if(max_search_depth > 100) stop('Will not search larger than 100 steps deep in a list')
-  # if(max_search_depth < 1 ) stop('Max search depth must be larger than 0')
-
-  flag <- NULL
-  i = 1
-
-  while(is.null(flag)) {
-    search_rslt <- unlist(purrr::map_depth(list, i, target, .ragged = TRUE))
-    i <- i + 1
-    flag <- search_rslt
-  }
-
-  for(i in seq(1:max_search_depth)) {
-
-  }
-
-  unlisted <- unlist(list, recursive = TRUE)
-  names(unlisted)
-
-  # Assumes each depth has a name...
-  split_names <- strsplit(names(unlist(list, recursive = TRUE)), split = '\\.')
-  min(unlist(lapply(split_names, function(x) which(x == target))), na.rm = TRUE)
-}
