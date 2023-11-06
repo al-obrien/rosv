@@ -3,7 +3,7 @@
 #' Each query needs to be constructed from the provided set of vectors. Default
 #' will be \code{NA} and thereby empty/null in the JSON request. If some values in the vector
 #' are missing, use NA For large queries, the conversion to a formatted JSON
-#' request can be parallelized via {future}.
+#' request can be parallelized via \{future\}.
 #'
 #' This returns the vulnerability ID and modified fields only, as per API instruction.
 #'

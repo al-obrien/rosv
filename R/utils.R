@@ -156,10 +156,12 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 }
 
 
-#' Determine if object is an {{rosv}} type R6 class
+#' Is object made from \{rosv\} R6 class
+#'
+#' Determine if object is an \{rosv\} type R6 class
 #'
 #' @param x Object to check.
-#' @returns Boolean value based on if \code{x} is an R6 class made by {{rosv}}.
+#' @returns Boolean value based on if \code{x} is an R6 class made by \{rosv\}.
 #' @examples
 #' is_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
 #'
@@ -170,7 +172,10 @@ is_rosv <- function(x) {
       inherits(x, 'RosvVulns'))
 }
 
-#' Validate if object is made by {{rosv}}
+#' Validate if object is made by \{rosv\}
+#'
+#' Determines if the object is a valid \{rosv\} type.
+#'
 #' @inheritParams is_rosv
 #' @returns Invisibly returns TRUE if validation is successful, otherwise will error.
 #' @examples
@@ -181,7 +186,7 @@ validate_rosv <- function(x) {
   invisible(TRUE)
 }
 
-#' Create a copy of the {{rosv}} object
+#' Create a copy of the \{rosv\} object
 #'
 #' Since R6 classes have reference semantics, to escape updating original objects,
 #' a clone should be made.
@@ -198,9 +203,9 @@ copy_rosv <- function(x, ...) {
   x$clone(...)
 }
 
-#' Retrieve contents field from {{rosv}} R6 object
+#' Retrieve contents field from \{rosv\} R6 object
 #'
-#' @param x An object made by {{rosv}}.
+#' @param x An object made by \{rosv\}.
 #'
 #' @returns Values contained in the content field of the object (data.frame or list).
 #'
@@ -213,8 +218,8 @@ get_content <- function(x) {
   get_rosv(x, 'content')
 }
 
-#' Internal function to assist with extracting details fro {{rosv}} objects
-#' @param x An object made by {{rosv}}.
+#' Internal function to assist with extracting details fro \{rosv\} objects
+#' @param x An object made by \{rosv\}.
 #' @param field Name of the field to extract from.
 #' @returns The specified field in the top hierarchy of the R6 class.
 #' @examples
