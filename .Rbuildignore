@@ -9,3 +9,6 @@
 ^_dependencies\.R$
 ^\.github$
 ^codecov\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
