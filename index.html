@@ -44,6 +44,9 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
+  <a class="nav-link" href="articles/rosv.html">Get started</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
@@ -73,81 +76,38 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>Use R to query the <a href="https://osv.dev/" class="external-link">Open Source Vulnerability (OSV) database</a>. This can be useful to cross check the database with packages used in <code>requirements.txt</code> (python) or <code>renv.lock</code> files (R). The generated content can also be used to create block lists for curated repositories with Posit Package Manager. More details about the OSV project and associated API can be found here: <a href="https://google.github.io/osv.dev/" class="external-link uri">https://google.github.io/osv.dev/</a></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The {rosv} package is an API client to the <a href="https://osv.dev/" class="external-link">Open Source Vulnerability (OSV) database</a>. Both high and low level functions are available to query the database for vulnerabilities in package repositories across various open source ecosystems such as CRAN, Bioconductor, PyPI, and many more. Queries made against the OSV database are useful to check for package vulnerabilities (including by specific versions) enumerated in package management files such as <code>requirements.txt</code> (Python) and <code>renv.lock</code> (R).</p>
+<p>Various helper function assist in the administration of <a href="https://packagemanager.posit.co/client/#/" class="external-link">Posit Package Manager</a> or similar services. Packages can be routinely examined for new vulnerabilities which aide in the creation and updating of curated repositories as well as setting block lists.</p>
+<p>More details about the OSV project and associated API can be found here: <a href="https://google.github.io/osv.dev/" class="external-link uri">https://google.github.io/osv.dev/</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install {rosv} only from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'rosv'</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://al-obrien.github.io/rosv/">rosv</a></span><span class="op">)</span></span></code></pre></div>
+<p>For the latest development version, you can install {rosv} from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'al-obrien/rosv'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="basic-examples">Basic Examples<a class="anchor" aria-label="anchor" href="#basic-examples"></a>
+<h2 id="basic-usage">Basic usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h2>
-<div class="section level3">
-<h3 id="detect-vulnerable-packages">Detect vulnerable packages<a class="anchor" aria-label="anchor" href="#detect-vulnerable-packages"></a>
-</h3>
-<p>One of the simplest queries is to provide a package and ecosystem and return a <code>TRUE</code>/<code>FALSE</code> response informing you if that package has ever been listed with a vulnerability.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://al-obrien.github.io/rosv/">rosv</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/is_pkg_vulnerable.html">is_pkg_vulnerable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'dash'</span><span class="op">)</span>, ecosystem <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PyPI'</span>, <span class="st">'PyPI'</span><span class="op">)</span>, cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  dask  dash </span></span>
-<span><span class="co">#&gt;  TRUE FALSE</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="list-package-vulnerabilities">List package vulnerabilities<a class="anchor" aria-label="anchor" href="#list-package-vulnerabilities"></a>
-</h3>
-<p>The most basic usage of {rosv} is to pull all versions of PyPI or CRAN packages listed on the OSV database using high-level functions such as <code><a href="reference/osv_query.html">osv_query()</a></code> and <code><a href="reference/create_osv_list.html">create_osv_list()</a></code>.</p>
+<p>Provide a package name and related ecosystem to fetch any identified vulnerabilities.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Query one package in PyPI for vulnerabilities</span></span>
-<span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span><span class="va">pkg_vul</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span></code></pre></div>
+<p>Multiple packages can be queried at the same time and can be mixed between ecosystems.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Pull the entire set of PyPI vulnerability data</span></span>
-<span><span class="va">pypi_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span>ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span><span class="va">pypi_vul</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="use-api-helpers-directly">Use API helpers directly<a class="anchor" aria-label="anchor" href="#use-api-helpers-directly"></a>
-</h2>
-<p>Lower-level functionality is available to return more details about the API request and response contained within the R6 object. These are more flexible than their higher-level alternatives. By default, the results of these functions will be cached using {memoise}. This can be overriden by specifying <code>cache = FALSE</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Returns entire response object to parse as you please.</span></span>
-<span><span class="fu"><a href="reference/osv_query_1.html">osv_query_1</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Returns the vulnerability IDs for packages in list</span></span>
-<span><span class="fu"><a href="reference/osv_querybatch.html">osv_querybatch</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Return vulnerabilities from different ecosystems as vectors</span></span>
-<span><span class="fu"><a href="reference/osv_querybatch.html">osv_querybatch</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'readxl'</span><span class="op">)</span>, ecosystem <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PyPI'</span>, <span class="st">'CRAN'</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Grab details by vulns ID</span></span>
-<span><span class="fu"><a href="reference/osv_vulns.html">osv_vulns</a></span><span class="op">(</span><span class="st">'PYSEC-2021-387'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Clear cache, if needed</span></span>
-<span><span class="fu"><a href="reference/clear_osv_cache.html">clear_osv_cache</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="creating-a-cross-referenced-whitelist">Creating a cross-referenced whitelist<a class="anchor" aria-label="anchor" href="#creating-a-cross-referenced-whitelist"></a>
-</h2>
-<p>When using a product such as {miniCRAN} or Posit Package Manager, there may be corporate requirements to limit what packages users can install. Although having a whitelist is often recommended, it should either specify the exact versions that are approved or exclude packages with known vulnerabilities. Given the amount of packages and versions, this is often difficult. The following method will take a vector of packages (from PyPI) and cross-reference against the OSV database. If packages are identified they are either entirely dropped, or the specific versions with flagged vulnerabilities are excluded.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># List of packages of interest</span></span>
-<span><span class="va">python_pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'tensorflow'</span>, <span class="st">'keras'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create the xref whitelist</span></span>
-<span><span class="va">pypi_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span>as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">xref_pkg_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_ppm_xref_whitelist.html">create_ppm_xref_whitelist</a></span><span class="op">(</span><span class="va">python_pkg</span>, <span class="va">pypi_vul</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Output requirements.txt which can be used with PPM product</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="va">xref_pkg_list</span>, <span class="st">'requirements.txt'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'readxl'</span>, <span class="st">'dplyr'</span><span class="op">)</span>,</span>
+<span>          ecosystem <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PyPI'</span>, <span class="st">'CRAN'</span>, <span class="st">'CRAN'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="development-notes">Development notes<a class="anchor" aria-label="anchor" href="#development-notes"></a>
 </h2>
-<p>{rosv} is still a young project. There are plans to extend its use. Currently it uses R6 classes for its lower-level interface to the OSV API. Pagination functionality will be added once it is offered by {httr2}, which at time of writing is available but experimental. There are also plans to have more types of returned details, such as returning just the version input for functions like <code><a href="reference/osv_query.html">osv_query()</a></code>.</p>
+<p>{rosv} is still a young project. There are plans to extend its use. Currently it uses R6 classes for its low-level interface to the OSV API. Pagination functionality will be added once it is offered by {httr2}, which at time of writing is available but experimental. There are also plans to have more types of returned details and parsing of content.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
