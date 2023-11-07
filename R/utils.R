@@ -40,7 +40,7 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #'
 #' @returns Character vector of normalized PyPI package names
 #'
-#' @seealso \href{PyPI Package Normalization}{https://packaging.python.org/en/latest/specifications/name-normalization/}
+#' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI Package Normalization}
 #'
 #' @examples
 #' rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))

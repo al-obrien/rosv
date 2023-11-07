@@ -2,7 +2,7 @@
 #'
 #' Helper function to assist in downloading vulnerabilities information from OSV database.
 #'
-#' Any ecosystems listed \href{here}{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt} can be downloaded.
+#' Any ecosystems listed \href{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt}{here} can be downloaded.
 #'
 #' @param ecosystem Character value of ecosystem, any listed on OSV database.
 #' @param id Vulnerability ID, default set to NULL to download all for provided ecosystem.

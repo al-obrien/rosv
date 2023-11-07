@@ -1,8 +1,13 @@
-# rosv 0.3.0
+# rosv 0.4.0
+
+* Initial CRAN release
+
+# rosv 0.3.0 (2023-11-01)
 
 * Overhaul on docs, basic tests, and more helper functions
+* Add caching mechanism
 
-# rosv 0.2.0
+# rosv 0.2.0 (2023-10-28)
 
 * Update to use of R6 for back-end 
 

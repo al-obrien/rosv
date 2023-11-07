@@ -21,5 +21,5 @@ rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
 
 }
 \seealso{
-\href{PyPI Package Normalization}{https://packaging.python.org/en/latest/specifications/name-normalization/}
+\href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI Package Normalization}
 }
