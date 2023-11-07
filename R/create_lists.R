@@ -126,6 +126,8 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
 #' @param delim The delimiter used when creating \code{osv_list}.
 #' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list()}.
+#' @param full_table Boolean value to determine if a complete table before dropping packages is returned (helpful for debugging).
+#'
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @returns Character vector containing the information for a selective requirements.txt file.
 #' @examplesIf interactive()
@@ -139,7 +141,7 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' try(unlink(file_name))
 #'
 #' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ') {
+create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ', full_table = FALSE) {
 
   if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
 
@@ -160,6 +162,8 @@ create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', de
   packages_vul[is.na(packages_vul$versions),'type'] <- 'ALLOW'
   packages_vul[is.na(packages_vul$type) & packages_vul$versions == version_placeholder, 'type'] <- 'BLOCK'
   packages_vul[is.na(packages_vul$type), 'type'] <- "VERSION"
+
+  if(full_table) return(packages_vul)
 
   # Remove all with a block name
   block_pkg <- packages_vul$name[packages_vul$type == 'BLOCK']
