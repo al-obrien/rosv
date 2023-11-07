@@ -20,7 +20,7 @@
 #'
 #' @examplesIf interactive()
 #'
-#' pypi_vul <- create_osv_list()
+#' pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 #' file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
 #' writeLines(pypi_vul, file_name1)
 #'
@@ -38,12 +38,12 @@
 #' \dontrun{
 #' # In parallel
 #' future::plan(multisession, workers = 4)
-#' pypi_vul <- create_osv_list()
+#' pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 #' future::plan(sequential)
 #' }
 #'
 #' @export
-create_osv_list <- function(rosv_query = NULL, ecosystem = 'PyPI', delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+create_osv_list <- function(rosv_query = NULL, ecosystem = NULL, delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
 
   # If used downloaded JSONs...
   if(is.null(rosv_query)) {
@@ -92,7 +92,7 @@ create_osv_list <- function(rosv_query = NULL, ecosystem = 'PyPI', delim = '\t',
 #' @returns Character vector containing blacklist commands.
 #'
 #' @examplesIf interactive()
-#' pypi_vul <- create_osv_list(delim = ',')
+#' pypi_vul <- create_osv_list(ecosystem = 'PyPI', delim = ',')
 #' cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
 #'
 #' @export
@@ -122,15 +122,15 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #'
 #'
 #' @param packages Character vector of package names.
-#' @param osv_list OSV data/list created from \code{create_osv_list}.
+#' @param osv_list OSV data/list created from \code{create_osv_list()}.
 #' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
 #' @param delim The delimiter used when creating \code{osv_list}.
-#' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list}.
+#' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list()}.
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @returns Character vector containing the information for a selective requirements.txt file.
 #' @examplesIf interactive()
 #' python_pkg <- c('dask', 'tensorflow', 'keras')
-#' pypi_vul <- create_osv_list(as.data.frame = TRUE)
+#' pypi_vul <- create_osv_list(ecosystem = 'PyPI', as.data.frame = TRUE)
 #' xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
 #' file_name <- file.path(tempdir(), 'requirements.txt')
 #' writeLines(xref_pkg_list, file_name)
