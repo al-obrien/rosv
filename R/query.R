@@ -67,7 +67,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
 #' Unlike the other query functions, \code{osv_query} will only return content and not
 #' the response object. By default all vulnerabilities are returned for any versions of the package flagged
-#' in OSV. This can be subset manually or via the parameter \code{all_affected_versions}.
+#' in OSV. This can be subset manually or via the parameter \code{all_affected}.
 #'
 #' @details
 #' Since the 'query' and 'batchquery' API endpoints have different outputs, this
@@ -75,11 +75,15 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' meant flattening once, and for 'batchquery' it meant using IDs to fetch the additional
 #' vulnerability information and then flattening the list.
 #'
+#' Since the OSV database is organized by vulnerability, the returned content may have duplicate
+#' package details as the same package and possibly its version may occur within several different
+#' reported vulnerabilities.
+#'
 #' @param name Name of package(s).
 #' @param version Version of package.
 #' @param ecosystem Ecosystem(s) package(s) lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
-#' @param all_affected_versions Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.
+#' @param all_affected Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.
 #' @param ... Any other parameters to pass to nested functions.
 #'
 #' @returns A data.frame with query results parsed.
@@ -96,7 +100,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
 #'
 #' @export
-osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected_versions = TRUE, ...) {
+osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected = TRUE, ...) {
 
   if(length(name) > 1) {
     batch_vulns <- get_content(osv_querybatch(name = name,
@@ -105,14 +109,12 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
                                               page_token = page_token,
                                               ...))
 
+    # Grab IDs for all Vulns and return the more details vulns info
     batch_vulns <- get_content(osv_vulns(batch_vulns$id))
 
-    # Grab IDs for all Vulns and return the more details vulns info
 
-    if(!all_affected_versions) {
-      stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
-      batch_vulns <- subset(batch_vulns,
-                            (batch_vulns$versions == version & batch_vulns$name == name & batch_vulns$ecosystem == ecosystem) | is.na(batch_vulns$versions))
+    if(!all_affected) {
+      batch_vulns <- filter_affected(batch_vulns, name, ecosystem, version)
     }
 
     structure(batch_vulns, class = c('rosv_query', 'data.frame'))
@@ -124,10 +126,8 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
                                       ecosystem = ecosystem,
                                       ...))
 
-    if(!all_affected_versions) {
-      stopifnot(all(!is.na(version))) # Must specify all versions to subset properly
-      query1 <- subset(query1,
-                       (query1$versions == version & query1$name == name & query1$ecosystem == ecosystem) | is.na(query1$versions))
+    if(!all_affected) {
+      query1 <- filter_affected(query1, name, ecosystem, version)
     }
 
     structure(query1,

@@ -229,3 +229,67 @@ get_rosv <- function(x, field) {
   validate_rosv(x)
   x[[field]]
 }
+
+
+#' Reduce query results to specific package and versions
+#'
+#' Internal function that helps separate specific package and versions queried from OSV API
+#' from other results that may exist for a vulnerability. This ensures results returned
+#' are specific to the subset defined by the query and does not add other packages and versions
+#' that may have been impacted by the same vulnerability.
+#'
+#' @details
+#' To perform the filtering, base R \code{merge()} is used. Column and row order are preserved
+#' even if some rows are dropped. Errors will be thrown if the user attempts to filter by \code{NA} and specific versions
+#' for a combination of a package and ecosystem. With this enforced, it is also easier to keep all rows with \code{NA} versions listed
+#' and reduce any versions to those specified in the parameters.
+#'
+#'
+#' @param data Query result in data.frame format.
+#' @inheritParams osv_query
+#'
+#' @returns A data.frame with filtered results.
+#' @examples
+#' result_data <- data.frame(name  = c('tensorflow', 'dask','tensorflow', 'dask', 'dask', 'notdask'),
+#'                           ecosystem = c('PyPI', 'PyPI','PyPI', 'PyPI', 'PyPI', 'PyPI'),
+#'                           versions = c('1.2.1', '1.1.1', '11.1', NA, '23.1', NA))
+#'
+#' filter_affected(result_data,
+#'                 name  = c('tensorflow', 'dask'),
+#'                 ecosystem = c('PyPI', 'PyPI'),
+#'                 versions = c('1.2.1', '1.1.1'))
+#'
+#' @noRd
+filter_affected <- function(data, name = NULL, ecosystem = NULL, version = NULL) {
+
+  if(any(is.na(name)) | any(is.na(ecosystem))) warning('Some package and/or ecosystem names were NA')
+
+  # Inner join on pkg and ecosystem
+  colname_index <- colnames(data)
+  data$index <- 1:nrow(data)
+  data <- merge(data, unique(data.frame(name = name, ecosystem = ecosystem)))
+
+  # Handle if version provided
+  if(!is.null(version)) {
+    data <- split(data, is.na(data$versions)) # if NA is in response, handle separate
+    ref_df <- unique(data.frame(name = name, ecosystem = ecosystem, versions = version))
+
+    # Check is someone mixed version filter and all
+    mixcheck <- sapply(split(ref_df$versions, list(ref_df$name, ref_df$ecosystem)),
+                       function(x) any(is.na(x)) & any(!is.na(x)))
+    if(any(mixcheck)) stop('Cannot mix NA with specific versions for a particular package and ecosystem combination.')
+
+    # Keep if NA in search
+    ref_df <- split(ref_df, is.na(ref_df$versions))
+
+    data <- rbind(if(!is.null(data$`TRUE`)) data$`TRUE` else NULL,
+                  if(is.null(ref_df$`FALSE`) || is.null(data$`FALSE`)) NULL else merge(data$`FALSE`, ref_df$`FALSE`),
+                  if(is.null(ref_df$`TRUE`) || is.null(data$`FALSE`)) NULL  else merge(data$`FALSE`, ref_df$`TRUE`[,c('name', 'ecosystem')]))
+  }
+
+  data <- data[order(data$index),]
+  data$index <- NULL
+  data <- data[, colname_index]
+
+  data
+
