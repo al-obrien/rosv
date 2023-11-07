@@ -23,3 +23,19 @@ test_that('Ensure rosv type check is selective...', {
   expect_error(validate_rosv(c(1,2,3)))
   expect_error(validate_rosv(data.frame(test = c(1,2,3))))
 })
+
+test_that('Ensure API affected package filtering operates...', {
+  example_data <- data.frame(id = c(rep('PYSEC-2021-387', 3), 'PYSEC-2020-73'),
+                             name = c(rep('dask', 3), 'pandas'),
+                             ecosystem = rep('PyPI', 4),
+                             versions = c('0.10.0', '0.10.1', '0.11.0', '0.25.3'))
+
+  expect_equal(nrow(filter_affected(example_data, name = 'dask', ecosystem = 'PyPI', version = NA)), 3)
+  expect_equal(nrow(filter_affected(example_data, name = 'dask', ecosystem = 'PyPI', version = '0.11.0')), 1)
+  expect_error(filter_affected(example_data, name = c('dask', 'dask'), ecosystem = c('PyPI', 'PyPI'), version = c(NA, '0.10.0')))
+  expect_equal(nrow(filter_affected(example_data, name = c('dask', 'pandas'), ecosystem = c('PyPI', 'PyPI'), version = c('0.11.0', NA))), 2)
+  expect_equal(nrow(filter_affected(example_data, name = c('dask', 'pandas'), ecosystem = c('PyPI', 'PyPI'), version = c('0.11.0', '1.1.1'))), 1)
+
+  # Test ordering of columns in maintained
+  expect_equal(colnames(filter_affected(example_data, name = 'dask', ecosystem = 'PyPI', version = NA)), colnames(example_data))
+})
