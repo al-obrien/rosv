@@ -84,6 +84,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' @param ecosystem Ecosystem(s) package(s) lives within.
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param all_affected Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.
+#' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Any other parameters to pass to nested functions.
 #'
 #' @returns A data.frame with query results parsed.
@@ -100,17 +101,18 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
 #'
 #' @export
-osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected = TRUE, ...) {
+osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected = TRUE, cache = TRUE, ...) {
 
   if(length(name) > 1) {
     batch_vulns <- get_content(osv_querybatch(name = name,
                                               version = version,
                                               ecosystem = ecosystem,
                                               page_token = page_token,
+                                              cache = cache,
                                               ...))
 
     # Grab IDs for all Vulns and return the more details vulns info
-    batch_vulns <- get_content(osv_vulns(batch_vulns$id))
+    batch_vulns <- get_content(osv_vulns(batch_vulns$id, cache = cache))
 
 
     if(!all_affected) {
@@ -124,6 +126,7 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
     query1 <- get_content(osv_query_1(name = name,
                                       version = version,
                                       ecosystem = ecosystem,
+                                      cache = cache,
                                       ...))
 
     if(!all_affected) {
