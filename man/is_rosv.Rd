@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_rosv}
 \alias{is_rosv}
-\title{Determine if object is an {{rosv}} type R6 class}
+\title{Is object made from \{rosv\} R6 class}
 \usage{
 is_rosv(x)
 }
@@ -10,10 +10,10 @@ is_rosv(x)
 \item{x}{Object to check.}
 }
 \value{
-Boolean value based on if \code{x} is an R6 class made by {{rosv}}.
+Boolean value based on if \code{x} is an R6 class made by \{rosv\}.
 }
 \description{
-Determine if object is an {{rosv}} type R6 class
+Determine if object is an \{rosv\} type R6 class
 }
 \examples{
 is_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))

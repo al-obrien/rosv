@@ -1,4 +1,8 @@
-#' Query OSV API for individual package vulnerabilities
+#' Query OSV API for vulnerabilities based upon an individual package
+#'
+#' Query the OSV API for vulnerabilities that include the individual package of interest.
+#' The request is automatically constructed from the provided elements and the returned
+#' values are parsed into a \code{data.frame}.
 #'
 #' @param name Name of package.
 #' @param version Version of package.
@@ -42,7 +46,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 }
 
 
-#' @describeIn osv_query_1 Internal function to run osv_query_1 without caching
+#' @describeIn osv_query_1 Internal function to run \code{osv_query_1} without caching.
 .osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
 
   query_1 <- RosvQuery1$new(commit,
@@ -58,7 +62,7 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
   query_1
 }
 
-#' @describeIn osv_query_1 Internal function to run a memoise and cached version of osv_query_1
+#' @describeIn osv_query_1 Internal function to run a memoise and cached version of \code{osv_query_1}.
 #' @importFrom memoise memoise
 .osv_query_1_cache <- function() {
   # Placeholder for documentation

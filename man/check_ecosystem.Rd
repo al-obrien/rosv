@@ -12,14 +12,15 @@ check_ecosystem(ecosystem, suppressMessages = TRUE)
 \item{suppressMessages}{Boolean value whether or not to suppress any messages.}
 }
 \value{
-A character vector of the same input if all are valid ecosystem names.
+A character vector, the same as input if all are valid ecosystem names.
 }
 \description{
-Ensures that inputs for ecosystem are valid based upon what is available in OSV database.
+Internal function that ensures inputs for ecosystem are valid based upon what
+is available in the OSV database.
 }
 \details{
-Will attempt to grab latest file and cache for the session. If cannot access
-the online version, will use a local copy that is shipped with the package.
+Will attempt to grab latest file and cache for the current R session. If session
+cannot access the online version, it will use a local copy shipped with the package.
 }
 \examples{
 # Passes
@@ -30,5 +31,5 @@ try(rosv:::check_ecosystem(c('notvalid', 'pypi')))
 
 }
 \seealso{
-\code{\link{check_ecosystem}}
+\code{\link{fetch_ecosystems}}
 }

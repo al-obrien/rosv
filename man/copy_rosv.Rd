@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{copy_rosv}
 \alias{copy_rosv}
-\title{Create a copy of the {{rosv}} object}
+\title{Copy a \{rosv\} object}
 \usage{
 copy_rosv(x, ...)
 }
@@ -15,8 +15,12 @@ copy_rosv(x, ...)
 An R6 class object.
 }
 \description{
-Since R6 classes have reference semantics, to escape updating original objects,
-a clone should be made.
+Create a copy of \{rosv\} R6 class objects to ensure original is not also updated with
+future changes.
+}
+\details{
+Since R6 classes have reference semantics, to escape updating original objects
+a clone can be made with this function.
 }
 \examples{
 original_obj <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')

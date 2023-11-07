@@ -9,34 +9,49 @@ osv_query(
   version = NULL,
   ecosystem = NULL,
   page_token = NULL,
-  all_affected_versions = TRUE,
+  all_affected = TRUE,
+  cache = TRUE,
   ...
 )
 }
 \arguments{
-\item{name}{Name of package(s).}
+\item{name}{Character vector of package names..}
 
-\item{version}{Version of package.}
+\item{version}{Character vector of package versions, \code{NA} if ignoring versions.}
 
-\item{ecosystem}{Ecosystem(s) package(s) lives within.}
+\item{ecosystem}{Character vector of ecosystem(s) within which the package(s) exist.}
 
-\item{page_token}{When large number of results, next response to complete set requires a page_token.}
+\item{page_token}{For large result sizes, the next response to complete set requires a page_token (for future use).}
 
-\item{all_affected_versions}{Boolean value, if \code{TRUE} will return all versions found per vulnerability discovered.}
+\item{all_affected}{Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.}
+
+\item{cache}{Boolean value to determine if should use a cached version of the function and API results.}
 
 \item{...}{Any other parameters to pass to nested functions.}
+}
+\value{
+A data.frame with query results parsed.
 }
 \description{
 Will connect to OSV API and query vulnerabilities from the specified packages.
 Unlike the other query functions, \code{osv_query} will only return content and not
 the response object. By default all vulnerabilities are returned for any versions of the package flagged
-in OSV. This can be subset manually or via the parameter \code{all_affected_versions}.
+in OSV. This can be subset manually or via the parameter \code{all_affected}.
 }
 \details{
 Since the 'query' and 'batchquery' API endpoints have different outputs, this
 function will align their contents to be a list of vulnerabilities. For 'query' this
 meant flattening once, and for 'batchquery' it meant using IDs to fetch the additional
 vulnerability information and then flattening the list.
+
+Since the OSV database is organized by vulnerability, the returned content may have duplicate
+package details as the same package and possibly its version may occur within several different
+reported vulnerabilities.
+
+Due to variations in formatting from the OSV API, not all responses have versions associated in
+the response but instead use ranges. Filtering currently does not apply to this field and may return
+all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
+examine the response object using lower-level functions like \code{osv_query1()}.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -4,7 +4,7 @@
 \alias{osv_query_1}
 \alias{.osv_query_1}
 \alias{.osv_query_1_cache}
-\title{Query OSV API for individual package vulnerabilities}
+\title{Query OSV API for vulnerabilities based upon an individual package}
 \usage{
 osv_query_1(
   name = NULL,
@@ -65,13 +65,15 @@ osv_query_1(
 An R6 object containing API query contents.
 }
 \description{
-Query OSV API for individual package vulnerabilities
+Query the OSV API for vulnerabilities that include the individual package of interest.
+The request is automatically constructed from the provided elements and the returned
+values are parsed into a \code{data.frame}.
 }
 \section{Functions}{
 \itemize{
-\item \code{.osv_query_1()}: Internal function to run osv_query_1 without caching
+\item \code{.osv_query_1()}: Internal function to run \code{osv_query_1} without caching.
 
-\item \code{.osv_query_1_cache()}: Internal function to run a memoise and cached version of osv_query_1
+\item \code{.osv_query_1_cache()}: Internal function to run a memoise and cached version of \code{osv_query_1}.
 
 }}
 \examples{

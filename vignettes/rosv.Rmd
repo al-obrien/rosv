@@ -14,22 +14,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rosv)
-```
-
 ## Package purpose
 
 The {rosv} package provides two core purposes:
 
-- Access information from the OSV database.
+- Access information from the [Open Source Vulnerability (OSV) database](https://osv.dev/).
 - Operate on vulnerability information and create formatted lists for package administration.
 
-Consequently, the functions available relate to querying or downloading content from OSV, parsing components of the content, and generating tables and lists regarding key information on package vulnerabilities. The OSV database is not specific to R related repositories such as "CRAN"; users can access information on any ecosystem available in OSV. For R users who also dabble in Python, they can search for package vulnerabilities within the "PyPI" repository while remaining in an R interface.
+Consequently, the functions in {rosv} relate to querying or downloading content from OSV, parsing JSON content, and generating tables and lists regarding key information on package vulnerabilities. The OSV database is not specific to R related repositories such as CRAN; users can access information on any ecosystem available in OSV. For R users who also dabble in Python, they can search for package vulnerabilities within the PyPI repository while remaining in an R interface.
 
 ## Basic Examples
 
-The following examples will outline an assortment of package functionality.
+The following examples will outline an assortment of package functionality but first we must load the package!
+
+```{r setup}
+library(rosv)
+```
 
 ### Detect vulnerable packages
 
@@ -37,13 +37,13 @@ One of the simplest queries is to provide a package and ecosystem and return a `
 informing you if that package has ever been listed with a vulnerability.
 
 ```{r, eval = FALSE}
-is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'), cache = TRUE)
+is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 ```
 
 ### List package vulnerabilities
 
-The most basic usage of {rosv} is to pull all versions of an ecosystem's (e.g. PyPI or CRAN) packages listed 
-on the OSV database. This can be achieved using high-level functions such as `osv_query()` and `create_osv_list()`.
+The most basic usage of {rosv} is to pull all versions of an ecosystem's packages (e.g. PyPI or CRAN) listed 
+in the OSV database. This can be achieved using high-level functions such as `osv_query()` and `create_osv_list()`. 
 
 ```{r, eval = FALSE}
 # Query one package in PyPI for vulnerabilities
@@ -60,10 +60,12 @@ pypi_vul
 
 ## Use API helpers directly
 
-Lower-level functionality is available to return more details about the API request and response 
+Lower-level functions return more detail about the API request and response 
 contained within the R6 object. These are more flexible than their higher-level alternatives. 
-By default, the results of these functions will be cached using {memoise}. This can be overriden 
+By default, the results of these functions will be cached. This can be overriden 
 by specifying `cache = FALSE`.
+
+The higher-level API query function `osv_query()` aligns returned content type and parsing method, making it the preferred choice for the typical use-case.
 
 ```{r, eval = FALSE}
 # Returns entire response object to parse as you please.
@@ -81,11 +83,11 @@ osv_vulns('PYSEC-2021-387')
 
 ## Result caching
 
-By default, results from specific queries using API helpers such as `osv_query()` or `osv_querybatch()` will cache results using `memoise::memoise()`. The caching can be turned off directly using parameters available in the functions, or globally reset using `clear_osv_cache()`. Caching is the default behavior to help enforce polite access of the OSV API.
+By default, results from queries using API helpers (e.g. `osv_query()` or `osv_querybatch()`) will cache results using `memoise::memoise()`. The caching can be turned off directly using function parameters or globally reset using `clear_osv_cache()`. Caching is the default behavior to help enforce polite access of the OSV API.
 
 ```{r, eval = FALSE}
 # Query without caching
-osv_query_1('dask', ecosystem = 'PyPI', cache = FALSE)
+osv_query('dask', ecosystem = 'PyPI', cache = FALSE)
 
 # Clear cache, as needed
 clear_osv_cache()
@@ -94,7 +96,7 @@ clear_osv_cache()
 
 ## Creating a cross-referenced whitelist
 
-When using a product such as {miniCRAN} or Posit Package Manager, there may be 
+When using a product such as {miniCRAN} or Posit Package Manager there may be 
 corporate requirements to limit what packages users can install. Although having a 
 whitelist is often recommended, it should either specify the exact versions that are approved 
 or exclude packages with known vulnerabilities. Given the sheer amount of packages and their versions, this 

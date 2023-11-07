@@ -6,8 +6,6 @@
   .osv_query_1_cache <<- memoise::memoise(.osv_query_1)
   .osv_querybatch_cache <<- memoise::memoise(.osv_querybatch)
   .osv_vulns_cache <<- memoise::memoise(.osv_vulns)
-
-
 }
 
 .onUnload <- function(libpath) {

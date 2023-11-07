@@ -15,6 +15,9 @@ vulns <- RosvQueryBatch$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
 vulns
 
 }
+\seealso{
+\url{https://google.github.io/osv.dev/get-v1-vulns/}
+}
 \section{Super class}{
 \code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvVulns}
 }

@@ -7,9 +7,9 @@
 is_pkg_vulnerable(name, ecosystem, ...)
 }
 \arguments{
-\item{name}{Name of package(s).}
+\item{name}{Character vector of package names..}
 
-\item{ecosystem}{Ecosystem(s) package(s) lives within.}
+\item{ecosystem}{Character vector of ecosystem(s) within which the package(s) exist.}
 
 \item{...}{Any other parameters to pass to nested functions.}
 }
@@ -19,7 +19,7 @@ A named vector of logical values.
 \description{
 Search the OSV database, by package name and its respective ecosystem, to determine
 if a vulnerability has ever been listed. If a package has been listed as impacted by
-a vulnerability, this may warrant further queries to investigate specific versions
+a vulnerability this may warrant further queries to investigate specific versions
 that have been affected.
 }
 \examples{

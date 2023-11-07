@@ -2,18 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{get_content}
 \alias{get_content}
-\title{Retrieve contents field from {{rosv}} R6 object}
+\title{Retrieve contents field from \{rosv\} R6 object}
 \usage{
 get_content(x)
 }
 \arguments{
-\item{x}{An object made by {{rosv}}.}
+\item{x}{An object made by \{rosv\}.}
 }
 \value{
 Values contained in the content field of the object (data.frame or list).
 }
 \description{
-Retrieve contents field from {{rosv}} R6 object
+Retrieve contents field from \{rosv\} R6 object
 }
 \examples{
 test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')

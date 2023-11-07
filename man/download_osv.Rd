@@ -20,7 +20,7 @@ A list containing the cache and download locations for the vulnerability files.
 Helper function to assist in downloading vulnerabilities information from OSV database.
 }
 \details{
-Any ecosystems listed \href{here}{'https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt'} can be downloaded.
+Any ecosystems listed \href{here}{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt} can be downloaded.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -4,7 +4,7 @@
 #' An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 #'
 #' @details
-#' Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+#' Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
 #' For now, a warning will be provided and the first set returned. The response object can be used
 #' for subsequent queries if the user wants to handle the pagination themselves for the time being.
 #'
@@ -12,10 +12,12 @@
 #' @param version Version of package.
 #' @param name Name of package.
 #' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
-#' @param purl URL for package (do not use if name or ecosystem set).
+#' @param purl URL for package (do not use if \code{name} or \code{ecosystem} is set).
 #' @param page_token When large number of results, next response to complete set requires a page_token.
 #'
 #' @returns An R6 object to operate with OSV query endpoint.
+#'
+#' @seealso \url{https://google.github.io/osv.dev/post-v1-query/}
 #'
 #' @examples
 #' query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
@@ -83,7 +85,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
                             #' @description
                             #' Parse the contents returned into a tidier format. Can
-                            #' use \code{future} plans to help parallelize.
+                            #' use \code{future} plans to help parallelize. Not all contents are parsed.
                             parse = function() {
                               stopifnot(!is.null(self$content))
 

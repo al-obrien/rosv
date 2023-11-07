@@ -7,16 +7,19 @@
 normalize_pypi_pkg(pkg_name)
 }
 \arguments{
-\item{pkg_name}{Vector of package names.}
+\item{pkg_name}{Character vector of package names.}
 }
 \value{
 Character vector of normalized PyPI package names
 }
 \description{
-Perform some formatting as PyPI is case insensitive and underscore, period, and hyphens
-as long runs are not recognized (- is same as --).
+Perform package name formatting as PyPI is case insensitive and long runs
+of underscore, period, and hyphens are not recognized (- is same as --).
 }
 \examples{
 rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
 
+}
+\seealso{
+\href{PyPI Package Normalization}{https://packaging.python.org/en/latest/specifications/name-normalization/}
 }

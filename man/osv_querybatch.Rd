@@ -65,19 +65,22 @@ osv_querybatch(
 An R6 object containing API query contents.
 }
 \description{
-Each query needs to be constructed from the provided set of vectors. Default
-will be \code{NA} and thereby empty/null in the JSON request. If some values in the vector
-are missing, use NA For large queries, the conversion to a formatted JSON
-request can be parallelized via {future}.
+Using a vector of input information, query the OSV API for any associated
+vulnerability ID.
 }
 \details{
-This returns the vulnerability ID and modified fields only, as per API instruction.
+The query is constructed from the provided set of vectors. Default
+will be \code{NULL} and thereby empty/null in the JSON request. If some values in the vector
+are missing, use \code{NA}. For many queries, the conversion to a formatted JSON
+request can be parallelized via \{future\}.
+
+The returned information are vulnerability IDs and modified fields only, as per API instruction.
 }
 \section{Functions}{
 \itemize{
-\item \code{.osv_querybatch()}: Internal function to run osv_querybatch without caching
+\item \code{.osv_querybatch()}: Internal function to run \code{osv_querybatch} without caching.
 
-\item \code{.osv_querybatch_cache()}: Internal function to run a memoise and cached version of osv_querybatch
+\item \code{.osv_querybatch_cache()}: Internal function to run a memoise and cached version of \code{osv_querybatch}.
 
 }}
 \examples{

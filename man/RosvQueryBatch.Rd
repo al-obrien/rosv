@@ -12,7 +12,7 @@ endpoint of the OSV API. Batches are enforced to only process by commit hash, pu
 This avoids some confusion as to which is taken preferentially and simplifies query creation.
 }
 \details{
-Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
 For now, a warning will be provided and the first set returned. The response object can be used
 for subsequent queries if the user wants to handle the pagination themselves for the time being.
 }
@@ -22,6 +22,9 @@ ecosystem <- rep('PyPI', length(pkgs))
 batchquery <- RosvQueryBatch$new(name = pkgs, ecosystem = ecosystem)
 batchquery
 
+}
+\seealso{
+\url{https://google.github.io/osv.dev/post-v1-querybatch/}
 }
 \section{Super class}{
 \code{\link[rosv:RosvQuery1]{rosv::RosvQuery1}} -> \code{RosvQueryBatch}
@@ -69,9 +72,9 @@ Set the core request details for subsequent use when called in \code{run()} meth
 
 \item{\code{ecosystem}}{Ecosystem package lives within (must be set if using \code{name}).}
 
-\item{\code{purl}}{URL for package (do not use if name or ecosystem set).}
+\item{\code{purl}}{URL for package (do not use if \code{name} or \code{ecosystem} is set).}
 
-\item{\code{page_token}}{When large number of results, next response to complete set requires a page_token.}
+\item{\code{page_token}}{When large number of results, next response to complete set requires a \code{page_token}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -99,7 +102,7 @@ Parse the contents returned into a tidier format.
 When no result is found, any empty list is returned by the API, which
 during parsing will be dropped as the list is flattened. However, the
 index of the list is still accessible and the dropped items can easily
-be identified from the results column.
+be identified from the results column. Not all contents are parsed.
 }
 
 }

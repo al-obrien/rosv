@@ -7,12 +7,11 @@
 clear_osv_cache()
 }
 \value{
-Invisibly returns a logical value of \code{TRUE} if cache clear occurred without error.
+Invisibly returns a logical value of \code{TRUE} if cache cleared without error.
 }
 \description{
 A thin wrapper around \code{\link[memoise]{forget}} to clear cached results.
 }
 \examples{
 clear_osv_cache()
-
 }

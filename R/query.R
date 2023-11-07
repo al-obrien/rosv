@@ -62,6 +62,7 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
   }
 }
 
+
 #' Query OSV API for individual package vulnerabilities
 #'
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
@@ -79,10 +80,15 @@ download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
 #' package details as the same package and possibly its version may occur within several different
 #' reported vulnerabilities.
 #'
-#' @param name Name of package(s).
-#' @param version Version of package.
-#' @param ecosystem Ecosystem(s) package(s) lives within.
-#' @param page_token When large number of results, next response to complete set requires a page_token.
+#' Due to variations in formatting from the OSV API, not all responses have versions associated in
+#' the response but instead use ranges. Filtering currently does not apply to this field and may return
+#' all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
+#' examine the response object using lower-level functions like \code{osv_query1()}.
+#'
+#' @param name Character vector of package names..
+#' @param version Character vector of package versions, \code{NA} if ignoring versions.
+#' @param ecosystem Character vector of ecosystem(s) within which the package(s) exist.
+#' @param page_token For large result sizes, the next response to complete set requires a page_token (for future use).
 #' @param all_affected Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.
 #' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Any other parameters to pass to nested functions.
@@ -138,11 +144,12 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token 
   }
 }
 
+
 #' Detect if package within ecosystem has reported vulnerabilities
 #'
 #' Search the OSV database, by package name and its respective ecosystem, to determine
 #' if a vulnerability has ever been listed. If a package has been listed as impacted by
-#' a vulnerability, this may warrant further queries to investigate specific versions
+#' a vulnerability this may warrant further queries to investigate specific versions
 #' that have been affected.
 #'
 #' @inheritParams osv_query

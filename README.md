@@ -21,10 +21,10 @@ are useful to check for package vulnerabilities (including by specific
 versions) enumerated in package management files such as
 `requirements.txt` (Python) and `renv.lock` (R).
 
-Various helper function assist in the administration of [Posit Package
+Various helper functions assist in the administration of [Posit Package
 Manager](https://packagemanager.posit.co/client/#/) or similar services.
 Packages can be routinely examined for new vulnerabilities which aide in
-the creation and updating of curated repositories as well as setting
+the creation and updating of curated repositories as well as assigning
 block lists.
 
 More details about the OSV project and associated API can be found here:
@@ -52,8 +52,7 @@ vulnerabilities.
 osv_query('dask', ecosystem = 'PyPI')
 ```
 
-Multiple packages can be queried at the same time and can be mixed
-between ecosystems.
+Multiple packages can be queried at the same time and across ecosystems.
 
 ``` r
 osv_query(c('dask', 'readxl', 'dplyr'),

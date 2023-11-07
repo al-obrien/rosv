@@ -1,8 +1,10 @@
-#' Extract key OSV information from JSON
+#' Extract key OSV information from JSON files
 #'
-#' Use the downloaded JSON dataset from OSV and extract key details on package and versions listed.
+#' Use the downloaded JSON dataset from OSV and extract key details on package and versions.
+#'
+#' @details
 #' Packages that do not have a listed version will have a blank space as the default placeholder.
-#' This makes it easier for \code{strsplit} to operate on the string in other steps,
+#' This makes it easier for \code{strsplit()} to operate on the string in other steps,
 #' which will not perform as expected without some value coming after the delimiter.
 #'
 #' @param input File path to the folder or API response content containing the OSV JSON info
@@ -15,8 +17,8 @@
 #' vul_json_file <- download_osv('CRAN', id = "RSEC-2023-8")
 #' rosv:::extract_vul_info(vul_json_file$osv_cache)
 #'
+#' @noRd
 extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
-
 
   # Load from a file (if it exists), parse accordingly for affected set
   aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
@@ -31,12 +33,14 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 
 #' Normalize package name to PyPI expectation
 #'
-#' Perform some formatting as PyPI is case insensitive and underscore, period, and hyphens
-#' as long runs are not recognized (- is same as --).
+#' Perform package name formatting as PyPI is case insensitive and long runs
+#' of underscore, period, and hyphens are not recognized (- is same as --).
 #'
-#' @param pkg_name Vector of package names.
+#' @param pkg_name Character vector of package names.
 #'
 #' @returns Character vector of normalized PyPI package names
+#'
+#' @seealso \href{PyPI Package Normalization}{https://packaging.python.org/en/latest/specifications/name-normalization/}
 #'
 #' @examples
 #' rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
@@ -56,11 +60,10 @@ normalize_pypi_pkg <- function(pkg_name) {
 #'
 #' A thin wrapper around \code{\link[memoise]{forget}} to clear cached results.
 #'
-#' @returns Invisibly returns a logical value of \code{TRUE} if cache clear occurred without error.
+#' @returns Invisibly returns a logical value of \code{TRUE} if cache cleared without error.
 #'
 #' @examples
 #' clear_osv_cache()
-#'
 #' @export
 clear_osv_cache <- function() {
   purrr::walk(list(.osv_query_1_cache, .osv_querybatch_cache, .osv_vulns_cache),
@@ -71,17 +74,18 @@ clear_osv_cache <- function() {
 
 #' Check input against possible ecosystems available
 #'
-#' Ensures that inputs for ecosystem are valid based upon what is available in OSV database.
+#' Internal function that ensures inputs for ecosystem are valid based upon what
+#' is available in the OSV database.
 #'
-#' Will attempt to grab latest file and cache for the session. If cannot access
-#' the online version, will use a local copy that is shipped with the package.
+#' Will attempt to grab latest file and cache for the current R session. If session
+#' cannot access the online version, it will use a local copy shipped with the package.
 #'
 #' @param ecosystem Character value for ecosystem(s) to check.
 #' @param suppressMessages Boolean value whether or not to suppress any messages.
 #'
-#' @returns A character vector of the same input if all are valid ecosystem names.
+#' @returns A character vector, the same as input if all are valid ecosystem names.
 #'
-#' @seealso \code{\link{check_ecosystem}}
+#' @seealso \code{\link{fetch_ecosystems}}
 #'
 #' @examples
 #' # Passes
@@ -115,7 +119,7 @@ check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
 #' for each R session, it is unlikely that this parameter is required and is primarily
 #' reserved for future use if functionality necessitates.
 #'
-#' @param offline Boolean, determine if use list bundled with package.
+#' @param offline Boolean, determine if using list bundled with package.
 #' @param refresh Boolean, force refresh of cache when using online list.
 #'
 #' @returns A data.frame containing all the ecosystem names available in the OSV database.
@@ -181,15 +185,20 @@ is_rosv <- function(x) {
 #' @examples
 #' # example code
 #' rosv:::validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
+#' @noRd
 validate_rosv <- function(x) {
   if(!is_rosv(x)) stop('Object is not a class created by {rosv}.')
   invisible(TRUE)
 }
 
-#' Create a copy of the \{rosv\} object
+#' Copy a \{rosv\} object
 #'
-#' Since R6 classes have reference semantics, to escape updating original objects,
-#' a clone should be made.
+#' Create a copy of \{rosv\} R6 class objects to ensure original is not also updated with
+#' future changes.
+#'
+#' @details
+#' Since R6 classes have reference semantics, to escape updating original objects
+#' a clone can be made with this function.
 #'
 #' @param x Object to copy.
 #' @param ... Additional parameters sent to R6's clone method.
@@ -218,13 +227,18 @@ get_content <- function(x) {
   get_rosv(x, 'content')
 }
 
-#' Internal function to assist with extracting details fro \{rosv\} objects
+#' Extract details from \{rosv\} objects
+#'
+#' Internal function to assist with extracting details from \{rosv\} objects.
+#'
 #' @param x An object made by \{rosv\}.
 #' @param field Name of the field to extract from.
 #' @returns The specified field in the top hierarchy of the R6 class.
 #' @examples
 #' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
 #' rosv:::get_rosv(test, 'content')
+#'
+#' @noRd
 get_rosv <- function(x, field) {
   validate_rosv(x)
   x[[field]]
@@ -293,3 +307,4 @@ filter_affected <- function(data, name = NULL, ecosystem = NULL, version = NULL)
 
   data
 
+}

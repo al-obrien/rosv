@@ -7,9 +7,12 @@
 #' @param vuln_ids Character vector of vulnerability IDs.
 #'
 #' @returns An R6 object to operate with OSV vulns endpoint.
+#'
 #' @examples
 #' vulns <- RosvQueryBatch$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
 #' vulns
+#'
+#' @seealso \url{https://google.github.io/osv.dev/get-v1-vulns/}
 #'
 #' @export
 RosvVulns <- R6::R6Class('RosvVulns',
@@ -33,7 +36,9 @@ RosvVulns <- R6::R6Class('RosvVulns',
                            #' Perform the request and return response for OSV API call.
                            run = function() {
 
-                             resps <- purrr::map(self$request, httr2::req_perform)
+                             progress_bool <- if(length(self$request) > 10) 'Fetching from OSV...' else FALSE
+
+                             resps <- purrr::map(self$request, httr2::req_perform, .progress = progress_bool)
 
                              # Assign to main variables
                              self$content <- purrr::map(resps, httr2::resp_body_json)

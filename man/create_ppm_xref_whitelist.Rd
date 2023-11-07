@@ -9,38 +9,42 @@ create_ppm_xref_whitelist(
   osv_list,
   ecosystem = "PyPI",
   delim = "\\\\t",
-  version_placeholder = " "
+  version_placeholder = " ",
+  full_table = FALSE
 )
 }
 \arguments{
 \item{packages}{Character vector of package names.}
 
-\item{osv_list}{OSV data/list created from \code{create_osv_list}.}
+\item{osv_list}{OSV data/list created from \code{create_osv_list()}.}
 
 \item{ecosystem}{Determine what ecosystem of OSV list is being used (currently only works with PyPI).}
 
 \item{delim}{The delimiter used when creating \code{osv_list}.}
 
-\item{version_placeholder}{Value used when creating the \code{osv_list} from \code{create_osv_list}.}
+\item{version_placeholder}{Value used when creating the \code{osv_list} from \code{create_osv_list()}.}
+
+\item{full_table}{Boolean value to determine if a complete table before dropping packages is returned (helpful for debugging).}
 }
 \value{
 Character vector containing the information for a selective requirements.txt file.
 }
 \description{
-Cross reference a whitelist of packages to a vulnerability database
+Search for package names for vulnerability information and selectively drop packages
+or define specific versions that should not be used in a curated repository.
 }
 \details{
 Note that some version suffixes may have compatibility issues. For example, the use of
 *-git as a suffix may not be recognized and may need to be dropped. For more details on
 PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
 
-Due to variations in formatting from the API, not all responses have versions associated and
+Due to variations in formatting from the OSV API, not all responses have versions associated and
 are not directly compatible with this function.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 python_pkg <- c('dask', 'tensorflow', 'keras')
-pypi_vul <- create_osv_list(as.data.frame = TRUE)
+pypi_vul <- create_osv_list(ecosystem = 'PyPI', as.data.frame = TRUE)
 xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
 file_name <- file.path(tempdir(), 'requirements.txt')
 writeLines(xref_pkg_list, file_name)

@@ -2,30 +2,31 @@
 % Please edit documentation in R/create_lists.R
 \name{create_ppm_blacklist}
 \alias{create_ppm_blacklist}
-\title{Create blacklist commands for Posit Package Manager from OSV data}
+\title{Create blacklist commands for Posit Package Manager}
 \usage{
 create_ppm_blacklist(osv_list, delim, flags = NULL)
 }
 \arguments{
 \item{osv_list}{Output from \code{create_osv_list()}.}
 
-\item{delim}{The delimiter used when creating \code{osv_list}.}
+\item{delim}{The delimiter used from \code{create_osv_list()}.}
 
-\item{flags}{Global flag to apply to the rspm commands.}
+\item{flags}{Global flag to append to commands.}
 }
 \value{
 Character vector containing blacklist commands.
 }
 \description{
-Create blacklist commands for Posit Package Manager from OSV data
+Use OSV data to create blacklist (i.e. blocklist) commands for the Posit Package
+Manager product.
 }
 \details{
-Although OSV has many databases for open source software, this function really is
+Although OSV has many databases for open source software, this function is
 only relevant for CRAN/Bioconductor and PyPI.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-pypi_vul <- create_osv_list(delim = ',')
+pypi_vul <- create_osv_list(ecosystem = 'PyPI', delim = ',')
 cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
 \dontshow{\}) # examplesIf}
 }

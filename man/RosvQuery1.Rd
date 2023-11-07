@@ -10,13 +10,16 @@ An R6 object to operate with OSV query endpoint.
 An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 }
 \details{
-Pageination is not implemented yet, waiting for httr2 updates to add, then will handle automatically.
+Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
 For now, a warning will be provided and the first set returned. The response object can be used
 for subsequent queries if the user wants to handle the pagination themselves for the time being.
 }
 \examples{
 query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 query
+}
+\seealso{
+\url{https://google.github.io/osv.dev/post-v1-query/}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -66,7 +69,7 @@ Set the core request details for subsequent use when called in \code{run()} meth
 
 \item{\code{ecosystem}}{Ecosystem package lives within (must be set if using \code{name}).}
 
-\item{\code{purl}}{URL for package (do not use if name or ecosystem set).}
+\item{\code{purl}}{URL for package (do not use if \code{name} or \code{ecosystem} is set).}
 
 \item{\code{page_token}}{When large number of results, next response to complete set requires a page_token.}
 }
@@ -88,7 +91,7 @@ Perform the request and return response for OSV API call.
 \if{latex}{\out{\hypertarget{method-RosvQuery1-parse}{}}}
 \subsection{Method \code{parse()}}{
 Parse the contents returned into a tidier format. Can
-use \code{future} plans to help parallelize.
+use \code{future} plans to help parallelize. Not all contents are parsed.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RosvQuery1$parse()}\if{html}{\out{</div>}}
 }

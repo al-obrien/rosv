@@ -7,7 +7,7 @@
 fetch_ecosystems(offline = FALSE, refresh = FALSE)
 }
 \arguments{
-\item{offline}{Boolean, determine if use list bundled with package.}
+\item{offline}{Boolean, determine if using list bundled with package.}
 
 \item{refresh}{Boolean, force refresh of cache when using online list.}
 }

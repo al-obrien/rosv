@@ -2,11 +2,11 @@
 % Please edit documentation in R/create_lists.R
 \name{create_osv_list}
 \alias{create_osv_list}
-\title{Create list of packages identified in OSV database}
+\title{List packages identified in the OSV database}
 \usage{
 create_osv_list(
   rosv_query = NULL,
-  ecosystem = "PyPI",
+  ecosystem = NULL,
   delim = "\\t",
   as.data.frame = FALSE,
   refresh = FALSE,
@@ -14,36 +14,40 @@ create_osv_list(
 )
 }
 \arguments{
-\item{rosv_query}{A table of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.}
+\item{rosv_query}{A table of vulnerabilities (created via \code{query_osv()}); if not set, will pull an ecosystem's entire database.}
 
-\item{ecosystem}{Character value of either 'PyPI' or 'CRAN'.}
+\item{ecosystem}{Character value of ecosystem name (e.g. PyPI or CRAN); should not be set if providing \code{rosv_query}.}
 
 \item{delim}{The deliminator to separate the package and version details.}
 
-\item{as.data.frame}{Boolean value to determine if a data.frame should be created instead of a list.}
+\item{as.data.frame}{Boolean value to determine if a data.frame should be returned.}
 
 \item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
 
-\item{clear_cache}{Boolean value, to force clearing of the existing cache upon exiting function.}
+\item{clear_cache}{Boolean value, to force clearing of the existing cache upon exiting function for downloaded JSON files.}
 }
 \value{
 A vector object containing the package and version details; if \code{as.data.frame} is selected
-this vector will be reformatted into a \code{data.frame} object.
+this vector will be reformatted into a \code{data.frame()} object.
 }
 \description{
-Create list of packages identified in OSV database
+Create a list based upon package vulnerabilities discovered in the OSV database.
 }
 \details{
-This is the core calculation to extract details from the database. As such, if
-you set a \code{future::plan()} for parallelization, that will be respected via the
-\code{furrr} package. The default will be to run sequentially.
+If used without assigning \code{rosv_query} parameter, all packages listed in the ecosystem
+will be referenced. To speed up this creation process for large ecosystems you can set \code{future::plan()}
+for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
 
-NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
+Please note, the default behaviour is to return all packages (and versions) associated with discovered vulnerabilities. Ensure you
+have properly subset the returned query if not done so via the function parameters. Furthermore, if the package is
+listed across several vulnerabilities, an additional deduplication step may need to be performed. Furthermore, the \code{clear_cache}
+parameter is specific to a downloaded set of JSON files, it is not related to caching of specific API queries which happens
+prior to using this step via functions like \code{query_osv()}.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-pypi_vul <- create_osv_list()
+pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
 writeLines(pypi_vul, file_name1)
 
@@ -61,7 +65,7 @@ create_osv_list(rosv_query = pkg_vul)
 \dontrun{
 # In parallel
 future::plan(multisession, workers = 4)
-pypi_vul <- create_osv_list()
+pypi_vul <- create_osv_list(ecosystem = 'PyPI')
 future::plan(sequential)
 }
 \dontshow{\}) # examplesIf}

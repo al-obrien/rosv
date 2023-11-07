@@ -4,7 +4,7 @@
 \alias{osv_vulns}
 \alias{.osv_vulns}
 \alias{.osv_vulns_cache}
-\title{Query OSV API for vulnerabilities based on ID}
+\title{Query OSV API for vulnerability information based on ID}
 \usage{
 osv_vulns(vuln_ids, parse = TRUE, cache = TRUE)
 
@@ -23,13 +23,13 @@ osv_vulns(vuln_ids, parse = TRUE, cache = TRUE)
 An R6 object containing API query contents.
 }
 \description{
-Use vulnerability IDs to extract more details information. Usually is paired with \code{osv_querybatch}.
+Use vulnerability IDs to extract more detailed information, usually paired with \code{osv_querybatch()}.
 }
 \section{Functions}{
 \itemize{
-\item \code{.osv_vulns()}: Internal function to run osv_vulns without caching
+\item \code{.osv_vulns()}: Internal function to run \code{osv_vulns} without caching.
 
-\item \code{.osv_vulns_cache()}: Internal function to run a memoise and cached version of osv_vulns
+\item \code{.osv_vulns_cache()}: Internal function to run a memoise and cached version of \code{osv_vulns}.
 
 }}
 \examples{

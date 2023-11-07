@@ -1,22 +1,27 @@
-#' Create list of packages identified in OSV database
+#' List packages identified in the OSV database
 #'
+#' Create a list based upon package vulnerabilities discovered in the OSV database.
 #'
 #' @details
-#' This is the core calculation to extract details from the database. As such, if
-#' you set a \code{future::plan()} for parallelization, that will be respected via the
-#' \code{furrr} package. The default will be to run sequentially.
+#' If used without assigning \code{rosv_query} parameter, all packages listed in the ecosystem
+#' will be referenced. To speed up this creation process for large ecosystems you can set \code{future::plan()}
+#' for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
 #'
-#' NOTE: Currently, returns more packages than just subset if using query approach (all packages under vulnerability found). May require subset after returned.
+#' Please note, the default behaviour is to return all packages (and versions) associated with discovered vulnerabilities. Ensure you
+#' have properly subset the returned query if not done so via the function parameters. Furthermore, if the package is
+#' listed across several vulnerabilities, an additional deduplication step may need to be performed. Furthermore, the \code{clear_cache}
+#' parameter is specific to a downloaded set of JSON files, it is not related to caching of specific API queries which happens
+#' prior to using this step via functions like \code{query_osv()}.
 #'
-#' @param rosv_query A table of vulnerabilities created via \code{query_osv}; if NA will pull entire database based upon \code{ecosystem} parameter.
-#' @param ecosystem Character value of either 'PyPI' or 'CRAN'.
+#' @param rosv_query A table of vulnerabilities (created via \code{query_osv()}); if not set, will pull an ecosystem's entire database.
+#' @param ecosystem Character value of ecosystem name (e.g. PyPI or CRAN); should not be set if providing \code{rosv_query}.
 #' @param delim The deliminator to separate the package and version details.
-#' @param as.data.frame Boolean value to determine if a data.frame should be created instead of a list.
+#' @param as.data.frame Boolean value to determine if a data.frame should be returned.
 #' @param refresh Force refresh of the cache to grab latest details from OSV databases.
-#' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function.
+#' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function for downloaded JSON files.
 #'
 #' @returns A vector object containing the package and version details; if \code{as.data.frame} is selected
-#' this vector will be reformatted into a \code{data.frame} object.
+#' this vector will be reformatted into a \code{data.frame()} object.
 #'
 #' @examplesIf interactive()
 #'
@@ -47,7 +52,7 @@ create_osv_list <- function(rosv_query = NULL, ecosystem = NULL, delim = '\t', a
 
   # If used downloaded JSONs...
   if(is.null(rosv_query)) {
-
+    stopifnot(!is.null(ecosystem))
     dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
     rosv_query <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
 
@@ -79,15 +84,18 @@ create_osv_list <- function(rosv_query = NULL, ecosystem = NULL, delim = '\t', a
 }
 
 
-#' Create blacklist commands for Posit Package Manager from OSV data
+#' Create blacklist commands for Posit Package Manager
+#'
+#' Use OSV data to create blacklist (i.e. blocklist) commands for the Posit Package
+#' Manager product.
 #'
 #' @details
-#' Although OSV has many databases for open source software, this function really is
+#' Although OSV has many databases for open source software, this function is
 #' only relevant for CRAN/Bioconductor and PyPI.
 #'
 #' @param osv_list Output from \code{create_osv_list()}.
-#' @param delim The delimiter used when creating \code{osv_list}.
-#' @param flags Global flag to apply to the rspm commands.
+#' @param delim The delimiter used from \code{create_osv_list()}.
+#' @param flags Global flag to append to commands.
 #'
 #' @returns Character vector containing blacklist commands.
 #'
@@ -112,14 +120,16 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 
 #' Cross reference a whitelist of packages to a vulnerability database
 #'
+#' Search for package names for vulnerability information and selectively drop packages
+#' or define specific versions that should not be used in a curated repository.
+#'
 #' @details
 #' Note that some version suffixes may have compatibility issues. For example, the use of
 #' *-git as a suffix may not be recognized and may need to be dropped. For more details on
 #' PyPI package version naming see \url{https://peps.python.org/pep-0440/}.
 #'
-#' Due to variations in formatting from the API, not all responses have versions associated and
+#' Due to variations in formatting from the OSV API, not all responses have versions associated and
 #' are not directly compatible with this function.
-#'
 #'
 #' @param packages Character vector of package names.
 #' @param osv_list OSV data/list created from \code{create_osv_list()}.

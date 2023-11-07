@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 The {rosv} package is an API client to the [Open Source Vulnerability (OSV) database](https://osv.dev/). Both high and low level functions are available to query the database for vulnerabilities in package repositories across various open source ecosystems such as CRAN, Bioconductor, PyPI, and many more. Queries made against the OSV database are useful to check for package vulnerabilities (including by specific versions) enumerated in package management files such as `requirements.txt` (Python) and `renv.lock` (R). 
 
-Various helper function assist in the administration of [Posit Package Manager](https://packagemanager.posit.co/client/#/) or similar services. Packages can be routinely examined for new vulnerabilities which aide in the creation and updating of curated repositories as well as setting block lists.
+Various helper functions assist in the administration of [Posit Package Manager](https://packagemanager.posit.co/client/#/) or similar services. Packages can be routinely examined for new vulnerabilities which aide in the creation and updating of curated repositories as well as assigning block lists.
 
 More details about the OSV project and associated API can be found here: [https://google.github.io/osv.dev/](https://google.github.io/osv.dev/).
 
@@ -48,7 +48,7 @@ Provide a package name and related ecosystem to fetch any identified vulnerabili
 osv_query('dask', ecosystem = 'PyPI')
 ```
 
-Multiple packages can be queried at the same time and can be mixed between ecosystems.
+Multiple packages can be queried at the same time and across ecosystems.
 
 ```{r, eval = FALSE}
 osv_query(c('dask', 'readxl', 'dplyr'),
