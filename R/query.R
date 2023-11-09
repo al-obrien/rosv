@@ -19,7 +19,7 @@
 #' try(unlink(osv_dl$dl_dir, recursive = TRUE))
 #'
 #' @export
-download_osv <- function(ecosystem = 'PyPI', id = NULL, refresh = FALSE) {
+download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 
   ecosystem <- check_ecosystem(ecosystem)
   time_stamp <- Sys.time()

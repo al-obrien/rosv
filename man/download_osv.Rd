@@ -4,7 +4,7 @@
 \alias{download_osv}
 \title{Download helper for OSV data}
 \usage{
-download_osv(ecosystem = "PyPI", id = NULL, refresh = FALSE)
+download_osv(ecosystem, id = NULL, refresh = FALSE)
 }
 \arguments{
 \item{ecosystem}{Character value of ecosystem, any listed on OSV database.}

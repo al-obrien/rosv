@@ -1,4 +1,4 @@
-# rosv 0.4.0
+# rosv 0.4.1
 
 * Initial CRAN release
 
