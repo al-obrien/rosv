@@ -20,9 +20,6 @@
 #'
 #' @returns A dummy http request.
 #'
-#' @examples
-#' enforce_httr2_use()
-#'
 #' @noRd
 enforce_httr2_use <- function() {
   httr2::request('dummyURL')

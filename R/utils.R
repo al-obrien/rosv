@@ -13,10 +13,6 @@
 #'
 #' @returns A character vector of package names and versions
 #'
-#' @examplesIf interactive()
-#' vul_json_file <- download_osv('CRAN', id = "RSEC-2023-8")
-#' rosv:::extract_vul_info(vul_json_file$osv_cache)
-#'
 #' @noRd
 extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 
@@ -43,8 +39,9 @@ extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI Package Normalization}
 #'
 #' @examples
-#' rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
+#' normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
 #'
+#' @export
 normalize_pypi_pkg <- function(pkg_name) {
 
   pypi_pattern <- "^([A-Z0-9]|[A-Z0-9][A-Z0-9._-]*[A-Z0-9])$"
@@ -87,13 +84,6 @@ clear_osv_cache <- function() {
 #'
 #' @seealso \code{\link{fetch_ecosystems}}
 #'
-#' @examples
-#' # Passes
-#' rosv:::check_ecosystem(c('PyPI', 'CRAN'))
-#'
-#' # Fails
-#' try(rosv:::check_ecosystem(c('notvalid', 'pypi')))
-#'
 check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
 
   ecosystems <- tryCatch({
@@ -125,9 +115,6 @@ check_ecosystem <- function(ecosystem, suppressMessages = TRUE) {
 #' @returns A data.frame containing all the ecosystem names available in the OSV database.
 #'
 #' @seealso \code{\link{check_ecosystem}}
-#'
-#' @examples
-#' rosv:::fetch_ecosystems(offline = TRUE)
 #'
 fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 
@@ -182,9 +169,6 @@ is_rosv <- function(x) {
 #'
 #' @inheritParams is_rosv
 #' @returns Invisibly returns TRUE if validation is successful, otherwise will error.
-#' @examples
-#' # example code
-#' rosv:::validate_rosv(RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN'))
 #' @noRd
 validate_rosv <- function(x) {
   if(!is_rosv(x)) stop('Object is not a class created by {rosv}.')
@@ -234,10 +218,6 @@ get_content <- function(x) {
 #' @param x An object made by \{rosv\}.
 #' @param field Name of the field to extract from.
 #' @returns The specified field in the top hierarchy of the R6 class.
-#' @examples
-#' test <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
-#' rosv:::get_rosv(test, 'content')
-#'
 #' @noRd
 get_rosv <- function(x, field) {
   validate_rosv(x)
@@ -263,16 +243,6 @@ get_rosv <- function(x, field) {
 #' @inheritParams osv_query
 #'
 #' @returns A data.frame with filtered results.
-#' @examples
-#' result_data <- data.frame(name  = c('tensorflow', 'dask','tensorflow', 'dask', 'dask', 'notdask'),
-#'                           ecosystem = c('PyPI', 'PyPI','PyPI', 'PyPI', 'PyPI', 'PyPI'),
-#'                           versions = c('1.2.1', '1.1.1', '11.1', NA, '23.1', NA))
-#'
-#' filter_affected(result_data,
-#'                 name  = c('tensorflow', 'dask'),
-#'                 ecosystem = c('PyPI', 'PyPI'),
-#'                 versions = c('1.2.1', '1.1.1'))
-#'
 #' @noRd
 filter_affected <- function(data, name = NULL, ecosystem = NULL, version = NULL) {
 

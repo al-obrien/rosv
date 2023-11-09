@@ -155,7 +155,7 @@ create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', de
 
   if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
 
-  packages <- data.frame(name = normalize_pypi_pkg(packages))
+  packages <- unique(data.frame(name = normalize_pypi_pkg(packages)))
 
   # If was using the non-data.frame format, convert to it for merges...
   if(!is.data.frame(osv_list)) {

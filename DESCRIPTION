@@ -4,10 +4,11 @@ Version: 0.4.0
 Authors@R: 
     person("Allen", "OBrien", , "allen.g.obrien@gmail.com", role = c("aut", "cre", "cph"))
 Description: Connect, query, and operate on information available from the 
-    'Open Source Vulnerability' database. Although CRAN has vulnerabilities 
-    listed, these are few compared to projects such as PyPI. With tighter 
-    integration between R and Python, having an R specific package to access 
-    details about vulnerabilities from various sources is a worthwhile enterprise.
+    'Open Source Vulnerability' database <https://osv.dev/>. Although 'CRAN' 
+    has vulnerabilities listed, these are few compared to projects such as 
+    'PyPI'. With tighter integration between 'R' and 'Python', having an 
+    'R' specific package to access details about vulnerabilities from 
+    various sources is a worthwhile enterprise.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

@@ -23,10 +23,6 @@ even if one is available in the cached location. Since a fresh pull is performed
 for each R session, it is unlikely that this parameter is required and is primarily
 reserved for future use if functionality necessitates.
 }
-\examples{
-rosv:::fetch_ecosystems(offline = TRUE)
-
-}
 \seealso{
 \code{\link{check_ecosystem}}
 }

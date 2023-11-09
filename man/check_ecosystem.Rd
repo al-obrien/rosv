@@ -22,14 +22,6 @@ is available in the OSV database.
 Will attempt to grab latest file and cache for the current R session. If session
 cannot access the online version, it will use a local copy shipped with the package.
 }
-\examples{
-# Passes
-rosv:::check_ecosystem(c('PyPI', 'CRAN'))
-
-# Fails
-try(rosv:::check_ecosystem(c('notvalid', 'pypi')))
-
-}
 \seealso{
 \code{\link{fetch_ecosystems}}
 }

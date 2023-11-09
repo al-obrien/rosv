@@ -113,5 +113,5 @@ pypi_vul <- create_osv_list(as.data.frame = TRUE)
 xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
 
 # Output requirements.txt which can be used with PPM product
-writeLines(xref_pkg_list, 'requirements.txt')
+writeLines(xref_pkg_list, file.path(tempdir(), 'requirements.txt'))
 ```

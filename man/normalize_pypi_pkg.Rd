@@ -17,7 +17,7 @@ Perform package name formatting as PyPI is case insensitive and long runs
 of underscore, period, and hyphens are not recognized (- is same as --).
 }
 \examples{
-rosv:::normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
+normalize_pypi_pkg(c('Dask', 'TenSorFlow'))
 
 }
 \seealso{

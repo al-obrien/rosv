@@ -39,3 +39,8 @@ test_that('Ensure API affected package filtering operates...', {
   # Test ordering of columns in maintained
   expect_equal(colnames(filter_affected(example_data, name = 'dask', ecosystem = 'PyPI', version = NA)), colnames(example_data))
 })
+
+test_that('Can retrieve R6 class contents before running query...', {
+  newobj <- RosvQuery1$new(name = 'readxl', ecosystem = 'CRAN')
+  expect_null(get_rosv(newobj, 'content'))
+})
