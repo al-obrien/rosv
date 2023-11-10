@@ -2,7 +2,7 @@
 title: "Introduction to rosv"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{rosv}
+  %\VignetteIndexEntry{Introduction to rosv}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

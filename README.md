@@ -1,10 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rosv
+# rosv <a href="https://al-obrien.github.io/rosv/"><img src="man/figures/logo.png" align="right" height="139" alt="rosv website" /></a>
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rosv)](https://CRAN.R-project.org/package=rosv)
 [![R-CMD-check](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/al-obrien/rosv/branch/master/graph/badge.svg)](https://app.codecov.io/gh/al-obrien/rosv?branch=master)
