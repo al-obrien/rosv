@@ -55,16 +55,10 @@
     <loc>https://al-obrien.github.io/rosv/reference/download_osv.html</loc>
   </url>
   <url>
-    <loc>https://al-obrien.github.io/rosv/reference/extract_vul_info.html</loc>
-  </url>
-  <url>
     <loc>https://al-obrien.github.io/rosv/reference/fetch_ecosystems.html</loc>
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/get_content.html</loc>
-  </url>
-  <url>
-    <loc>https://al-obrien.github.io/rosv/reference/get_rosv.html</loc>
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/index.html</loc>
@@ -89,8 +83,5 @@
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/osv_vulns.html</loc>
-  </url>
-  <url>
-    <loc>https://al-obrien.github.io/rosv/reference/validate_rosv.html</loc>
   </url>
 </urlset>
