@@ -61,12 +61,5 @@ try(unlink(c(file_name1, file_name2)))
 # Use from query instead of entire database
 pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 create_osv_list(rosv_query = pkg_vul)
-
-\dontrun{
-# In parallel
-future::plan(multisession, workers = 4)
-pypi_vul <- create_osv_list(ecosystem = 'PyPI')
-future::plan(sequential)
-}
 \dontshow{\}) # examplesIf}
 }

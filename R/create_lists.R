@@ -40,13 +40,6 @@
 #' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 #' create_osv_list(rosv_query = pkg_vul)
 #'
-#' \dontrun{
-#' # In parallel
-#' future::plan(multisession, workers = 4)
-#' pypi_vul <- create_osv_list(ecosystem = 'PyPI')
-#' future::plan(sequential)
-#' }
-#'
 #' @export
 create_osv_list <- function(rosv_query = NULL, ecosystem = NULL, delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
 
