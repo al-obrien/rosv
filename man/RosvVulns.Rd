@@ -11,7 +11,7 @@ An R6 class to provide a lower-level interface to the vulnerability
 endpoint of the OSV API.
 }
 \examples{
-vulns <- RosvQueryBatch$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
+vulns <- RosvVulns$new(c('RSEC-2023-6', 'GHSA-jq35-85cj-fj4p'))
 vulns
 
 }
