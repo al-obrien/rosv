@@ -1,5 +1,5 @@
 with_mock_dir('osv_vulns_req', {
-  test_that("Can run mid level query...", {
+  test_that("Can run mid level vulns query...", {
 
     expect_true(is_rosv(osv_vulns("RSEC-2023-8", parse = FALSE)))
     expect_true(is_rosv(osv_vulns("RSEC-2023-8", parse = TRUE)))
