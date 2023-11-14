@@ -509,7 +509,7 @@
     },
     "httptest2": {
       "Package": "httptest2",
-      "Version": "0.1.0",
+      "Version": "1.0.0",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -521,7 +521,7 @@
         "testthat",
         "utils"
       ],
-      "Hash": "50b4125f558e7fc28b73dec16633b27b"
+      "Hash": "bf481be43f2a798dd27a550d3499e615"
     },
     "httpuv": {
       "Package": "httpuv",
