@@ -67,7 +67,7 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Pageination is implemented via <code>httr2::req_perform_iterative()</code> and a private method for
+    <p>Pageination is implemented via <code><a href="https://httr2.r-lib.org/reference/req_perform_iterative.html" class="external-link">httr2::req_perform_iterative()</a></code> and a private method for
 extracting tokens automatically. When initialized, the page_token is set to <code>NULL</code>;
 if a token is generated for large results the process is handled internally. The response object
 will contain a list of all returned responses before any formatting occurred. The content field will

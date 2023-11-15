@@ -148,7 +148,11 @@ values are parsed into a <code>data.frame</code>.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">osv_query_1</span><span class="op">(</span>commit <span class="op">=</span> <span class="st">'6879efc2c1596d11a6a6ad296f80063b558d5e0f'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'req_perform_iterative' is not an exported object from 'namespace:httr2'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Request made to: https://api.osv.dev/v1/query </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successful responses of total: 1 / 1 </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in purrr::map_chr(self$response, function(x) purrr::pluck(httr2::resp_headers(x),     "Content-Length")):</span> <span style="color: #00BBBB;">ℹ</span> In index: 1.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Result must be length 1, not 0.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
