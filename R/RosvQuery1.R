@@ -4,16 +4,17 @@
 #' An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 #'
 #' @details
-#' Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
-#' For now, a warning will be provided and the first set returned. The response object can be used
-#' for subsequent queries if the user wants to handle the pagination themselves for the time being.
+#' Pageination is implemented via \code{httr2::req_perform_iterative()} and a private method for
+#' extracting tokens automatically. When initialized, the page_token is set to \code{NULL};
+#' if a token is generated for large results the process is handled internally. The response object
+#' will contain a list of all returned responses before any formatting occurred. The content field will
+#' contain the list of vulnerabilities which may be further parsed into a table format.
 #'
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param version Version of package.
 #' @param name Name of package.
 #' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
 #' @param purl URL for package (do not use if \code{name} or \code{ecosystem} is set).
-#' @param page_token When large number of results, next response to complete set requires a page_token.
 #'
 #' @returns An R6 object to operate with OSV query endpoint.
 #'
@@ -41,8 +42,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                                                   version = NULL,
                                                   name = NULL,
                                                   ecosystem = NULL,
-                                                  purl = NULL,
-                                                  page_token = NULL) {
+                                                  purl = NULL) {
 
                               # Checks on input lengths (NULLs are 0), specific to osv_query_1
                               if(length(commit) > 1) stop('Only provide one commit.')
@@ -57,7 +57,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               constructed_query <- list(commit = commit,
                                                         version = version,
                                                         package = list(name = name, ecosystem = ecosystem, purl = purl),
-                                                        page_token = page_token)
+                                                        page_token = NULL)
 
                               # Perform request, get response
                               req <- private$core_query('query')
@@ -70,13 +70,10 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             #' Perform the request and return response for OSV API call.
                             run = function() {
 
-                              resp <- httr2::req_perform(self$request)
+                              resp <- httr2::req_perform_iterative(self$request, next_req = private$iterate_osv_page)
 
-                              # Assign to main variables
-                              self$content <- httr2::resp_body_json(resp)
-                              if(length(purrr::pluck(self$content, 'next_page_token')) > 0) {
-                                warning('Pagination detected in API response; this is not directly supported yet. Only first set is returned.')
-                              }
+                              # Assign to main variables (just vulns, not tokens)
+                              self$content <- list(vulns = httr2::resps_data(resp, function(x) httr2::resp_body_json(x)$vulns))
 
                               self$response <- resp
                               # invisible(self) # If want to be able to chain content at confusion of reference semantics
@@ -117,12 +114,12 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             print = function(...) {
                               if(!is.null(self$response)) {
                                 cat('Request made to:', self$request$url , '\n')
-                                cat('Response status of:', self$response$status_code, httr2::resp_status_desc(self$response), '\n')
-                                cat('Content length is:', httr2::resp_headers(self$response)$`Content-Length`, '\n')
+                                cat('Successful responses of total:', length(httr2::resps_successes(self$response)), '/', length(self$response), '\n')
+                                cat('Successful content size (bytes):', sum(as.double(purrr::map_chr(self$response, function(x) purrr::pluck(httr2::resp_headers(x), 'Content-Length')))), '\n')
                               } else {
                                 cat('Request made to:', NA , '\n')
-                                cat('Response status of:', NA, '\n')
-                                cat('Content length is:', NA, '\n')
+                                cat('Successful responses of total:', NA, '\n')
+                                cat('Successful content size (bytes):', NA, '\n')
                               }
                               invisible(self)
                             }
@@ -174,6 +171,20 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               data.frame(
                                 private$modify_helper(append(pkg_details, list(versions = versions)))
                               )
+                            },
+
+                            # Iterator for OSV pagination tokens for single queries
+                            iterate_osv_page = function(resp, req) {
+
+                              json_body <- httr2::resp_body_json(resp)
+                              tokens <- json_body$next_page_token
+
+                              # Break out if all tokens are NULL
+                              if(is.null(tokens)) return(NULL)
+
+                              # Modify new request with new tokens
+                              httr2::req_body_json_modify(req, page_token = tokens)
+
                             },
 
                             validate_query = function(commit, version, name, ecosystem, purl) {

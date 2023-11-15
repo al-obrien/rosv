@@ -12,7 +12,6 @@ osv_querybatch(
   ecosystem = NULL,
   commit = NULL,
   purl = NULL,
-  page_token = NA,
   parse = TRUE,
   cache = TRUE,
   ...
@@ -24,7 +23,6 @@ osv_querybatch(
   ecosystem = NULL,
   commit = NULL,
   purl = NULL,
-  page_token = NA,
   parse = TRUE,
   cache = TRUE,
   ...
@@ -36,7 +34,6 @@ osv_querybatch(
   ecosystem = NULL,
   commit = NULL,
   purl = NULL,
-  page_token = NA,
   parse = TRUE,
   cache = TRUE,
   ...
@@ -52,8 +49,6 @@ osv_querybatch(
 \item{commit}{Commit hash to query against (do not use when version set).}
 
 \item{purl}{URL for package (do not use if name or ecosystem set).}
-
-\item{page_token}{When large number of results, next response to complete set requires a page_token.}
 
 \item{parse}{Boolean value to set if the content field should be parsed from JSON list format.}
 

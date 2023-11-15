@@ -9,7 +9,6 @@
 #' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
 #' @param commit Commit hash to query against (do not use when version set).
 #' @param purl URL for package (do not use if name or ecosystem set).
-#' @param page_token When large number of results, next response to complete set requires a page_token.
 #' @param parse Boolean value to set if the content field should be parsed from JSON list format.
 #' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Additional parameters passed to nested functions.
@@ -22,7 +21,7 @@
 #' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 #'
 #' @export
-osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, parse = TRUE, cache = TRUE, ...) {
 
   if(cache) {
     .osv_query_1_cache(commit = commit,
@@ -30,7 +29,6 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
                        name = name,
                        ecosystem = ecosystem,
                        purl = purl,
-                       page_token = page_token,
                        parse = parse,
                        ...)
   } else {
@@ -39,7 +37,6 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
                  name = name,
                  ecosystem = ecosystem,
                  purl = purl,
-                 page_token = page_token,
                  parse = parse,
                  ...)
   }
@@ -47,14 +44,13 @@ osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = 
 
 
 #' @describeIn osv_query_1 Internal function to run \code{osv_query_1} without caching.
-.osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+.osv_query_1 <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, parse = TRUE, cache = TRUE, ...) {
 
   query_1 <- RosvQuery1$new(commit,
                             version,
                             name,
                             ecosystem,
                             purl,
-                            page_token,
                             ...)
   query_1$run()
   if(parse) query_1$parse()

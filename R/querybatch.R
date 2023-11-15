@@ -21,14 +21,13 @@
 #' osv_querybatch(c("commonmark", "dask"), ecosystem = c('CRAN', 'PyPI'))
 #'
 #' @export
-osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, parse = TRUE, cache = TRUE, ...) {
   if(cache) {
     .osv_querybatch_cache(commit = commit,
                           version = version,
                           name = name,
                           ecosystem = ecosystem,
                           purl = purl,
-                          page_token = page_token,
                           parse = parse,
                           ...)
   } else {
@@ -37,21 +36,19 @@ osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit
                     name = name,
                     ecosystem = ecosystem,
                     purl = purl,
-                    page_token = page_token,
                     parse = parse,
                     ...)
   }
 }
 
 #' @describeIn osv_querybatch Internal function to run \code{osv_querybatch} without caching.
-.osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, page_token = NA, parse = TRUE, cache = TRUE, ...) {
+.osv_querybatch <- function(name = NULL, version = NULL, ecosystem = NULL, commit = NULL, purl = NULL, parse = TRUE, cache = TRUE, ...) {
 
   querybatch <- RosvQueryBatch$new(commit,
                                    version,
                                    name,
                                    ecosystem,
                                    purl,
-                                   page_token,
                                    ...)
 
   querybatch$run()

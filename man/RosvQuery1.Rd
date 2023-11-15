@@ -10,9 +10,11 @@ An R6 object to operate with OSV query endpoint.
 An R6 class to provide a lower-level interface to the query endpoint of the OSV API.
 }
 \details{
-Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
-For now, a warning will be provided and the first set returned. The response object can be used
-for subsequent queries if the user wants to handle the pagination themselves for the time being.
+Pageination is implemented via \code{httr2::req_perform_iterative()} and a private method for
+extracting tokens automatically. When initialized, the page_token is set to \code{NULL};
+if a token is generated for large results the process is handled internally. The response object
+will contain a list of all returned responses before any formatting occurred. The content field will
+contain the list of vulnerabilities which may be further parsed into a table format.
 }
 \examples{
 query <- RosvQuery1$new(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
@@ -53,8 +55,7 @@ Set the core request details for subsequent use when called in \code{run()} meth
   version = NULL,
   name = NULL,
   ecosystem = NULL,
-  purl = NULL,
-  page_token = NULL
+  purl = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -70,8 +71,6 @@ Set the core request details for subsequent use when called in \code{run()} meth
 \item{\code{ecosystem}}{Ecosystem package lives within (must be set if using \code{name}).}
 
 \item{\code{purl}}{URL for package (do not use if \code{name} or \code{ecosystem} is set).}
-
-\item{\code{page_token}}{When large number of results, next response to complete set requires a page_token.}
 }
 \if{html}{\out{</div>}}
 }
