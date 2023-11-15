@@ -313,3 +313,25 @@ parse_renv_lock <- function(loc = NULL, as.data.frame = TRUE) {
                  })
   }
 }
+
+#' Parse R installed libraries
+#'
+#' Parse and return installed libraries discovered at the library paths.
+#'
+#' @details
+#' Default path will be from results of \code{.libPaths()}.
+#'
+#'
+#' @param ... Parameters for \code{\link[utils]{installed.packages()}}.
+#'
+#' @returns Package and version information as a data.frame.
+#'
+#' @noRd
+parse_r_libpath <- function(...) {
+  rlibs <- installed.packages(...)[,c('Package', 'Version')]
+  rlibs <- as.data.frame(rlibs, row.names = FALSE)
+  colnames(rlibs) <- c('name', 'version')
+  rlibs <- cbind(rlibs, ecosystem = 'CRAN')
+  rlibs
+}
+
