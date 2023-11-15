@@ -115,7 +115,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                               if(!is.null(self$response)) {
                                 cat('Request made to:', self$request$url , '\n')
                                 cat('Successful responses of total:', length(httr2::resps_successes(self$response)), '/', length(self$response), '\n')
-                                cat('Successful content size (bytes):', sum(as.double(purrr::map_chr(self$response, function(x) purrr::pluck(httr2::resp_headers(x), 'Content-Length')))), '\n')
+                                cat('Successful content size (bytes):', sum(as.double(vapply(httr2::resps_successes(self$response), function(x) purrr::pluck(httr2::resp_headers(x), 'Content-Length'), 'character'))), '\n')
                               } else {
                                 cat('Request made to:', NA , '\n')
                                 cat('Successful responses of total:', NA, '\n')
