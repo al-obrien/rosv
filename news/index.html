@@ -50,7 +50,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rosv-development-version">rosv (development version)<a class="anchor" aria-label="anchor" href="#rosv-development-version"></a></h2>
 <ul><li>Upgraded to {httr2} 1.0.0</li>
-<li>Upgraded tests with {httrtest2} 1.0.0</li>
+<li>Upgraded tests with {httptest2} 1.0.0</li>
 <li>Implemented pagination as core functionality in low-level functions (e.g. <code><a href="../reference/RosvQueryBatch.html">RosvQueryBatch()</a></code>)</li>
 <li>Remove page_token parameter from mid-level functions, all handled at low-level automatically.</li>
 <li>Use <code><a href="https://httr2.r-lib.org/reference/req_perform_sequential.html" class="external-link">httr2::req_perform_sequential()</a></code> for the <code><a href="../reference/RosvVulns.html">RosvVulns()</a></code> methods to get build-in helpers not available in <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> alone.</li>
