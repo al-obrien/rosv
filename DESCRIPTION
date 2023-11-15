@@ -25,7 +25,8 @@ Imports:
     httr2 (>= 1.0.0),
     jsonlite,
     memoise,
-    purrr
+    purrr,
+    utils
 Depends: 
     R (>= 2.10)
 URL: https://al-obrien.github.io/rosv/, https://github.com/al-obrien/rosv

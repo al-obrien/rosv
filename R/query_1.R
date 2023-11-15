@@ -17,7 +17,7 @@
 #'
 #' @seealso \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
 #'
-#' @examples
+#' @examplesIf interactive()
 #' osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
 #'
 #' @export

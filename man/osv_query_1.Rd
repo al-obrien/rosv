@@ -72,8 +72,9 @@ values are parsed into a \code{data.frame}.
 
 }}
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 osv_query_1(commit = '6879efc2c1596d11a6a6ad296f80063b558d5e0f')
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \href{https://ossf.github.io/osv-schema/#affectedpackage-field}{Ecosystem list}
