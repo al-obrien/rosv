@@ -69,7 +69,7 @@ osv_query(c('dask', 'readxl', 'dplyr'),
 
 ## Development notes
 
-{rosv} leverages {httr2} and {httrtest2} for its core API client
+{rosv} leverages {httr2} and {httptest2} for its core API client
 functionality and uses R6 classes for its low-level interface to the OSV
 API. There are also plans to have more types of returned details and
 parsing of content.
