@@ -6,6 +6,7 @@
 * Remove page_token parameter from mid-level functions, all handled at low-level automatically.
 * Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
 available in `purrr::map()` alone.
+* Add `osv_scan()` as a high-level function to scan various components of a project (focus on R project content).
 
 # rosv 0.4.2
 

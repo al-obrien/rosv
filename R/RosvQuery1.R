@@ -112,7 +112,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             #' Print basic details of query object to screen.
                             #' @param ... Reserved for possible future use.
                             print = function(...) {
-                              if(!is.null(self$response)) {browser()
+                              if(!is.null(self$response)) {
                                 success_length <- length(httr2::resps_successes(self$response))
                                 cat('Request made to:', self$request$url , '\n')
                                 cat('Successful responses of total:', success_length, '/', length(self$response), '\n')
