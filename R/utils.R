@@ -278,3 +278,38 @@ filter_affected <- function(data, name = NULL, ecosystem = NULL, version = NULL)
   data
 
 }
+
+#' Parse renv LOCK file
+#'
+#' Parse the LOCK file containing R packages and versions at the provided location.
+#'
+#' @param loc Location of the renv LOCK file.
+#' @param as.data.frame Boolean value, determine if parsed content is in a data.frame format
+#'
+#' @returns Package and version information as a list of data.frame.
+#'
+#' @noRd
+parse_renv_lock <- function(loc = NULL, as.data.frame = TRUE) {
+
+  if(is.null(loc)) loc <- 'renv.lock'
+  stopifnot(file.exists(loc))
+
+  lock_n_load <- jsonlite::fromJSON(loc)[['Packages']]
+
+  if(as.data.frame) {
+    purrr::list_rbind(purrr::map(lock_n_load,
+                          function(x) {
+                            data.frame(name = pluck(x, 'Package'),
+                                       version = pluck(x, 'Version'),
+                                       ecosystem = 'CRAN')
+                          })
+    )
+  } else {
+    purrr::map(lock_n_load,
+               function(x) {
+                 c(name = purrr::pluck(x, 'Package'),
+                   version = purrr::pluck(x, 'Version'),
+                   ecosystem = 'CRAN')
+                 })
+  }
+}
