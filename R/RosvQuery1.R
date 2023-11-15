@@ -112,10 +112,13 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
                             #' Print basic details of query object to screen.
                             #' @param ... Reserved for possible future use.
                             print = function(...) {
-                              if(!is.null(self$response)) {
+                              if(!is.null(self$response)) {browser()
+                                success_length <- length(httr2::resps_successes(self$response))
                                 cat('Request made to:', self$request$url , '\n')
-                                cat('Successful responses of total:', length(httr2::resps_successes(self$response)), '/', length(self$response), '\n')
-                                cat('Successful content size (bytes):', sum(as.double(vapply(httr2::resps_successes(self$response), function(x) purrr::pluck(httr2::resp_headers(x), 'Content-Length'), 'character'))), '\n')
+                                cat('Successful responses of total:', success_length, '/', length(self$response), '\n')
+                                cat('Successful content size (bytes):',
+                                    sum(as.double(vapply(httr2::resps_successes(self$response), function(x) purrr::pluck(httr2::resp_headers(x), 'Content-Length'), character(success_length)))),
+                                    '\n')
                               } else {
                                 cat('Request made to:', NA , '\n')
                                 cat('Successful responses of total:', NA, '\n')
