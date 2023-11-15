@@ -91,7 +91,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The {rosv} package is an API client to the <a href="https://osv.dev/" class="external-link">Open Source Vulnerability (OSV) database</a>. Both high and low level functions are available to query the database for vulnerabilities in package repositories across various open source ecosystems such as CRAN, Bioconductor, PyPI, and many more. Queries made against the OSV database are useful to check for package vulnerabilities (including by specific versions) enumerated in package management files such as <code>requirements.txt</code> (Python) and <code>renv.lock</code> (R).</p>
+<p>The {rosv} package is an API client to the <a href="https://osv.dev/" class="external-link">Open Source Vulnerability (OSV) database</a>. Both high and low level functions are available to query the database for vulnerabilities in package repositories across various open source ecosystems such as CRAN, Bioconductor, PyPI, and many more. Queries made against the OSV database are useful to check for package vulnerabilities (including by specific versions) enumerated in package management files such as <code>requirements.txt</code> (Python) and <code>renv.lock</code> (R). Checking valid query construction, API response pagination, and parsing content are all handled by {rosv}.</p>
 <p>Various helper functions assist in the administration of <a href="https://packagemanager.posit.co/client/#/" class="external-link">Posit Package Manager</a> or similar services. Packages can be routinely examined for new vulnerabilities which aide in the creation and updating of curated repositories as well as assigning block lists.</p>
 <p>More details about the OSV project and associated API can be found here: <a href="https://google.github.io/osv.dev/" class="external-link uri">https://google.github.io/osv.dev/</a>.</p>
 </div>
@@ -119,7 +119,7 @@
 <div class="section level2">
 <h2 id="development-notes">Development notes<a class="anchor" aria-label="anchor" href="#development-notes"></a>
 </h2>
-<p>{rosv} is still a young project. There are plans to extend its use. Currently it uses R6 classes for its low-level interface to the OSV API. Pagination functionality will be added once it is offered by {httr2}, which at time of writing is available but experimental. There are also plans to have more types of returned details and parsing of content.</p>
+<p>{rosv} leverages {httr2} and {httrtest2} for its core API client functionality and uses R6 classes for its low-level interface to the OSV API. There are also plans to have more types of returned details and parsing of content.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

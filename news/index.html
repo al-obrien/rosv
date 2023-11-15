@@ -49,7 +49,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rosv-development-version">rosv (development version)<a class="anchor" aria-label="anchor" href="#rosv-development-version"></a></h2>
-</div>
+<ul><li>Upgraded to {httr2} 1.0.0</li>
+<li>Upgraded tests with {httrtest2} 1.0.0</li>
+<li>Implemented pagination as core functionality in low-level functions (e.g. <code><a href="../reference/RosvQueryBatch.html">RosvQueryBatch()</a></code>)</li>
+<li>Remove page_token parameter from mid-level functions, all handled at low-level automatically.</li>
+<li>Use <code>httr2::req_perform_sequential()</code> for the <code><a href="../reference/RosvVulns.html">RosvVulns()</a></code> methods to get build-in helpers not available in <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> alone.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="rosv-042">rosv 0.4.2<a class="anchor" aria-label="anchor" href="#rosv-042"></a></h2><p class="text-muted">CRAN release: 2023-11-10</p>
 <ul><li>Initial CRAN release</li>

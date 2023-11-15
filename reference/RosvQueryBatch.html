@@ -67,9 +67,11 @@ This avoids some confusion as to which is taken preferentially and simplifies qu
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Pageination is not implemented yet, waiting for httr2 feature update which will handle automatically.
-For now, a warning will be provided and the first set returned. The response object can be used
-for subsequent queries if the user wants to handle the pagination themselves for the time being.</p>
+    <p>Pageination is implemented via <code>httr2::req_perform_iterative()</code> and a private method for
+extracting tokens automatically. When initialized, the page_token is set to <code>NULL</code>;
+if a token is generated for large results the process is handled internally. The response object
+will contain a list of all returned responses before any formatting occurred. The content field will
+contain the list of results with vulnerabilities which may be further parsed into a table format.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -99,8 +101,7 @@ for subsequent queries if the user wants to handle the pagination themselves for
 <span>  version <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ecosystem <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  purl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  page_token <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  purl <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -124,10 +125,6 @@ for subsequent queries if the user wants to handle the pagination themselves for
 
 <dt><code>purl</code></dt>
 <dd><p>URL for package (do not use if <code>name</code> or <code>ecosystem</code> is set).</p></dd>
-
-
-<dt><code>page_token</code></dt>
-<dd><p>When large number of results, next response to complete set requires a <code>page_token</code>.</p></dd>
 
 
 </dl><p></p></div>
@@ -184,8 +181,8 @@ be identified from the results column. Not all contents are parsed.</p>
 <span class="r-in"><span><span class="va">batchquery</span> <span class="op">&lt;-</span> <span class="va">RosvQueryBatch</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>name <span class="op">=</span> <span class="va">pkgs</span>, ecosystem <span class="op">=</span> <span class="va">ecosystem</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">batchquery</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Request made to: NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Response status of: NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content length is: NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successful responses of total: NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successful content size (bytes): NA </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
