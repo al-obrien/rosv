@@ -1,5 +1,12 @@
 # rosv (development version)
 
+* Upgraded to {httr2} 1.0.0
+* Upgraded tests with {httrtest2} 1.0.0
+* Implemented pagination as core functionality in low-level functions (e.g. `RosvQueryBatch()`)
+* Remove page_token parameter from mid-level functions, all handled at low-level automatically.
+* Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
+available in `purrr::map()` alone.
+
 # rosv 0.4.2
 
 * Initial CRAN release

@@ -25,7 +25,9 @@ repositories across various open source ecosystems such as CRAN,
 Bioconductor, PyPI, and many more. Queries made against the OSV database
 are useful to check for package vulnerabilities (including by specific
 versions) enumerated in package management files such as
-`requirements.txt` (Python) and `renv.lock` (R).
+`requirements.txt` (Python) and `renv.lock` (R). Checking valid query
+construction, API response pagination, and parsing content are all
+handled by {rosv}.
 
 Various helper functions assist in the administration of [Posit Package
 Manager](https://packagemanager.posit.co/client/#/) or similar services.
@@ -67,8 +69,7 @@ osv_query(c('dask', 'readxl', 'dplyr'),
 
 ## Development notes
 
-{rosv} is still a young project. There are plans to extend its use.
-Currently it uses R6 classes for its low-level interface to the OSV API.
-Pagination functionality will be added once it is offered by {httr2},
-which at time of writing is available but experimental. There are also
-plans to have more types of returned details and parsing of content.
+{rosv} leverages {httr2} and {httrtest2} for its core API client
+functionality and uses R6 classes for its low-level interface to the OSV
+API. There are also plans to have more types of returned details and
+parsing of content.
