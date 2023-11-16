@@ -167,7 +167,7 @@ is_pkg_vulnerable <- function(name, ecosystem, ...) {
                                       ecosystem = ecosystem,
                                       ...))
 
-  results_vec[as.integer(index$result)] <- TRUE
+  results_vec[unique(as.integer(index$result))] <- TRUE
   names(results_vec) <- name
   results_vec
 
