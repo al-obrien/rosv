@@ -88,7 +88,6 @@ download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 #' @param name Character vector of package names..
 #' @param version Character vector of package versions, \code{NA} if ignoring versions.
 #' @param ecosystem Character vector of ecosystem(s) within which the package(s) exist.
-#' @param page_token For large result sizes, the next response to complete set requires a page_token (for future use).
 #' @param all_affected Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.
 #' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Any other parameters to pass to nested functions.
@@ -107,13 +106,12 @@ download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 #' pkg_vul <- osv_query(name_vec, ecosystem = ecosystem_vec)
 #'
 #' @export
-osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, page_token = NULL, all_affected = TRUE, cache = TRUE, ...) {
+osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affected = TRUE, cache = TRUE, ...) {
 
   if(length(name) > 1) {
     batch_vulns <- get_content(osv_querybatch(name = name,
                                               version = version,
                                               ecosystem = ecosystem,
-                                              page_token = page_token,
                                               cache = cache,
                                               ...))
 
