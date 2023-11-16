@@ -7,6 +7,8 @@
 * Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
 available in `purrr::map()` alone.
 * Add `osv_scan()` as a high-level function to scan various components of a project (focus on R project content).
+* Add groupings to pkgdown reference tab
+* Add example outputs for getting started vignette
 
 # rosv 0.4.2
 
