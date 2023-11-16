@@ -47,7 +47,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="main-osv-api-queries-and-scans">Main OSV API queries and scans<a class="anchor" aria-label="anchor" href="#main-osv-api-queries-and-scans"></a></h2>
       
       
 
@@ -59,35 +59,52 @@
 
       <dl><dt>
           
-          <code><a href="RosvQuery1.html">RosvQuery1</a></code> 
+          <code><a href="osv_query.html">osv_query()</a></code> 
         </dt>
-        <dd>R6 Class for OSV Query Endpoint</dd>
+        <dd>Query OSV API for individual package vulnerabilities</dd>
       </dl><dl><dt>
           
-          <code><a href="RosvQueryBatch.html">RosvQueryBatch</a></code> 
+          <code><a href="is_pkg_vulnerable.html">is_pkg_vulnerable()</a></code> 
         </dt>
-        <dd>R6 Class for OSV Querybatch Endpoint</dd>
+        <dd>Detect if package within ecosystem has reported vulnerabilities</dd>
       </dl><dl><dt>
           
-          <code><a href="RosvVulns.html">RosvVulns</a></code> 
+          <code><a href="osv_scan.html">osv_scan()</a></code> 
         </dt>
-        <dd>R6 Class for OSV Vulns Endpoint</dd>
+        <dd>Use OSV database to scan for vulnerabilities</dd>
+      </dl></div><div class="section level2">
+      <h2 id="access-osv-database-files">Access OSV database files<a class="anchor" aria-label="anchor" href="#access-osv-database-files"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="download_osv.html">download_osv()</a></code> 
+        </dt>
+        <dd>Download helper for OSV data</dd>
       </dl><dl><dt>
           
-          <code><a href="check_ecosystem.html">check_ecosystem()</a></code> 
+          <code><a href="fetch_ecosystems.html">fetch_ecosystems()</a></code> 
         </dt>
-        <dd>Check input against possible ecosystems available</dd>
-      </dl><dl><dt>
-          
-          <code><a href="clear_osv_cache.html">clear_osv_cache()</a></code> 
-        </dt>
-        <dd>Reset cached results of OSV calls</dd>
-      </dl><dl><dt>
-          
-          <code><a href="copy_rosv.html">copy_rosv()</a></code> 
-        </dt>
-        <dd>Copy a {rosv} object</dd>
-      </dl><dl><dt>
+        <dd>Fetch all available ecosystems</dd>
+      </dl></div><div class="section level2">
+      <h2 id="create-vulnerability-lists">Create vulnerability lists<a class="anchor" aria-label="anchor" href="#create-vulnerability-lists"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="create_osv_list.html">create_osv_list()</a></code> 
         </dt>
@@ -102,26 +119,32 @@
           <code><a href="create_ppm_xref_whitelist.html">create_ppm_xref_whitelist()</a></code> 
         </dt>
         <dd>Cross reference a whitelist of packages to a vulnerability database</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utility-functions">Utility functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="copy_rosv.html">copy_rosv()</a></code> 
+        </dt>
+        <dd>Copy a {rosv} object</dd>
       </dl><dl><dt>
           
-          <code><a href="download_osv.html">download_osv()</a></code> 
+          <code><a href="clear_osv_cache.html">clear_osv_cache()</a></code> 
         </dt>
-        <dd>Download helper for OSV data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fetch_ecosystems.html">fetch_ecosystems()</a></code> 
-        </dt>
-        <dd>Fetch all available ecosystems</dd>
+        <dd>Reset cached results of OSV calls</dd>
       </dl><dl><dt>
           
           <code><a href="get_content.html">get_content()</a></code> 
         </dt>
         <dd>Retrieve contents field from {rosv} R6 object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="is_pkg_vulnerable.html">is_pkg_vulnerable()</a></code> 
-        </dt>
-        <dd>Detect if package within ecosystem has reported vulnerabilities</dd>
       </dl><dl><dt>
           
           <code><a href="is_rosv.html">is_rosv()</a></code> 
@@ -134,10 +157,21 @@
         <dd>Normalize package name to PyPI expectation</dd>
       </dl><dl><dt>
           
-          <code><a href="osv_query.html">osv_query()</a></code> 
+          <code><a href="check_ecosystem.html">check_ecosystem()</a></code> 
         </dt>
-        <dd>Query OSV API for individual package vulnerabilities</dd>
-      </dl><dl><dt>
+        <dd>Check input against possible ecosystems available</dd>
+      </dl></div><div class="section level2">
+      <h2 id="low-level-functions-to-osv-api">Low-level functions to OSV API<a class="anchor" aria-label="anchor" href="#low-level-functions-to-osv-api"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="osv_query_1.html">osv_query_1()</a></code> <code><a href="osv_query_1.html">.osv_query_1()</a></code> <code><a href="osv_query_1.html">.osv_query_1_cache()</a></code> 
         </dt>
@@ -149,16 +183,27 @@
         <dd>Query OSV API for vulnerabilities given a vector of packages</dd>
       </dl><dl><dt>
           
-          <code><a href="osv_scan.html">osv_scan()</a></code> 
-        </dt>
-        <dd>Use OSV database to scan for vulnerabilities</dd>
-      </dl><dl><dt>
-          
           <code><a href="osv_vulns.html">osv_vulns()</a></code> <code><a href="osv_vulns.html">.osv_vulns()</a></code> <code><a href="osv_vulns.html">.osv_vulns_cache()</a></code> 
         </dt>
         <dd>Query OSV API for vulnerability information based on ID</dd>
+      </dl><dl><dt>
+          
+          <code><a href="RosvQuery1.html">RosvQuery1</a></code> 
+        </dt>
+        <dd>R6 Class for OSV Query Endpoint</dd>
+      </dl><dl><dt>
+          
+          <code><a href="RosvQueryBatch.html">RosvQueryBatch</a></code> 
+        </dt>
+        <dd>R6 Class for OSV Querybatch Endpoint</dd>
+      </dl><dl><dt>
+          
+          <code><a href="RosvVulns.html">RosvVulns</a></code> 
+        </dt>
+        <dd>R6 Class for OSV Vulns Endpoint</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

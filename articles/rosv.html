@@ -118,6 +118,8 @@ return a <code>TRUE</code>/<code>FALSE</code> response informing you if
 that package has ever been listed with a vulnerability.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/is_pkg_vulnerable.html">is_pkg_vulnerable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'dash'</span><span class="op">)</span>, ecosystem <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PyPI'</span>, <span class="st">'PyPI'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt;  dask  dash </span></span>
+<span><span class="co">#&gt;  TRUE FALSE</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="list-package-vulnerabilities">List package vulnerabilities<a class="anchor" aria-label="anchor" href="#list-package-vulnerabilities"></a>
@@ -126,15 +128,40 @@ that package has ever been listed with a vulnerability.</p>
 ecosystem’s packages (e.g. PyPI or CRAN) listed in the OSV database.
 This can be achieved using high-level functions such as
 <code><a href="../reference/osv_query.html">osv_query()</a></code> and <code><a href="../reference/create_osv_list.html">create_osv_list()</a></code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Query one package in PyPI for vulnerabilities</span></span>
 <span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span><span class="va">pkg_vul</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<span><span class="va">pkg_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span><span class="va">pkg_vul</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pkg_tbl</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt;   name versions</span></span>
+<span><span class="co">#&gt; 1 dask   0.10.0</span></span>
+<span><span class="co">#&gt; 2 dask   0.10.1</span></span>
+<span><span class="co">#&gt; 3 dask   0.10.2</span></span></code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pull the entire set of PyPI vulnerability data</span></span>
 <span><span class="va">pypi_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span>ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
-<span><span class="va">pypi_vul</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pypi_vul</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; [1] "aaiohttp\t "           "accesscontrol\t2.13.0" "accesscontrol\t2.13.1"</span></span></code></pre>
 </div>
+</div>
+<div class="section level2">
+<h2 id="scan-an-r-project">Scan an R project<a class="anchor" aria-label="anchor" href="#scan-an-r-project"></a>
+</h2>
+<p>Packages discovered within an R project (such as {renv} LOCK files
+and installed packages at <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>) can be parsed and
+scanned directly using the <code><a href="../reference/osv_scan.html">osv_scan()</a></code> function. A
+data.frame is returned with the package name and a logical value
+specifying if a vulnerability was discovered in the OSV database. If a
+particular scanning mode does not exist, similar functionality can be
+created if a package list and associated version information is passed
+to <code><a href="../reference/is_pkg_vulnerable.html">is_pkg_vulnerable()</a></code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/osv_scan.html">osv_scan</a></span><span class="op">(</span><span class="st">'r_project'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt;         name version ecosystem is_vul</span></span>
+<span><span class="co">#&gt; 1 commonmark   1.9.0      CRAN   TRUE</span></span>
+<span><span class="co">#&gt; 2   jsonlite   1.8.7      CRAN   TRUE</span></span>
+<span><span class="co">#&gt; 3    askpass   1.2.0      CRAN  FALSE</span></span>
+<span><span class="co">#&gt; 4       base   4.3.1      CRAN  FALSE</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="use-api-helpers-directly">Use API helpers directly<a class="anchor" aria-label="anchor" href="#use-api-helpers-directly"></a>
@@ -147,7 +174,7 @@ functions will be cached. This can be overriden by specifying
 <p>The higher-level API query function <code><a href="../reference/osv_query.html">osv_query()</a></code> aligns
 returned content type and parsing method, making it the preferred choice
 for the typical use-case.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Returns entire response object to parse as you please.</span></span>
 <span><span class="fu"><a href="../reference/osv_query_1.html">osv_query_1</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>
 <span></span>
@@ -169,7 +196,7 @@ cache results using <code><a href="https://memoise.r-lib.org/reference/memoise.h
 turned off directly using function parameters or globally reset using
 <code><a href="../reference/clear_osv_cache.html">clear_osv_cache()</a></code>. Caching is the default behavior to help
 enforce polite access of the OSV API.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Query without caching</span></span>
 <span><span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span>, cache <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -188,7 +215,7 @@ versions, this is often difficult. The following method will take a
 vector of packages (from PyPI) and cross-reference against the OSV
 database. If packages are identified they are either entirely dropped,
 or the specific versions with flagged vulnerabilities are excluded.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List of packages of interest</span></span>
 <span><span class="va">python_pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dask'</span>, <span class="st">'tensorflow'</span>, <span class="st">'keras'</span><span class="op">)</span></span>
 <span></span>
