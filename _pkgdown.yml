@@ -2,3 +2,44 @@ url: https://al-obrien.github.io/rosv/
 template:
   bootstrap: 5
 
+reference:
+- title: Main OSV API queries and scans
+- desc: High level interface to the OSV API and project vulnerability scans, should cover most use-cases.
+- contents:
+  - osv_query
+  - is_pkg_vulnerable
+  - osv_scan
+
+- title: Access OSV database files
+- desc: Fetch metadata and JSON vulnerability files from the OSV database
+- contents:
+  - download_osv
+  - fetch_ecosystems
+
+- title: Create vulnerability lists
+- desc: >
+    Create lists with package vulnerability information that may be helpful in the curation
+    of repositories.
+- contents:
+  - create_osv_list
+  - create_ppm_blacklist
+  - create_ppm_xref_whitelist
+
+- title: Utility functions
+- contents:
+  - copy_rosv
+  - clear_osv_cache
+  - get_content
+  - is_rosv
+  - normalize_pypi_pkg
+  - check_ecosystem
+
+- title: Low-level functions to OSV API
+- desc: >
+    R6 class generators and associated methods related to each OSV end point.
+    For most purposes, a higher-level interface will be preferable.
+- contents:
+  - osv_query_1
+  - osv_querybatch
+  - osv_vulns
+  - starts_with('Rosv')
