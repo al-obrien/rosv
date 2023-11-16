@@ -120,6 +120,15 @@ osv_scan_r_project <- function(dir = '.', sort_by_vul = TRUE) {
 #'
 #' Scan project based upon specified mode to determine if any vulnerable packages are detected.
 #'
+#' @details
+#' The available scanning modes are: 'r_project', 'renv', and 'r_libath'. The 'r_libpath' mode
+#' simply performs all R project related scans at once. Emphasis is placed on scans of R related content.
+#' Additional parsing and scanning modes will be added over time as needed. If a mode does not exist for
+#' a particular purpose, alternate functions such as \code{is_pkg_vulnerable()} can be used with any list of
+#' package names for ecosystems available in the OSV database
+#'
+#' @seealso \code{\link{is_pkg_vulnerable}}
+#'
 #' @param mode The kind of scan to perform.
 #' @param ... Parameters passed to specific underlying functions for mode selected.
 #'
@@ -130,6 +139,9 @@ osv_scan_r_project <- function(dir = '.', sort_by_vul = TRUE) {
 #'
 #' @export
 osv_scan <- function(mode, ...) {
+  mode <- match.arg(mode,
+                    choices = c('r_project', 'renv', 'r_libpath'),
+                    several.ok = FALSE)
   switch(mode,
          r_project = osv_scan_r_libpath(...),
          renv = osv_scan_renv(...),

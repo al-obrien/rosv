@@ -8,7 +8,6 @@ osv_query(
   name = NULL,
   version = NULL,
   ecosystem = NULL,
-  page_token = NULL,
   all_affected = TRUE,
   cache = TRUE,
   ...
@@ -20,8 +19,6 @@ osv_query(
 \item{version}{Character vector of package versions, \code{NA} if ignoring versions.}
 
 \item{ecosystem}{Character vector of ecosystem(s) within which the package(s) exist.}
-
-\item{page_token}{For large result sizes, the next response to complete set requires a page_token (for future use).}
 
 \item{all_affected}{Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.}
 
