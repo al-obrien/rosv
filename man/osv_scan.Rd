@@ -22,7 +22,7 @@ The available scanning modes are: 'r_project', 'renv', and 'r_libath'. The 'r_li
 simply performs all R project related scans at once. Emphasis is placed on scans of R related content.
 Additional parsing and scanning modes will be added over time as needed. If a mode does not exist for
 a particular purpose, alternate functions such as \code{is_pkg_vulnerable()} can be used with any list of
-package names for ecosystems available in the OSV database
+package names for ecosystems available in the OSV database.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

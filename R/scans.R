@@ -109,7 +109,7 @@ osv_scan_r_project <- function(dir = '.', sort_by_vul = TRUE) {
   pkg_data$is_vul <- is_pkg_vulnerable(name = pkg_data$name, ecosystem = pkg_data$ecosystem, version = pkg_data$version)
 
   if(sort_by_vul) {
-    pkg_data[order(pkg_data$is_vul, pkg_data$name, pkg_data$version, decreasing = TRUE),]
+    pkg_data[order(-pkg_data$is_vul, pkg_data$name, pkg_data$version),]
   } else{
     pkg_data[order(pkg_data$name, pkg_data$version),]
   }
@@ -125,7 +125,7 @@ osv_scan_r_project <- function(dir = '.', sort_by_vul = TRUE) {
 #' simply performs all R project related scans at once. Emphasis is placed on scans of R related content.
 #' Additional parsing and scanning modes will be added over time as needed. If a mode does not exist for
 #' a particular purpose, alternate functions such as \code{is_pkg_vulnerable()} can be used with any list of
-#' package names for ecosystems available in the OSV database
+#' package names for ecosystems available in the OSV database.
 #'
 #' @seealso \code{\link{is_pkg_vulnerable}}
 #'
@@ -143,8 +143,8 @@ osv_scan <- function(mode, ...) {
                     choices = c('r_project', 'renv', 'r_libpath'),
                     several.ok = FALSE)
   switch(mode,
-         r_project = osv_scan_r_libpath(...),
+         r_project = osv_scan_r_project(...),
          renv = osv_scan_renv(...),
-         r_libpath = osv_scan_r_project(...))
+         r_libpath = osv_scan_r_libpath(...))
 }
 

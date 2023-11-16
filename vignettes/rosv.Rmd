@@ -40,6 +40,11 @@ informing you if that package has ever been listed with a vulnerability.
 is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 ```
 
+```{r, echo = FALSE}
+c(dask = TRUE, dash = FALSE)
+```
+
+
 ### List package vulnerabilities
 
 The most basic usage of {rosv} is to pull all versions of an ecosystem's packages (e.g. PyPI or CRAN) listed 
@@ -48,13 +53,43 @@ in the OSV database. This can be achieved using high-level functions such as `os
 ```{r, eval = FALSE}
 # Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
-create_osv_list(pkg_vul)
+pkg_tbl <- create_osv_list(pkg_vul, as.data.frame = TRUE)
+head(pkg_tbl, 3)
 ```
+
+```{r, echo = FALSE}
+data.frame(name = rep('dask', 3),
+           versions = c('0.10.0', '0.10.1', '0.10.2'))
+```
+
 
 ```{r example, eval = FALSE}
 # Pull the entire set of PyPI vulnerability data
 pypi_vul <- create_osv_list(ecosystem = 'PyPI')
-pypi_vul
+head(pypi_vul, 3)
+```
+
+```{r, echo = FALSE}
+c("aaiohttp\t ", "accesscontrol\t2.13.0", "accesscontrol\t2.13.1")
+```
+
+
+## Scan an R project
+
+Packages discovered within an R project (such as {renv} LOCK files and installed packages at `.libPaths()`) can be 
+parsed and scanned directly using the `osv_scan()` function. A data.frame is returned with the package name and a logical value 
+specifying if a vulnerability was discovered in the OSV database. If a particular scanning mode does not exist, similar 
+functionality can be created if a package list and associated version information is passed to `is_pkg_vulnerable()`.
+
+```{r, eval = FALSE}
+osv_scan('r_project')
+```
+
+```{r, echo = FALSE}
+data.frame(name = c('commonmark', 'jsonlite', 'askpass', 'base'),
+           version = c( '1.9.0', '1.8.7', '1.2.0', '4.3.1'),
+           ecosystem = rep('CRAN', 4), 
+           is_vul = c(TRUE, TRUE, FALSE , FALSE))
 ```
 
 
