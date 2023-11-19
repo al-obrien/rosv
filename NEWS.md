@@ -9,6 +9,8 @@ available in `purrr::map()` alone.
 * Add `osv_scan()` as a high-level function to scan various components of a project (focus on R project content).
 * Add groupings to pkgdown reference tab
 * Add example outputs for getting started vignette
+* Add missing R6 dependency and specify more specific minimum versions
+* Package documentation Rd added
 
 # rosv 0.4.2
 

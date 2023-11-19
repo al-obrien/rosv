@@ -20,12 +20,13 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
-    digest,
-    furrr,
+    digest (>= 0.6.0),
+    furrr (>= 0.3.0),
     httr2 (>= 1.0.0),
-    jsonlite,
-    memoise,
-    purrr,
+    jsonlite (>= 0.9.16),
+    memoise (>= 2.0.0),
+    purrr (>= 1.0.0),
+    R6 (>= 2.0.0),
     utils
 Depends: 
     R (>= 2.10)
