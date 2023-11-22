@@ -25,6 +25,9 @@
     <loc>https://al-obrien.github.io/rosv/news/index.html</loc>
   </url>
   <url>
+    <loc>https://al-obrien.github.io/rosv/reference/RosvDownload.html</loc>
+  </url>
+  <url>
     <loc>https://al-obrien.github.io/rosv/reference/RosvQuery1.html</loc>
   </url>
   <url>
@@ -49,10 +52,7 @@
     <loc>https://al-obrien.github.io/rosv/reference/create_ppm_blacklist.html</loc>
   </url>
   <url>
-    <loc>https://al-obrien.github.io/rosv/reference/create_ppm_xref_whitelist.html</loc>
-  </url>
-  <url>
-    <loc>https://al-obrien.github.io/rosv/reference/download_osv.html</loc>
+    <loc>https://al-obrien.github.io/rosv/reference/create_xref_whitelist.html</loc>
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/fetch_ecosystems.html</loc>
@@ -71,6 +71,12 @@
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/normalize_pypi_pkg.html</loc>
+  </url>
+  <url>
+    <loc>https://al-obrien.github.io/rosv/reference/osv_count_vulns.html</loc>
+  </url>
+  <url>
+    <loc>https://al-obrien.github.io/rosv/reference/osv_download.html</loc>
   </url>
   <url>
     <loc>https://al-obrien.github.io/rosv/reference/osv_query.html</loc>

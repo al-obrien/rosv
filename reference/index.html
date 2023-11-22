@@ -69,30 +69,14 @@
         <dd>Detect if package within ecosystem has reported vulnerabilities</dd>
       </dl><dl><dt>
           
+          <code><a href="osv_count_vulns.html">osv_count_vulns()</a></code> 
+        </dt>
+        <dd>Count the number of reported vulnerabilities</dd>
+      </dl><dl><dt>
+          
           <code><a href="osv_scan.html">osv_scan()</a></code> 
         </dt>
         <dd>Use OSV database to scan for vulnerabilities</dd>
-      </dl></div><div class="section level2">
-      <h2 id="access-osv-database-files">Access OSV database files<a class="anchor" aria-label="anchor" href="#access-osv-database-files"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="download_osv.html">download_osv()</a></code> 
-        </dt>
-        <dd>Download helper for OSV data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fetch_ecosystems.html">fetch_ecosystems()</a></code> 
-        </dt>
-        <dd>Fetch all available ecosystems</dd>
       </dl></div><div class="section level2">
       <h2 id="create-vulnerability-lists">Create vulnerability lists<a class="anchor" aria-label="anchor" href="#create-vulnerability-lists"></a></h2>
       
@@ -116,7 +100,7 @@
         <dd>Create blacklist commands for Posit Package Manager</dd>
       </dl><dl><dt>
           
-          <code><a href="create_ppm_xref_whitelist.html">create_ppm_xref_whitelist()</a></code> 
+          <code><a href="create_xref_whitelist.html">create_xref_whitelist()</a></code> 
         </dt>
         <dd>Cross reference a whitelist of packages to a vulnerability database</dd>
       </dl></div><div class="section level2">
@@ -160,6 +144,11 @@
           <code><a href="check_ecosystem.html">check_ecosystem()</a></code> 
         </dt>
         <dd>Check input against possible ecosystems available</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fetch_ecosystems.html">fetch_ecosystems()</a></code> 
+        </dt>
+        <dd>Fetch all available ecosystems</dd>
       </dl></div><div class="section level2">
       <h2 id="low-level-functions-to-osv-api">Low-level functions to OSV API<a class="anchor" aria-label="anchor" href="#low-level-functions-to-osv-api"></a></h2>
       
@@ -186,6 +175,16 @@
           <code><a href="osv_vulns.html">osv_vulns()</a></code> <code><a href="osv_vulns.html">.osv_vulns()</a></code> <code><a href="osv_vulns.html">.osv_vulns_cache()</a></code> 
         </dt>
         <dd>Query OSV API for vulnerability information based on ID</dd>
+      </dl><dl><dt>
+          
+          <code><a href="osv_download.html">osv_download()</a></code> <code><a href="osv_download.html">.osv_download()</a></code> <code><a href="osv_download.html">.osv_download_cache()</a></code> 
+        </dt>
+        <dd>Download vulnerabilities from the OSV database</dd>
+      </dl><dl><dt>
+          
+          <code><a href="RosvDownload.html">RosvDownload</a></code> 
+        </dt>
+        <dd>R6 Class for OSV Database Downloads</dd>
       </dl><dl><dt>
           
           <code><a href="RosvQuery1.html">RosvQuery1</a></code> 
