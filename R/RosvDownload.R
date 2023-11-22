@@ -4,14 +4,15 @@
 #' An R6 class to provide a lower-level interface to download from the OSV database GCS buckets.
 #'
 #' @details
-#' If no vulnerability IDs are provided, the entire set are downloaded from the ecosystems all.zip file.
-#' Caching is performed during the \code{run()} operation; this downloads the JSON files to the R session's
-#' temporary folder as dictated by the environment variable \code{ROSV_CACHE_GLOBAL}. Due to its similarity
-#' in parsing process, it simply inherits the method from the parent class \code{RosvQuery1}.
+#' If no vulnerability IDs are provided, the entire set is downloaded from the ecosystem's all.zip file.
+#' JSON files are downloaded to the R session's temporary folder as dictated by the environment
+#' variable \code{ROSV_CACHE_GLOBAL}. Due to its similarity in parsing process, it simply inherits
+#' the method from the parent class \code{RosvQuery1}.
 #'
-#' @param vuln_ids Commit hash to query against (do not use when version set).
-#' @param ecosystem Ecosystem package lives within (must be set if using \code{name}).
-#' @param cache Boolean value to determine if the downloaded files should be cached.
+#' Any ecosystems listed \href{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt}{here} can be downloaded.
+#'
+#' @param vuln_ids Character vector of vulnerability IDs.
+#' @param ecosystem Ecosystem package lives within (must be set).
 #'
 #' @returns An R6 object to operate with data downloaded from the OSV GCS buckets.
 #'
@@ -40,6 +41,9 @@ RosvDownload <- R6::R6Class('RosvDownload',
                               #' @field ecosystem The ecosystem used upon creation.
                               ecosystem = NULL,
 
+                              #' @field vuln_ids The vulnerability IDs, if provided.
+                              vuln_ids = NULL,
+
                               #' @field request The URLs to request downloaded files.
                               request = NULL,
 
@@ -48,8 +52,14 @@ RosvDownload <- R6::R6Class('RosvDownload',
                               initialize = function(vuln_ids = NULL,
                                                     ecosystem) {
 
+                                if(!is.null(vuln_ids)) {
+                                  stopifnot(is.character(vuln_ids))
+                                  stopifnot(all(!is.na(vuln_ids)))
+                                }
+
                                 gcs_bucket <- 'https://osv-vulnerabilities.storage.googleapis.com'
 
+                                self$vuln_ids <- vuln_ids
                                 self$ecosystem <- check_ecosystem(ecosystem)
                                 self$time_stamp <- Sys.time()
                                 self$date_stamp_hash <- digest::digest(as.Date(self$time_stamp))
@@ -66,63 +76,51 @@ RosvDownload <- R6::R6Class('RosvDownload',
                               },
 
                               #' @description
-                              #' Perform the downloads and save if caching. Entire contents of
-                              #' each vulnerability file will be loaded into the R session. Subsequent use
-                              #' of the \code{parse()} method will shrink the memory footprint as not all contents
-                              #' will be carried across.
-                              run = function(cache = TRUE) {
+                              #' Download vulnerabilities from provided \code{ecosystem} to disk, the location
+                              #' is recorded under the \code{osv_cache_dir} field. Will overwrite any existing files
+                              #' in the cache.
+                              download = function() {
 
-                                # Caching...
-                                if(cache) {
+                                if(!dir.exists(self$osv_cache_dir)) dir.create(self$osv_cache_dir)
 
-                                  if(!dir.exists(self$osv_cache_dir)) dir.create(self$osv_cache_dir)
+                                if(!is.null(self$vuln_ids)) {
 
-                                  if(!is.null(self$vuln_ids)) {
+                                  osv_cache_files <- file.path(self$osv_cache_dir, paste0(self$vuln_ids, '.json'))
 
-                                    osv_cache_files <- file.path(self$osv_cache_dir, paste0(vuln_ids, '.json'))
-                                    not_cached_vulns <- !file.exists(osv_cache_files)
+                                  cached_vulns <- file.exists(osv_cache_files)
+                                  if(any(cached_vulns)) message('Overwriting previously downloaded JSON files...')
 
-                                    purrr::walk2(self$request[not_cached_vulns],
-                                                 osv_cache_files[not_cached_vulns],
-                                                 function(x, y) utils::download.file(x, y))
+                                  purrr::walk2(self$request,
+                                               osv_cache_files,
+                                               function(x, y) utils::download.file(x, y))
 
-                                    self$content <- furrr::future_map(osv_cache_files,
-                                                                      function(x) jsonlite::read_json(x))
-
-                                  } else {
-                                    all_zip <- file.path(self$osv_cache_dir, 'all.zip')
-
-                                    # Will only download if not already present as all.zip, otherwise simply unzips and loads
-                                    self$content <- private$osv_zip_operation(self$request,
-                                                                              self$osv_cache_dir,
-                                                                              all_zip)
-                                  }
-
-                                  # Not caching...
                                 } else {
 
-                                  # Load all JSON into list from URLs
-                                  if(!is.null(self$vuln_ids)) {
-                                    self$content <- furrr::future_map(self$vuln_ids,
-                                                                      function(x) jsonlite::read_json(x))
+                                  all_zip <- file.path(self$osv_cache_dir, 'all.zip')
+                                  if(file.exists(all_zip)) message('Overwriting a previously downloaded all.zip file...')
+                                  utils::download.file(url = self$request, destfile = all_zip)
+                                  utils::unzip(all_zip, exdir = self$osv_cache_dir)
 
-                                    # Temporary download, unzip and then load all JSON before wiping out (file should never exist at start)
-                                  } else {
+                                }
+                              },
 
-                                    temp_path <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), 'TEMP')
-                                    temp_file <- file.path(temp_path, 'all.zip')
+                              #' @description
+                              #' Load vulnerabilities to the R session. The entire contents of
+                              #' each vulnerability file will be loaded. Subsequent use of the \code{parse()} method
+                              #' will shrink the memory footprint as not all contents will be carried across.
+                              run = function() {
 
-                                    # Clear if TEMP wasnt cleaned up before and remake...
-                                    if(dir.exists(temp_path)) unlink(temp_path, recursive = TRUE, force = TRUE)
-                                    dir.create(temp_path)
+                                if(!is.null(self$vuln_ids)) {
 
-                                    # Remove as caching not being done.
-                                    on.exit(unlink(temp_path, recursive = TRUE, force = TRUE),
-                                            add = TRUE)
+                                  # Could also just use the request to load directly, but process here is to download first always...
+                                  self$content <- furrr::future_map(file.path(self$osv_cache_dir, paste0(self$vuln_ids, '.json')),
+                                                                    function(x) jsonlite::read_json(x))
 
-                                    self$content <- private$osv_zip_operation(self$request, temp_path, temp_file)
 
-                                  }
+                                } else {
+
+                                  self$content <- furrr::future_map(list.files(self$osv_cache_dir, '\\.json$', full.names = TRUE),
+                                                                    function(x) jsonlite::read_json(x))
                                 }
                               },
 
@@ -130,24 +128,10 @@ RosvDownload <- R6::R6Class('RosvDownload',
                               #' Print basic details of query object to screen.
                               #' @param ... Reserved for possible future use.
                               print = function(...) {
-                                cat('Request(s) made to:', self$request , '\n')
 
-                              }
-                            ),
-
-                            # Core operation to download, extract, and load JSON files from all.zip files into memory
-                            private = list(
-                              osv_zip_operation = function(req, path, file_name) {
-
-                                if(!file.exists(file_name)) {
-                                  message('Downloading all.zip from OSV database...')
-                                  utils::download.file(url = req,
-                                                       destfile = file_name)
-                                }
-
-                                utils::unzip(file_name, exdir = path)
-                                furrr::future_map(list.files(path, '\\.json$', full.names = TRUE),
-                                                  function(x) jsonlite::read_json(x))
+                                cat('Request(s) made to:', unique(dirname(self$request)), '\n')
+                                cat('Save location: ', self$osv_cache_dir, '\n')
+                                cat('Object contents: ', typeof(self$content))
 
                               }
                             )
