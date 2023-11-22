@@ -12,8 +12,8 @@
 #' vulnerability information and then flattened to a list.
 #'
 #' If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
-#' will be downloaded from the OSV database and parsed into a tidied table. Irrelevant parameters, such as \code{all_affected}
-#' will be ignored in this circumstance.
+#' will be downloaded from the OSV database and parsed into a tidied table. Since some
+#' vulnerabilities can exist across ecosystems, \code{all_affected} may need to be set to \code{FALSE}.
 #'
 #' Since the OSV database is organized by vulnerability, the returned content may have duplicate
 #' package details as the same package, and possibly its version, may occur within several different
@@ -95,9 +95,13 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affecte
   } else if((is.null(name) || length(name) == 0) && !is.null(ecosystem)) {
 
     message('Grabbing all vulnerabilities for ecosystem (', ecosystem, '), this may take a moment...')
-    message("'all_affected' parameter will be ignored...")
 
     download_all <- get_content(osv_download(ecosystem = ecosystem, cache = cache, ...))
+
+    if(!all_affected) {
+      download_all <- download_all[download_all$ecosystem == ecosystem,]
+    }
+
     return(structure(download_all, class = c('rosv_query', 'data.frame')))
 
   }

@@ -42,8 +42,8 @@ meant flattening the returned list once; for 'batchquery' the returned IDs are u
 vulnerability information and then flattened to a list.
 
 If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
-will be downloaded from the OSV database and parsed into a tidied table. Irrelevant parameters, such as \code{all_affected}
-will be ignored in this circumstance.
+will be downloaded from the OSV database and parsed into a tidied table. Since some
+vulnerabilities can exist across ecosystems, \code{all_affected} may need to be set to \code{FALSE}.
 
 Since the OSV database is organized by vulnerability, the returned content may have duplicate
 package details as the same package, and possibly its version, may occur within several different
