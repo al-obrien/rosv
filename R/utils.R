@@ -55,7 +55,8 @@ normalize_pypi_pkg <- function(pkg_name) {
 
 #' Reset cached results of OSV calls
 #'
-#' A thin wrapper around \code{\link[memoise]{forget}} to clear cached results.
+#' A thin wrapper around \code{\link[memoise]{forget}} to clear cached results and
+#' deletes all cached files under the \code{ROSV_CACHE_GLOBAL} environment variable location.
 #'
 #' @returns Invisibly returns a logical value of \code{TRUE} if cache cleared without error.
 #'
@@ -63,8 +64,15 @@ normalize_pypi_pkg <- function(pkg_name) {
 #' clear_osv_cache()
 #' @export
 clear_osv_cache <- function() {
-  purrr::walk(list(.osv_query_1_cache, .osv_querybatch_cache, .osv_vulns_cache),
+
+  # Clear memoise cache
+  purrr::walk(list(.osv_query_1_cache, .osv_querybatch_cache, .osv_vulns_cache, .osv_download_cache),
               function(x) memoise::forget(x))
+
+  # Clear download cache (list files/dirs in top of cache, then unlink recursively)
+  global_cache_files <- list.files(Sys.getenv("ROSV_CACHE_GLOBAL"), full.names = TRUE)
+  if(length(global_cache_files) > 0) unlink(global_cache_files, recursive = TRUE)
+
   invisible(TRUE)
 }
 
@@ -160,7 +168,8 @@ fetch_ecosystems <- function(offline = FALSE, refresh = FALSE) {
 is_rosv <- function(x) {
   any(inherits(x, 'RosvQuery1'),
       inherits(x, 'RosvQueryBatch'),
-      inherits(x, 'RosvVulns'))
+      inherits(x, 'RosvVulns'),
+      inherits(x, 'RosvDownload'))
 }
 
 #' Validate if object is made by \{rosv\}
