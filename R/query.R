@@ -85,6 +85,10 @@ download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 #' all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
 #' examine the response object using lower-level functions like \code{osv_query1()}.
 #'
+#' If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
+#' will be downloaded from the OSV database and parsed into the table. Irrelevant parameters, such as \code{all_affected}
+#' will be ignored in this circumstance.
+#'
 #' @param name Character vector of package names..
 #' @param version Character vector of package versions, \code{NA} if ignoring versions.
 #' @param ecosystem Character vector of ecosystem(s) within which the package(s) exist.
@@ -108,6 +112,11 @@ download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 #' @export
 osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affected = TRUE, cache = TRUE, ...) {
 
+  # Checks which may be specific to osv_query and not underlying lower level functions
+  if(is.null(ecosystem)) stop('An ecosystem must be provided')
+  if(is.null(name) & !is.null(version)) stop('Name parameter should be set if also providing versions')
+
+  # Batch method...
   if(length(name) > 1) {
     batch_vulns <- get_content(osv_querybatch(name = name,
                                               version = version,
@@ -123,9 +132,11 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affecte
       batch_vulns <- filter_affected(batch_vulns, name, ecosystem, version)
     }
 
-    structure(batch_vulns, class = c('rosv_query', 'data.frame'))
+    return(structure(batch_vulns, class = c('rosv_query', 'data.frame')))
 
-  } else {
+  # Query 1 method...
+  } else if(length(name) == 1) {
+
     # Align by pre-plucking the vulnerability label
     query1 <- get_content(osv_query_1(name = name,
                                       version = version,
@@ -137,8 +148,17 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affecte
       query1 <- filter_affected(query1, name, ecosystem, version)
     }
 
-    structure(query1,
-              class = c('rosv_query', 'data.frame'))
+    return(structure(query1, class = c('rosv_query', 'data.frame')))
+
+  # Download ALL method
+  } else if((is.null(name) || length(name) == 0) && !is.null(ecosystem)) {
+
+    message('Grabbing all vulnerabilities for ecosystem (', ecosystem, '), this may take a moment...')
+    message("'all_affected' parameter will be ignored...")
+
+    download_all <- get_content(osv_download(ecosystem = ecosystem, cache = cache, ...))
+    return(structure(download_all, class = c('rosv_query', 'data.frame')))
+
   }
 }
 
