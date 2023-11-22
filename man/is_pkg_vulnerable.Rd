@@ -7,7 +7,7 @@
 is_pkg_vulnerable(name, ecosystem, ...)
 }
 \arguments{
-\item{name}{Character vector of package names..}
+\item{name}{Character vector of package names.}
 
 \item{ecosystem}{Character vector of ecosystem(s) within which the package(s) exist.}
 

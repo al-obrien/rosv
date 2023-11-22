@@ -6,60 +6,64 @@
 \usage{
 create_osv_list(
   rosv_query = NULL,
-  ecosystem = NULL,
+  as.data.frame = TRUE,
+  sort = TRUE,
   delim = "\\t",
-  as.data.frame = FALSE,
-  refresh = FALSE,
-  clear_cache = FALSE
+  NA_value = NULL
 )
 }
 \arguments{
-\item{rosv_query}{A table of vulnerabilities (created via \code{query_osv()}); if not set, will pull an ecosystem's entire database.}
-
-\item{ecosystem}{Character value of ecosystem name (e.g. PyPI or CRAN); should not be set if providing \code{rosv_query}.}
-
-\item{delim}{The deliminator to separate the package and version details.}
+\item{rosv_query}{A table of vulnerabilities (created via \code{osv_query()}).}
 
 \item{as.data.frame}{Boolean value to determine if a data.frame should be returned.}
 
-\item{refresh}{Force refresh of the cache to grab latest details from OSV databases.}
+\item{sort}{Boolean value to determine if results should be sorted by name and version.}
 
-\item{clear_cache}{Boolean value, to force clearing of the existing cache upon exiting function for downloaded JSON files.}
+\item{delim}{The deliminator to separate the package and version details (ignored if \code{as.data.frame} set to \code{TRUE}).}
+
+\item{NA_value}{Character value to replace missing versions (typically means all versions impacted).}
 }
 \value{
-A vector object containing the package and version details; if \code{as.data.frame} is selected
-this vector will be reformatted into a \code{data.frame()} object.
+A \code{data.frame()} or vector object containing the package and version details.
 }
 \description{
-Create a list based upon package vulnerabilities discovered in the OSV database.
+Create a list of package names and versions based upon vulnerabilities discovered in the OSV database
+using \code{\link{osv_query}}.
 }
 \details{
-If used without assigning \code{rosv_query} parameter, all packages listed in the ecosystem
-will be referenced. To speed up this creation process for large ecosystems you can set \code{future::plan()}
-for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
+Requires an object of type \code{rosv_query} created by \code{\link{osv_query}}. This can be
+a selection of packages or all vulnerabilities for an ecosystem. Depending on use-case, users may
+prefer the vector based output with pairs of package names and versions separated by a provided value.
+Since only name and versions are returned, only one ecosystem can be operated on at a time.
 
-Please note, the default behaviour is to return all packages (and versions) associated with discovered vulnerabilities. Ensure you
-have properly subset the returned query if not done so via the function parameters. Furthermore, if the package is
-listed across several vulnerabilities, an additional deduplication step may need to be performed. Furthermore, the \code{clear_cache}
-parameter is specific to a downloaded set of JSON files, it is not related to caching of specific API queries which happens
-prior to using this step via functions like \code{query_osv()}.
+Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions)
+associated with discovered vulnerabilities. If a package is discovered across several vulnerabilities it will
+be listed multiple times, by default, in the returned content. Unlike \code{osv_query()}, \code{create_osv_list()} will
+further sort and return a unique set of packages. In most circumstances, users will create the
+\code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set  to \code{FALSE}
+so that only the package names of interest are returned.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-pypi_vul <- create_osv_list(ecosystem = 'PyPI')
+# List of a few PyPI packages in data.frame output
+pypi_query <- osv_query(c('dask', 'dash', 'aaiohttp'),
+                        ecosystem = rep('PyPI', 3),
+                        all_affected = FALSE)
+pypi_vul <- create_osv_list(pypi_query)
 file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
 writeLines(pypi_vul, file_name1)
 
-cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
+# All CRAN vulns in vector output
+cran_query <- osv_query(ecosystem = 'CRAN')
+cran_vul <- create_osv_list(cran_query, as.data.frame = FALSE, delim = ',')
 file_name2 <- file.path(tempdir(), 'cran_vul.csv')
 writeLines(cran_vul, file_name2)
 
 # Clean up
 try(unlink(c(file_name1, file_name2)))
-
-# Use from query instead of entire database
-pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
-create_osv_list(rosv_query = pkg_vul)
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link{osv_query}}
 }

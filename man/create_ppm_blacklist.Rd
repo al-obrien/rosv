@@ -4,12 +4,10 @@
 \alias{create_ppm_blacklist}
 \title{Create blacklist commands for Posit Package Manager}
 \usage{
-create_ppm_blacklist(osv_list, delim, flags = NULL)
+create_ppm_blacklist(rosv_query, flags = NULL)
 }
 \arguments{
-\item{osv_list}{Output from \code{create_osv_list()}.}
-
-\item{delim}{The delimiter used from \code{create_osv_list()}.}
+\item{rosv_query}{A table of vulnerabilities (created via \code{osv_query()}).}
 
 \item{flags}{Global flag to append to commands.}
 }
@@ -17,16 +15,21 @@ create_ppm_blacklist(osv_list, delim, flags = NULL)
 Character vector containing blacklist commands.
 }
 \description{
-Use OSV data to create blacklist (i.e. blocklist) commands for the Posit Package
-Manager product.
+Use OSV data accessed via \code{\link{osv_query}} to create blacklist (i.e. blocklist)
+commands for the Posit Package Manager product.
 }
 \details{
 Although OSV has many databases for open source software, this function is
-only relevant for CRAN/Bioconductor and PyPI.
+only relevant for CRAN/Bioconductor and PyPI. To ensure the blacklist is applied to the
+appropriate target, it is encouraged to specify the name of the source used in your configuration
+as an additional flag parameter (see examples). Only one ecosystem can be used at a time to ensure
+there is not a mix of packages across ecosystems applied to incompatible sources.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-pypi_vul <- create_osv_list(ecosystem = 'PyPI', delim = ',')
-cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
+
+# Blacklist all CRAN package versions with a listed vulnerability
+cran_vul <- osv_query(ecosystem = 'CRAN')
+cmd_blist <- create_ppm_blacklist(cran_vul, flags = '--source=cran')
 \dontshow{\}) # examplesIf}
 }

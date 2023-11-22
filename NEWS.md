@@ -7,9 +7,15 @@
 * Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
 available in `purrr::map()` alone.
 * Add `osv_scan()` as a high-level function to scan various components of a project (focus on R project content).
+* Add `osv_count_vulns()` to return the number of vulnerabilities a package is associated with.
 * Add groupings to pkgdown reference tab
 * Add example outputs for getting started vignette
 * Add missing R6 dependency and specify more specific minimum versions
+* Overhaul `download_osv()` to use R6 objects and memoise for core caching functionality
+* List creation functions now use data.frames specifically and have to be created by `osv_query()`.
+* Rename `download_osv()` to `osv_download()` to further standardize names 
+* `osv_query()` is now central to all high level queries and gains functionality via `osv_download()` to access all vulnerabilities by ecosystem
+* Corrected input not being de-duplicated in certain situations for `create_osv_list()`
 * Package documentation Rd added
 
 # rosv 0.4.2

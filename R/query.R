@@ -8,29 +8,32 @@
 #' @details
 #' Since the 'query' and 'batchquery' API endpoints have different outputs, this
 #' function will align their contents to be a list of vulnerabilities. For 'query' this
-#' meant flattening once, and for 'batchquery' it meant using IDs to fetch the additional
-#' vulnerability information and then flattening the list.
+#' meant flattening the returned list once; for 'batchquery' the returned IDs are used to fetch additional
+#' vulnerability information and then flattened to a list.
+#'
+#' If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
+#' will be downloaded from the OSV database and parsed into a tidied table. Irrelevant parameters, such as \code{all_affected}
+#' will be ignored in this circumstance.
 #'
 #' Since the OSV database is organized by vulnerability, the returned content may have duplicate
-#' package details as the same package and possibly its version may occur within several different
-#' reported vulnerabilities.
+#' package details as the same package, and possibly its version, may occur within several different
+#' reported vulnerabilities. To avoid this behaviour, set the \code{all_affected} parameter to \code{FALSE}.
 #'
 #' Due to variations in formatting from the OSV API, not all responses have versions associated in
 #' the response but instead use ranges. Filtering currently does not apply to this field and may return
 #' all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
-#' examine the response object using lower-level functions like \code{osv_query1()}.
-#'
-#' If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
-#' will be downloaded from the OSV database and parsed into the table. Irrelevant parameters, such as \code{all_affected}
-#' will be ignored in this circumstance.
+#' examine the response object using lower-level functions like \code{osv_query_1()}.
 #'
 #' To speed up this creation process for large ecosystems you can set \code{future::plan()}
 #' for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
+#' There are performance impacts to allow for mixed ecosystems to be queried. For packages with many vulnerabilities,
+#' it can be faster to perform those separately so all vulnerabilities can be pulled at once and not individually. Alternative
+#' approaches may be implemented in future versions.
 #'
-#' @param name Character vector of package names..
+#' @param name Character vector of package names.
 #' @param version Character vector of package versions, \code{NA} if ignoring versions.
 #' @param ecosystem Character vector of ecosystem(s) within which the package(s) exist.
-#' @param all_affected Boolean value, if \code{TRUE} will return all package results found per vulnerability discovered.
+#' @param all_affected Boolean value, if \code{TRUE} return all package results found per vulnerability discovered.
 #' @param cache Boolean value to determine if should use a cached version of the function and API results.
 #' @param ... Any other parameters to pass to nested functions.
 #'
@@ -162,3 +165,4 @@ osv_count_vulns <- function(name, ecosystem, ...) {
   results_vec
 
 }
+

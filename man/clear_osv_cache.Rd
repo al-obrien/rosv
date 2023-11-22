@@ -10,7 +10,8 @@ clear_osv_cache()
 Invisibly returns a logical value of \code{TRUE} if cache cleared without error.
 }
 \description{
-A thin wrapper around \code{\link[memoise]{forget}} to clear cached results.
+A thin wrapper around \code{\link[memoise]{forget}} to clear cached results and
+deletes all cached files under the \code{ROSV_CACHE_GLOBAL} environment variable location.
 }
 \examples{
 clear_osv_cache()

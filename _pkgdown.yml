@@ -8,13 +8,8 @@ reference:
 - contents:
   - osv_query
   - is_pkg_vulnerable
+  - osv_count_vulns
   - osv_scan
-
-- title: Access OSV database files
-- desc: Fetch metadata and JSON vulnerability files from the OSV database
-- contents:
-  - download_osv
-  - fetch_ecosystems
 
 - title: Create vulnerability lists
 - desc: >
@@ -23,7 +18,7 @@ reference:
 - contents:
   - create_osv_list
   - create_ppm_blacklist
-  - create_ppm_xref_whitelist
+  - create_xref_whitelist
 
 - title: Utility functions
 - contents:
@@ -33,6 +28,7 @@ reference:
   - is_rosv
   - normalize_pypi_pkg
   - check_ecosystem
+  - fetch_ecosystems
 
 - title: Low-level functions to OSV API
 - desc: >
@@ -42,4 +38,5 @@ reference:
   - osv_query_1
   - osv_querybatch
   - osv_vulns
+  - osv_download
   - starts_with('Rosv')
