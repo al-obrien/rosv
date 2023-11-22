@@ -44,6 +44,16 @@ is_pkg_vulnerable(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
 c(dask = TRUE, dash = FALSE)
 ```
 
+The number of vulnerabilities detected for each package can also be queried.
+
+```{r, eval = FALSE}
+osv_count_vulns(c('dask', 'readxl', 'dplyr'), c('PyPI', 'CRAN', 'CRAN'))
+```
+
+```{r, echo = FALSE}
+c(dask = 1, readxl = 3, dplyr = 0)
+```
+
 
 ### List package vulnerabilities
 
@@ -52,7 +62,12 @@ in the OSV database. This can be achieved using high-level functions such as `os
 
 ```{r, eval = FALSE}
 # Query one package in PyPI for vulnerabilities
-pkg_vul <- osv_query('dask', ecosystem = 'PyPI')
+pkg_vul <- osv_query('dask', ecosystem = 'PyPI', all_affected = FALSE)
+```
+
+Use the OSV query to generate a sorted and de-duplicated list of just package name and version.
+
+```{r, eval = FALSE}
 pkg_tbl <- create_osv_list(pkg_vul, as.data.frame = TRUE)
 head(pkg_tbl, 3)
 ```
@@ -64,8 +79,9 @@ data.frame(name = rep('dask', 3),
 
 
 ```{r example, eval = FALSE}
-# Pull the entire set of PyPI vulnerability data
-pypi_vul <- create_osv_list(ecosystem = 'PyPI')
+# Pull the entire set of PyPI vulnerability data and de-duplicate
+pkg_vul <- osv_query(ecosystem = 'PyPI', all_affected = FALSE)
+pypi_vul <- create_osv_list(pkg_vul, as.data.frame = FALSE, NA_value = ' ')
 head(pypi_vul, 3)
 ```
 
@@ -114,15 +130,22 @@ osv_querybatch(c('dask', 'readxl'), ecosystem = c('PyPI', 'CRAN'))
 
 # Grab details by vulns ID
 osv_vulns('PYSEC-2021-387')
+
+# Download vulns for an ecosystem
+osv_download('PYSEC-2021-387', 'PyPI')
+osv_download(ecosystem = 'PyPI', download_only = TRUE)
 ```
 
 ## Result caching
 
-By default, results from queries using API helpers (e.g. `osv_query()` or `osv_querybatch()`) will cache results using `memoise::memoise()`. The caching can be turned off directly using function parameters or globally reset using `clear_osv_cache()`. Caching is the default behavior to help enforce polite access of the OSV API.
+By default, results from queries using API helpers (e.g. `osv_query()` or `osv_querybatch()`) will cache results using `memoise::memoise()`. The caching can be turned off directly using function parameters or globally reset using `clear_osv_cache()`. Caching is the default behavior to help enforce polite access of the OSV API. When clearing the cache, all vulnerability files saved to disk at the temporary R session location will also be removed (refer to the environment variable `ROSV_CACHE_GLOBAL`). 
 
 ```{r, eval = FALSE}
 # Query without caching
 osv_query('dask', ecosystem = 'PyPI', cache = FALSE)
+
+# File will be saved to disk
+osv_download('PYSEC-2021-387', 'PyPI')
 
 # Clear cache, as needed
 clear_osv_cache()
@@ -141,11 +164,12 @@ vulnerabilities are excluded.
 
 ```{r, eval = FALSE}
 # List of packages of interest
-python_pkg <- c('dask', 'tensorflow', 'keras')
+python_pkg <- c('dask', 'dash', 'keras')
 
 # Create the xref whitelist
-pypi_vul <- create_osv_list(as.data.frame = TRUE)
-xref_pkg_list <- create_xref_whitelist(python_pkg, pypi_vul)
+xref_pkg_list <- create_xref_whitelist(python_pkg,
+                                       ecosystem = 'PyPI',
+                                       output_format = 'requirements.txt')
 
 # Output requirements.txt which can be used with PPM product
 writeLines(xref_pkg_list, file.path(tempdir(), 'requirements.txt'))

@@ -53,19 +53,35 @@ remotes::install_github('al-obrien/rosv')
 
 ## Basic usage
 
-Provide a package name and related ecosystem to fetch any identified
-vulnerabilities.
+The fastest and simplest way to get started with {rosv} is to use the
+`osv_query()` function.
 
-``` r
-osv_query('dask', ecosystem = 'PyPI')
-```
+1.  Provide a package name and related ecosystem to fetch any identified
+    vulnerabilities.
 
-Multiple packages can be queried at the same time and across ecosystems.
+    ``` r
+    osv_query('dask', ecosystem = 'PyPI')
+    ```
 
-``` r
-osv_query(c('dask', 'readxl', 'dplyr'),
-          ecosystem = c('PyPI', 'CRAN', 'CRAN'))
-```
+2.  Query multiple packages at the same time and across ecosystems.
+
+    ``` r
+    osv_query(c('dask', 'readxl', 'dplyr'),
+              ecosystem = c('PyPI', 'CRAN', 'CRAN'))
+    ```
+
+3.  Return results only for packages provided and not others that may be
+    part of the same vulnerability.
+
+    ``` r
+    osv_query('apache-airflow', ecosystem = 'PyPI', all_affected = FALSE)
+    ```
+
+4.  Download all vulnerabilities listed for an ecosystem.
+
+    ``` r
+    osv_query(ecosystem = 'CRAN', all_affected = FALSE)
+    ```
 
 ## Development notes
 
