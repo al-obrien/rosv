@@ -14,7 +14,7 @@ create_xref_whitelist(packages, ecosystem, output_format = NULL)
 \item{output_format}{Type of output to create (default is \code{NULL} for a \code{\link[base]{data.frame}}).}
 }
 \value{
-Character vector containing the information for a selective requirements.txt file.
+A \code{\link[base]{data.frame}} or character vector containing cross-referenced packages.
 }
 \description{
 Search for package names for vulnerability information and selectively drop packages
@@ -40,8 +40,8 @@ cran_pkg <- c('readxl', 'dplyr')
 cran_xref <- create_xref_whitelist(cran_pkg, ecosystem = 'CRAN')
 
 # Create a requirements.txt with excluded versions
-python_pkg <- c('dask', 'aaiohttp', 'keras')
-xref_pkg_list <- create_xref_whitelist(python_pkg,
+python_pkgs <- c('dask', 'aaiohttp', 'keras')
+xref_pkg_list <- create_xref_whitelist(python_pkgs,
                                        ecosystem = 'PyPI',
                                        output_format = 'requirements.txt')
 file_name <- file.path(tempdir(), 'requirements.txt')

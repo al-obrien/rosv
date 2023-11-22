@@ -14,7 +14,7 @@ is_pkg_vulnerable(name, ecosystem, ...)
 \item{...}{Any other parameters to pass to nested functions.}
 }
 \value{
-A named vector of logical values.
+A named vector of logical values indicating vulnerabilities.
 }
 \description{
 Search the OSV database, by package name and its respective ecosystem, to determine

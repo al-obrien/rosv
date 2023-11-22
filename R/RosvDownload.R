@@ -57,14 +57,15 @@ RosvDownload <- R6::R6Class('RosvDownload',
                                   stopifnot(all(!is.na(vuln_ids)))
                                 }
 
+                                stopifnot(is.character(ecosystem))
                                 if(length(ecosystem) > 1) stop('Only provide 1 ecosystem at a time.')
 
-                                gcs_bucket <- 'https://osv-vulnerabilities.storage.googleapis.com'
-
-                                self$vuln_ids <- vuln_ids
                                 self$ecosystem <- check_ecosystem(ecosystem)
+                                self$vuln_ids <- vuln_ids
                                 self$time_stamp <- Sys.time()
                                 self$date_stamp_hash <- digest::digest(as.Date(self$time_stamp))
+
+                                gcs_bucket <- 'https://osv-vulnerabilities.storage.googleapis.com'
 
                                 self$osv_cache_dir <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(self$ecosystem, '-', self$date_stamp_hash))
 

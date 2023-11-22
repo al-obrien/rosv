@@ -36,11 +36,11 @@ a selection of packages or all vulnerabilities for an ecosystem. Depending on us
 prefer the vector based output with pairs of package names and versions separated by a provided value.
 Since only name and versions are returned, only one ecosystem can be operated on at a time.
 
-Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions)
+Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions) across ecosystems
 associated with discovered vulnerabilities. If a package is discovered across several vulnerabilities it will
 be listed multiple times, by default, in the returned content. Unlike \code{osv_query()}, \code{create_osv_list()} will
 further sort and return a unique set of packages. In most circumstances, users will create the
-\code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set  to \code{FALSE}
+\code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set to \code{FALSE}
 so that only the package names of interest are returned.
 }
 \examples{
@@ -55,7 +55,7 @@ file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
 writeLines(pypi_vul, file_name1)
 
 # All CRAN vulns in vector output
-cran_query <- osv_query(ecosystem = 'CRAN')
+cran_query <- osv_query(ecosystem = 'CRAN', all_affected = FALSE)
 cran_vul <- create_osv_list(cran_query, as.data.frame = FALSE, delim = ',')
 file_name2 <- file.path(tempdir(), 'cran_vul.csv')
 writeLines(cran_vul, file_name2)

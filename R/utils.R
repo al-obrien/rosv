@@ -218,7 +218,6 @@ get_rosv <- function(x, field) {
 #' for a combination of a package and ecosystem. With this enforced, it is also easier to keep all rows with \code{NA} versions listed
 #' and reduce any versions to those specified in the parameters.
 #'
-#'
 #' @param data Query result in data.frame format.
 #' @inheritParams osv_query
 #'

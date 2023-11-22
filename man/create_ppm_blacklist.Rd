@@ -29,7 +29,7 @@ there is not a mix of packages across ecosystems applied to incompatible sources
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 # Blacklist all CRAN package versions with a listed vulnerability
-cran_vul <- osv_query(ecosystem = 'CRAN')
+cran_vul <- osv_query(ecosystem = 'CRAN', all_affected = FALSE)
 cmd_blist <- create_ppm_blacklist(cran_vul, flags = '--source=cran')
 \dontshow{\}) # examplesIf}
 }

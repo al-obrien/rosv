@@ -152,10 +152,10 @@ is_pkg_vulnerable <- function(name, ecosystem, ...) {
 #' @export
 osv_count_vulns <- function(name, ecosystem, ...) {
 
-  # Initialize FALSE vector
+  # Initialize 0 vector
   results_vec <- integer(length = length(name))
 
-  # Find TRUE locations
+  # Find vulns
   index <- get_content(osv_querybatch(name = name,
                                       ecosystem = ecosystem,
                                       ...))

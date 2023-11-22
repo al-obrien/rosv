@@ -9,11 +9,11 @@
 #' prefer the vector based output with pairs of package names and versions separated by a provided value.
 #' Since only name and versions are returned, only one ecosystem can be operated on at a time.
 #'
-#' Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions)
+#' Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions) across ecosystems
 #' associated with discovered vulnerabilities. If a package is discovered across several vulnerabilities it will
 #' be listed multiple times, by default, in the returned content. Unlike \code{osv_query()}, \code{create_osv_list()} will
 #' further sort and return a unique set of packages. In most circumstances, users will create the
-#' \code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set  to \code{FALSE}
+#' \code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set to \code{FALSE}
 #' so that only the package names of interest are returned.
 #'
 #' @param rosv_query A table of vulnerabilities (created via \code{osv_query()}).
@@ -37,7 +37,7 @@
 #' writeLines(pypi_vul, file_name1)
 #'
 #' # All CRAN vulns in vector output
-#' cran_query <- osv_query(ecosystem = 'CRAN')
+#' cran_query <- osv_query(ecosystem = 'CRAN', all_affected = FALSE)
 #' cran_vul <- create_osv_list(cran_query, as.data.frame = FALSE, delim = ',')
 #' file_name2 <- file.path(tempdir(), 'cran_vul.csv')
 #' writeLines(cran_vul, file_name2)
@@ -92,7 +92,7 @@ create_osv_list <- function(rosv_query = NULL, as.data.frame = TRUE, sort = TRUE
 #' @examplesIf interactive()
 #'
 #' # Blacklist all CRAN package versions with a listed vulnerability
-#' cran_vul <- osv_query(ecosystem = 'CRAN')
+#' cran_vul <- osv_query(ecosystem = 'CRAN', all_affected = FALSE)
 #' cmd_blist <- create_ppm_blacklist(cran_vul, flags = '--source=cran')
 #'
 #' @export
@@ -137,7 +137,7 @@ create_ppm_blacklist <- function(rosv_query, flags = NULL) {
 #' @param output_format Type of output to create (default is \code{NULL} for a \code{\link[base]{data.frame}}).
 #'
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
-#' @returns Character vector containing the information for a selective requirements.txt file.
+#' @returns A \code{\link[base]{data.frame}} or character vector containing cross-referenced packages.
 #' @examplesIf interactive()
 #'
 #' # Return xref dataset for CRAN package selection
@@ -145,8 +145,8 @@ create_ppm_blacklist <- function(rosv_query, flags = NULL) {
 #' cran_xref <- create_xref_whitelist(cran_pkg, ecosystem = 'CRAN')
 #'
 #' # Create a requirements.txt with excluded versions
-#' python_pkg <- c('dask', 'aaiohttp', 'keras')
-#' xref_pkg_list <- create_xref_whitelist(python_pkg,
+#' python_pkgs <- c('dask', 'aaiohttp', 'keras')
+#' xref_pkg_list <- create_xref_whitelist(python_pkgs,
 #'                                        ecosystem = 'PyPI',
 #'                                        output_format = 'requirements.txt')
 #' file_name <- file.path(tempdir(), 'requirements.txt')
@@ -164,7 +164,6 @@ create_xref_whitelist <- function(packages, ecosystem, output_format = NULL) {
     output_format <- match.arg(output_format, choices = 'requirements.txt', several.ok = FALSE)
     if(ecosystem != 'PyPI' && output_format == 'requirements.txt') stop('The output format is not compatible with the provided ecosystem')
   }
-
 
   if(ecosystem == 'PyPI') {
     packages <- unique(data.frame(name = normalize_pypi_pkg(packages)))
