@@ -1,113 +1,117 @@
 #' List packages identified in the OSV database
 #'
-#' Create a list based upon package vulnerabilities discovered in the OSV database.
+#' Create a list of package names and versions based upon vulnerabilities discovered in the OSV database
+#' using \code{\link{osv_query}}.
 #'
 #' @details
-#' If used without assigning \code{rosv_query} parameter, all packages listed in the ecosystem
-#' will be referenced. To speed up this creation process for large ecosystems you can set \code{future::plan()}
-#' for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
+#' Requires an object of type \code{rosv_query} created by \code{\link{osv_query}}. This can be
+#' a selection of packages or all vulnerabilities for an ecosystem. Depending on use-case, users may
+#' prefer the vector based output with pairs of package names and versions separated by a provided value.
+#' Since only name and versions are returned, only one ecosystem can be operated on at a time.
 #'
-#' Please note, the default behaviour is to return all packages (and versions) associated with discovered vulnerabilities. Ensure you
-#' have properly subset the returned query if not done so via the function parameters. Furthermore, if the package is
-#' listed across several vulnerabilities, an additional deduplication step may need to be performed. Furthermore, the \code{clear_cache}
-#' parameter is specific to a downloaded set of JSON files, it is not related to caching of specific API queries which happens
-#' prior to using this step via functions like \code{query_osv()}.
+#' Please note, the default behaviour of \code{osv_query()} is to return all packages (and versions)
+#' associated with discovered vulnerabilities. If a package is discovered across several vulnerabilities it will
+#' be listed multiple times, by default, in the returned content. Unlike \code{osv_query()}, \code{create_osv_list()} will
+#' further sort and return a unique set of packages. In most circumstances, users will create the
+#' \code{rosv_query} (via \code{osv_query()}) with the \code{all_affected} parameter set  to \code{FALSE}
+#' so that only the package names of interest are returned.
 #'
-#' @param rosv_query A table of vulnerabilities (created via \code{query_osv()}); if not set, will pull an ecosystem's entire database.
-#' @param ecosystem Character value of ecosystem name (e.g. PyPI or CRAN); should not be set if providing \code{rosv_query}.
-#' @param delim The deliminator to separate the package and version details.
+#' @param rosv_query A table of vulnerabilities (created via \code{osv_query()}).
 #' @param as.data.frame Boolean value to determine if a data.frame should be returned.
-#' @param refresh Force refresh of the cache to grab latest details from OSV databases.
-#' @param clear_cache Boolean value, to force clearing of the existing cache upon exiting function for downloaded JSON files.
+#' @param sort Boolean value to determine if results should be sorted by name and version.
+#' @param delim The deliminator to separate the package and version details (ignored if \code{as.data.frame} set to \code{TRUE}).
+#' @param NA_value Character value to replace missing versions (typically means all versions impacted).
 #'
-#' @returns A vector object containing the package and version details; if \code{as.data.frame} is selected
-#' this vector will be reformatted into a \code{data.frame()} object.
+#' @returns A \code{data.frame()} or vector object containing the package and version details.
+#'
+#' @seealso \code{\link{osv_query}}
 #'
 #' @examplesIf interactive()
 #'
-#' pypi_vul <- create_osv_list(ecosystem = 'PyPI')
+#' # List of a few PyPI packages in data.frame output
+#' pypi_query <- osv_query(c('dask', 'dash', 'aaiohttp'),
+#'                         ecosystem = rep('PyPI', 3),
+#'                         all_affected = FALSE)
+#' pypi_vul <- create_osv_list(pypi_query)
 #' file_name1 <- file.path(tempdir(), 'pypi_vul.csv')
 #' writeLines(pypi_vul, file_name1)
 #'
-#' cran_vul <- create_osv_list(ecosystem = 'CRAN', delim = ',')
+#' # All CRAN vulns in vector output
+#' cran_query <- osv_query(ecosystem = 'CRAN')
+#' cran_vul <- create_osv_list(cran_query, as.data.frame = FALSE, delim = ',')
 #' file_name2 <- file.path(tempdir(), 'cran_vul.csv')
 #' writeLines(cran_vul, file_name2)
 #'
 #' # Clean up
 #' try(unlink(c(file_name1, file_name2)))
 #'
-#' # Use from query instead of entire database
-#' pkg_vul <- osv_query(c('dask', 'dash'), ecosystem = c('PyPI', 'PyPI'))
-#' create_osv_list(rosv_query = pkg_vul)
-#'
 #' @export
-create_osv_list <- function(rosv_query = NULL, ecosystem = NULL, delim = '\t', as.data.frame = FALSE, refresh = FALSE, clear_cache = FALSE) {
+create_osv_list <- function(rosv_query = NULL, as.data.frame = TRUE, sort = TRUE, delim = '\t', NA_value = NULL) {
 
-  # If used downloaded JSONs...
-  if(is.null(rosv_query)) {
-    stopifnot(!is.null(ecosystem))
-    dir_loc <- download_osv(ecosystem = ecosystem, refresh = refresh)
-    rosv_query <- list.files(dir_loc$dl_dir, '*.json', full.names = TRUE)
+  stopifnot(inherits(rosv_query, 'rosv_query'))
+  if(length(unique(rosv_query[, 'ecosystem'])) > 1) stop ('Only operates on vulnerabilities from a single ecosystem at a time.')
 
-    on.exit({
-      unlink(dir_loc$dl_dir, recursive = TRUE, force = TRUE)
-      if(clear_cache) unlink(dir_loc$osv_cache, force = TRUE)
-    }, add = TRUE)
+  if(!is.null(NA_value)) {
+    stopifnot(is.character(NA_value))
+    rosv_query[is.na(rosv_query$versions), 'versions'] <- NA_value
+  }
 
-    # Run in parallel if plan set by user, otherwise its sequential
-    extracted_details <- furrr::future_map(rosv_query, function(x) extract_vul_info(x, delim = delim))
+  # Keep only unique
+  rosv_query <- unique(rosv_query[,c('name', 'versions')])
+  if(sort) rosv_query <- rosv_query[order(rosv_query$name, rosv_query$versions),]
 
-    if(as.data.frame) {
-      return(utils::read.table(textConnection(unique(sort(unlist(extracted_details)))),
-                        sep = delim,
-                        col.names = c('name', 'versions')))
-    } else {
-      return(unique(sort(unlist(extracted_details))))
-    }
+  if(as.data.frame) {
 
-  # If used a query...
+    return(rosv_query)
+
   } else {
-    stopifnot(inherits(rosv_query, 'rosv_query'))
-    if(as.data.frame) {
-      return(rosv_query[,c('name', 'versions')])
-    } else {
-      return(unique(sort(paste(rosv_query$name, rosv_query$versions, sep = delim))))
-    }
+
+    return(paste(rosv_query$name, rosv_query$versions, sep = delim))
+
   }
 }
 
 
 #' Create blacklist commands for Posit Package Manager
 #'
-#' Use OSV data to create blacklist (i.e. blocklist) commands for the Posit Package
-#' Manager product.
+#' Use OSV data accessed via \code{\link{osv_query}} to create blacklist (i.e. blocklist)
+#' commands for the Posit Package Manager product.
 #'
 #' @details
 #' Although OSV has many databases for open source software, this function is
-#' only relevant for CRAN/Bioconductor and PyPI.
+#' only relevant for CRAN/Bioconductor and PyPI. To ensure the blacklist is applied to the
+#' appropriate target, it is encouraged to specify the name of the source used in your configuration
+#' as an additional flag parameter (see examples). Only one ecosystem can be used at a time to ensure
+#' there is not a mix of packages across ecosystems applied to incompatible sources.
 #'
-#' @param osv_list Output from \code{create_osv_list()}.
-#' @param delim The delimiter used from \code{create_osv_list()}.
+#' @param rosv_query A table of vulnerabilities (created via \code{osv_query()}).
 #' @param flags Global flag to append to commands.
 #'
 #' @returns Character vector containing blacklist commands.
 #'
 #' @examplesIf interactive()
-#' pypi_vul <- create_osv_list(ecosystem = 'PyPI', delim = ',')
-#' cmd_blist <- create_ppm_blacklist(pypi_vul, delim = ',', flags = '--source=pypi')
+#'
+#' # Blacklist all CRAN package versions with a listed vulnerability
+#' cran_vul <- osv_query(ecosystem = 'CRAN')
+#' cmd_blist <- create_ppm_blacklist(cran_vul, flags = '--source=cran')
 #'
 #' @export
-create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
-  split_list <- unlist(strsplit(osv_list, delim)) #strsplit doesnt recognize empty after delim, perhaps use str_split
+create_ppm_blacklist <- function(rosv_query, flags = NULL) {
+
+  stopifnot(inherits(rosv_query, 'rosv_query'))
+  if(length(unique(rosv_query[, 'ecosystem'])) > 1) stop ('Only operates on vulnerabilities from a single ecosystem at a time.')
+
+  rosv_query <- unique(rosv_query[,c('name', 'versions')])
+
   cmd_out <- paste0('rspm create blocklist-rule ',
-                    '--package-name=', split_list[seq(1,length(split_list), by = 2)])
+                    '--package-name=', rosv_query$name)
 
-  versions <- split_list[seq(2,length(split_list), by = 2)]
-  inx_v <- versions != ' '
+  inx_v <- !is.na(rosv_query$versions)
 
-  cmd_out[inx_v] <- paste0(cmd_out[inx_v], ' --version=', versions[inx_v])
+  cmd_out[inx_v] <- paste0(cmd_out[inx_v], ' --version=', rosv_query$versions[inx_v])
   if(!is.null(flags)) cmd_out <- paste(cmd_out, flags)
   cmd_out
+
 }
 
 
@@ -124,19 +128,27 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' Due to variations in formatting from the OSV API, not all responses have versions associated and
 #' are not directly compatible with this function.
 #'
+#' Although the default output is a \code{\link[base]{data.frame}}, for PyPI packages a \code{requirements.txt} format can be
+#' created that defines which versions should not be allowed based upon the cross-referencing performed. This can be
+#' useful when curating repositories in Posit Package Manager.
+#'
 #' @param packages Character vector of package names.
-#' @param osv_list OSV data/list created from \code{create_osv_list()}.
-#' @param ecosystem Determine what ecosystem of OSV list is being used (currently only works with PyPI).
-#' @param delim The delimiter used when creating \code{osv_list}.
-#' @param version_placeholder Value used when creating the \code{osv_list} from \code{create_osv_list()}.
-#' @param full_table Boolean value to determine if a complete table before dropping packages is returned (helpful for debugging).
+#' @param ecosystem Character vector of ecosystem(s) within which the package(s) exist.
+#' @param output_format Type of output to create (default is \code{NULL} for a \code{\link[base]{data.frame}}).
 #'
 #' @seealso \href{https://packaging.python.org/en/latest/specifications/name-normalization/}{PyPI package normalization}
 #' @returns Character vector containing the information for a selective requirements.txt file.
 #' @examplesIf interactive()
-#' python_pkg <- c('dask', 'tensorflow', 'keras')
-#' pypi_vul <- create_osv_list(ecosystem = 'PyPI', as.data.frame = TRUE)
-#' xref_pkg_list <- create_ppm_xref_whitelist(python_pkg, pypi_vul)
+#'
+#' # Return xref dataset for CRAN package selection
+#' cran_pkg <- c('readxl', 'dplyr')
+#' cran_xref <- create_xref_whitelist(cran_pkg, ecosystem = 'CRAN')
+#'
+#' # Create a requirements.txt with excluded versions
+#' python_pkg <- c('dask', 'aaiohttp', 'keras')
+#' xref_pkg_list <- create_xref_whitelist(python_pkg,
+#'                                        ecosystem = 'PyPI',
+#'                                        output_format = 'requirements.txt')
 #' file_name <- file.path(tempdir(), 'requirements.txt')
 #' writeLines(xref_pkg_list, file_name)
 #'
@@ -144,50 +156,60 @@ create_ppm_blacklist <- function(osv_list, delim, flags = NULL) {
 #' try(unlink(file_name))
 #'
 #' @export
-create_ppm_xref_whitelist <- function(packages, osv_list, ecosystem = 'PyPI', delim = '\\t', version_placeholder = ' ', full_table = FALSE) {
+create_xref_whitelist <- function(packages, ecosystem, output_format = NULL) {
 
-  if(ecosystem != 'PyPI') stop('This function currently only works for PyPI repos') else warning('This function currently only works for PyPI repos')
-
-  packages <- unique(data.frame(name = normalize_pypi_pkg(packages)))
-
-  # If was using the non-data.frame format, convert to it for merges...
-  if(!is.data.frame(osv_list)) {
-    osv_list <-  utils::read.table(textConnection(osv_list),
-                                   sep = delim,
-                                   col.names = c('name', 'versions'))
+  # Checks...
+  ecosystem <- check_ecosystem(ecosystem)
+  if(!is.null(output_format)) {
+    output_format <- match.arg(output_format, choices = 'requirements.txt', several.ok = FALSE)
+    if(ecosystem != 'PyPI' && output_format == 'requirements.txt') stop('The output format is not compatible with the provided ecosystem')
   }
+
+
+  if(ecosystem == 'PyPI') {
+    packages <- unique(data.frame(name = normalize_pypi_pkg(packages)))
+  } else {
+    packages <- unique(data.frame(name = packages))
+  }
+
+  # Pull all vulnerabilities for the cross reference
+  osv_list <- create_osv_list2(osv_query(name = packages$name, ecosystem = rep(ecosystem, nrow(packages)), all_affected = FALSE),
+                               NA_value = '_ALL_')
+
 
   # Left join to provided
   packages_vul <- merge(packages, osv_list, by = 'name', all.x = TRUE, all.y = FALSE)
 
   # Categorize package vul types
-  packages_vul$type <- NA
-  packages_vul[is.na(packages_vul$versions),'type'] <- 'ALLOW'
-  packages_vul[is.na(packages_vul$type) & packages_vul$versions == version_placeholder, 'type'] <- 'BLOCK'
-  packages_vul[is.na(packages_vul$type), 'type'] <- "VERSION"
+  packages_vul$block_rule <- NA
+  packages_vul[is.na(packages_vul$versions),'block_rule'] <- 'ALLOW'
+  packages_vul[is.na(packages_vul$block_rule) & packages_vul$versions == '_ALL_', 'block_rule'] <- 'BLOCK_ALL'
+  packages_vul[is.na(packages_vul$block_rule), 'block_rule'] <- "BLOCK_VERSION"
 
-  if(full_table) return(packages_vul)
+  if(is.null(output_format)) return(packages_vul)
 
   # Remove all with a block name
-  block_pkg <- packages_vul$name[packages_vul$type == 'BLOCK']
+  block_pkg <- packages_vul$name[packages_vul$block_rule == 'BLOCK']
   packages_vul <- packages_vul[!(packages_vul$name %in% block_pkg),]
 
-  if(nrow(packages_vul) > 0) {
+  if(output_format == 'requirements.txt') {
+    if(nrow(packages_vul) > 0) {
 
-    # Generate version exclusion
-    exl_v <- lapply(split(packages_vul[packages_vul$type == 'VERSION', 'versions'],
-                          packages_vul[packages_vul$type == 'VERSION', 'name']),
-                    function(x){
-                      version_glue <- paste0(x, collapse = ', != ')
-                    })
-    exl_v <- paste0(names(exl_v), ' != ', exl_v)
+      # Generate version exclusion
+      exl_v <- lapply(split(packages_vul[packages_vul$block_rule == 'BLOCK_VERSION', 'versions'],
+                            packages_vul[packages_vul$block_rule == 'BLOCK_VERSION', 'name']),
+                      function(x){
+                        version_glue <- paste0(x, collapse = ', != ')
+                      })
+      exl_v <- paste0(names(exl_v), ' != ', exl_v)
 
-    # Add to allow list
-    xref_pkgs <- c(packages_vul[packages_vul$type == 'ALLOW', 'name'],
-                   exl_v)
-    return(xref_pkgs)
+      # Add to allow list
+      xref_pkgs <- c(packages_vul[packages_vul$block_rule == 'ALLOW', 'name'],
+                     exl_v)
+      return(xref_pkgs)
+    }
+
+    packages_vul[packages_vul$block_rule == 'ALLOW', 'name']
+
   }
-
-  packages_vul[packages_vul$type == 'ALLOW', 'name']
-
 }
