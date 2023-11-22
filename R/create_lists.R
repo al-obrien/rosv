@@ -173,7 +173,7 @@ create_xref_whitelist <- function(packages, ecosystem, output_format = NULL) {
   }
 
   # Pull all vulnerabilities for the cross reference
-  osv_list <- create_osv_list2(osv_query(name = packages$name, ecosystem = rep(ecosystem, nrow(packages)), all_affected = FALSE),
+  osv_list <- create_osv_list(osv_query(name = packages$name, ecosystem = rep(ecosystem, nrow(packages)), all_affected = FALSE),
                                NA_value = '_ALL_')
 
 
