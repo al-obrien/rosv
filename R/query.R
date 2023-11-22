@@ -1,68 +1,3 @@
-#' Download helper for OSV data
-#'
-#' Helper function to assist in downloading vulnerabilities information from OSV database.
-#'
-#' Any ecosystems listed \href{https://osv-vulnerabilities.storage.googleapis.com/ecosystems.txt}{here} can be downloaded.
-#'
-#' @param ecosystem Character value of ecosystem, any listed on OSV database.
-#' @param id Vulnerability ID, default set to NULL to download all for provided ecosystem.
-#' @param refresh Force refresh of the cache to grab latest details from OSV databases.
-#'
-#' @returns A list containing the cache and download locations for the vulnerability files.
-#'
-#' @examplesIf interactive()
-#'
-#' osv_dl <- download_osv('CRAN')
-#'
-#' # Clean up
-#' try(unlink(osv_dl$osv_cache, recursive = TRUE))
-#' try(unlink(osv_dl$dl_dir, recursive = TRUE))
-#'
-#' @export
-download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
-
-  ecosystem <- check_ecosystem(ecosystem)
-  time_stamp <- Sys.time()
-  date_stamp_hash <- digest::digest(as.Date(time_stamp))
-
-  # If providing specific ID
-  if(!is.null(id)) {
-    vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, paste0(id, '.json'))
-    osv_cache_dir <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem, '-', date_stamp_hash))
-    osv_cache_file <- file.path(osv_cache_dir, paste0(id, '.json'))
-    if(!dir.exists(osv_cache_dir)) dir.create(osv_cache_dir)
-
-    if(!file.exists(osv_cache_file) || refresh) {
-      message('Downloading from OSV online database...')
-      utils::download.file(url = vul_url, destfile = osv_cache_file)
-    }
-
-    return(list('osv_cache' = osv_cache_file,
-                'dl_dir' = osv_cache_dir))
-
-  # If downloading all JSON for ecosystem
-  } else {
-    vul_url <- file.path('https://osv-vulnerabilities.storage.googleapis.com', ecosystem, 'all.zip')
-
-    # Cache setup, only DL zip if not done today or in live session
-    osv_cache <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem, '-', date_stamp_hash, '-', 'all.zip'))
-
-    if(!file.exists(osv_cache) || refresh) {
-      message('Downloading from OSV online database...')
-      utils::download.file(url = vul_url, destfile = osv_cache)
-    }
-
-    # Unzip for use...
-    dl_dir <- file.path(Sys.getenv('ROSV_CACHE_GLOBAL'), paste0(ecosystem,'-unzipped-',date_stamp_hash))
-    utils::unzip(osv_cache, exdir = dl_dir)
-
-    return(list('osv_cache' = osv_cache,
-                'dl_dir' = dl_dir))
-
-  }
-}
-
-
 #' Query OSV API for individual package vulnerabilities
 #'
 #' Will connect to OSV API and query vulnerabilities from the specified packages.
@@ -88,6 +23,9 @@ download_osv <- function(ecosystem, id = NULL, refresh = FALSE) {
 #' If only an \code{ecosystem} parameter is provided, all vulnerabilities for that selection
 #' will be downloaded from the OSV database and parsed into the table. Irrelevant parameters, such as \code{all_affected}
 #' will be ignored in this circumstance.
+#'
+#' To speed up this creation process for large ecosystems you can set \code{future::plan()}
+#' for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
 #'
 #' @param name Character vector of package names..
 #' @param version Character vector of package versions, \code{NA} if ignoring versions.

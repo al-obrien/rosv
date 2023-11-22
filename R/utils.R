@@ -1,32 +1,3 @@
-#' Extract key OSV information from JSON files
-#'
-#' Use the downloaded JSON dataset from OSV and extract key details on package and versions.
-#'
-#' @details
-#' Packages that do not have a listed version will have a blank space as the default placeholder.
-#' This makes it easier for \code{strsplit()} to operate on the string in other steps,
-#' which will not perform as expected without some value coming after the delimiter.
-#'
-#' @param input File path to the folder or API response content containing the OSV JSON info
-#' @param delim The deliminator to separate the package and version details.
-#' @param version_placeholder Value to fill if no versions are listed for package.
-#'
-#' @returns A character vector of package names and versions
-#'
-#' @noRd
-extract_vul_info <- function(input, delim = '\t', version_placeholder = ' ') {
-
-  # Load from a file (if it exists), parse accordingly for affected set
-  aff_pkgs <- purrr::pluck(jsonlite::read_json(input), 'affected')
-
-  pkg_names <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'package', 'name'))
-  pkg_versions <- purrr::map(aff_pkgs, function(x) purrr::pluck(x, 'versions'))
-  if(length(pkg_versions) == 1 && length(pkg_versions[[1]]) < 1) pkg_versions <- version_placeholder
-  unlist(purrr::map2(pkg_names, pkg_versions, function(x,y) paste(x, y, sep = delim)))
-
-}
-
-
 #' Normalize package name to PyPI expectation
 #'
 #' Perform package name formatting as PyPI is case insensitive and long runs
