@@ -56,6 +56,6 @@ osv_download <- function(vuln_ids = NULL, ecosystem, parse = TRUE, cache = TRUE,
 
 
 #' @describeIn osv_download Internal function to run a memoise and cached version of \code{osv_download}.
-.osv_download_cache <- function(vuln_ids = NULL, ecosystem, parse = TRUE) {
+.osv_download_cache <- function(vuln_ids = NULL, ecosystem, parse = TRUE, download_only = FALSE) {
   # Placeholder for documentation
 }
