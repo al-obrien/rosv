@@ -109,7 +109,7 @@ osv_query <- function(name = NULL, version = NULL, ecosystem = NULL, all_affecte
 #' that have been affected.
 #'
 #' @inheritParams osv_query
-#' @returns A named vector of logical values.
+#' @returns A named vector of logical values indicating vulnerabilities.
 #'
 #' @examplesIf interactive()
 #' is_pkg_vulnerable(c('dask', 'dplyr'), c('PyPI', 'CRAN'))
@@ -131,3 +131,34 @@ is_pkg_vulnerable <- function(name, ecosystem, ...) {
 
 }
 
+#' Count the number of reported vulnerabilities
+#'
+#' Search the OSV database, by package name and its respective ecosystem, and count the number
+#' of discovered vulnerabilities listed.
+#'
+#' @inheritParams osv_query
+#' @returns A named vector of numeric values indicating vulnerabilities.
+#'
+#' @examplesIf interactive()
+#' osv_count_vulns(c('dask', 'dplyr'), c('PyPI', 'CRAN'))
+#'
+#' @export
+osv_count_vulns <- function(name, ecosystem, ...) {
+
+  # Initialize FALSE vector
+  results_vec <- integer(length = length(name))
+
+  # Find TRUE locations
+  index <- get_content(osv_querybatch(name = name,
+                                      ecosystem = ecosystem,
+                                      ...))
+
+  vulns_count <- tapply(index$id,
+                        index$result,
+                        FUN = function(x) length(unique(x)))
+
+  results_vec[unique(as.integer(index$result))] <- vulns_count
+  names(results_vec) <- name
+  results_vec
+
+}
