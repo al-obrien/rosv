@@ -57,6 +57,8 @@ RosvDownload <- R6::R6Class('RosvDownload',
                                   stopifnot(all(!is.na(vuln_ids)))
                                 }
 
+                                if(length(ecosystem) > 1) stop('Only provide 1 ecosystem at a time.')
+
                                 gcs_bucket <- 'https://osv-vulnerabilities.storage.googleapis.com'
 
                                 self$vuln_ids <- vuln_ids
