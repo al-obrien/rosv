@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rosv</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,8 +49,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rosv-development-version">rosv (development version)<a class="anchor" aria-label="anchor" href="#rosv-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="rosv-050">rosv 0.5.0<a class="anchor" aria-label="anchor" href="#rosv-050"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h3>
 <ul><li>Implemented pagination as core functionality in low-level functions (e.g. <code><a href="../reference/RosvQueryBatch.html">RosvQueryBatch()</a></code>)</li>
 <li>Add <code><a href="../reference/osv_scan.html">osv_scan()</a></code> as a high-level function to scan various components of a project (focused on R project content)</li>
 <li>Add <code><a href="../reference/osv_count_vulns.html">osv_count_vulns()</a></code> to return the number of vulnerabilities a package is associated with</li>
@@ -58,15 +61,15 @@
 <code><a href="../reference/osv_query.html">osv_query()</a></code> is now central to all high level queries and gains functionality via <code><a href="../reference/osv_download.html">osv_download()</a></code> to access all vulnerabilities by ecosystem</li>
 </ul></div>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-5-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-5-0"></a></h3>
 <ul><li>Upgraded to {httr2} 1.0.0</li>
 <li>Upgraded tests with {httptest2} 1.0.0</li>
 <li>Overhaul <code>download_osv()</code> to use R6 objects and memoise for core caching functionality, rename <code>download_osv()</code> to <code><a href="../reference/osv_download.html">osv_download()</a></code> to further standardize names</li>
-<li>Use <code><a href="https://httr2.r-lib.org/reference/req_perform_sequential.html" class="external-link">httr2::req_perform_sequential()</a></code> for the <code><a href="../reference/RosvVulns.html">RosvVulns()</a></code> methods to get build-in helpers not available in <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> alone</li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-changes-improvements-and-fixes-development-version">Minor changes, improvements, and fixes<a class="anchor" aria-label="anchor" href="#minor-changes-improvements-and-fixes-development-version"></a></h3>
-<ul><li>Corrected input not being de-duplicated in certain situations for <code><a href="../reference/create_osv_list.html">create_osv_list()</a></code>
+<h3 id="minor-changes-improvements-and-fixes-0-5-0">Minor changes, improvements, and fixes<a class="anchor" aria-label="anchor" href="#minor-changes-improvements-and-fixes-0-5-0"></a></h3>
+<ul><li>Use <code><a href="https://httr2.r-lib.org/reference/req_perform_sequential.html" class="external-link">httr2::req_perform_sequential()</a></code> for the <code><a href="../reference/RosvVulns.html">RosvVulns()</a></code> methods to get build-in helpers not available in <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> alone</li>
+<li>Corrected input not being de-duplicated in certain situations for <code><a href="../reference/create_osv_list.html">create_osv_list()</a></code>
 </li>
 <li>Remove page_token parameter from mid-level functions, all handled at low-level automatically</li>
 <li>Add groupings to pkgdown reference tab</li>

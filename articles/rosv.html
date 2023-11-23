@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rosv</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,9 +134,9 @@ queried.</p>
 ecosystem’s packages (e.g. PyPI or CRAN) listed in the OSV database.
 This can be achieved using high-level functions such as
 <code><a href="../reference/osv_query.html">osv_query()</a></code> and <code><a href="../reference/create_osv_list.html">create_osv_list()</a></code>.</p>
+<p>To start we can query one package in PyPI for vulnerabilities.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Query one package in PyPI for vulnerabilities</span></span>
-<span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span>, all_affected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span>, all_affected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Use the OSV query to generate a sorted and de-duplicated list of just
 package name and version.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -146,9 +146,9 @@ package name and version.</p>
 <span><span class="co">#&gt; 1 dask   0.10.0</span></span>
 <span><span class="co">#&gt; 2 dask   0.10.1</span></span>
 <span><span class="co">#&gt; 3 dask   0.10.2</span></span></code></pre>
+<p>Pull the entire set of PyPI vulnerability data and de-duplicate</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Pull the entire set of PyPI vulnerability data and de-duplicate</span></span>
-<span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span>ecosystem <span class="op">=</span> <span class="st">'PyPI'</span>, all_affected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pkg_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/osv_query.html">osv_query</a></span><span class="op">(</span>ecosystem <span class="op">=</span> <span class="st">'PyPI'</span>, all_affected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">pypi_vul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_osv_list.html">create_osv_list</a></span><span class="op">(</span><span class="va">pkg_vul</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, NA_value <span class="op">=</span> <span class="st">' '</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pypi_vul</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] "aaiohttp\t "           "accesscontrol\t2.13.0" "accesscontrol\t2.13.1"</span></span></code></pre>
@@ -159,12 +159,12 @@ package name and version.</p>
 </h2>
 <p>Packages discovered within an R project (such as {renv} LOCK files
 and installed packages at <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>) can be parsed and
-scanned directly using the <code><a href="../reference/osv_scan.html">osv_scan()</a></code> function. A
-data.frame is returned with the package name and a logical value
-specifying if a vulnerability was discovered in the OSV database. If a
-particular scanning mode does not exist, similar functionality can be
-created if a package list and associated version information is passed
-to <code><a href="../reference/is_pkg_vulnerable.html">is_pkg_vulnerable()</a></code>.</p>
+scanned directly using <code><a href="../reference/osv_scan.html">osv_scan()</a></code>. A
+<code>data.frame</code> is returned with the package name and a logical
+value specifying if a vulnerability was discovered in the OSV database.
+If a particular scanning mode does not exist, similar functionality can
+be created if a package list and associated version information is
+passed to <code><a href="../reference/is_pkg_vulnerable.html">is_pkg_vulnerable()</a></code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/osv_scan.html">osv_scan</a></span><span class="op">(</span><span class="st">'r_project'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;         name version ecosystem is_vul</span></span>
@@ -181,9 +181,9 @@ response contained within the R6 object. These are more flexible than
 their higher-level alternatives. By default, the results of these
 functions will be cached. This can be overriden by specifying
 <code>cache = FALSE</code>.</p>
-<p>The higher-level API query function <code><a href="../reference/osv_query.html">osv_query()</a></code> aligns
-returned content type and parsing method, making it the preferred choice
-for the typical use-case.</p>
+<p>The higher-level API query function <code><a href="../reference/osv_query.html">osv_query()</a></code> builds
+upon these helpers to align the format of returned content, making it
+the preferred choice for typical use-cases.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Returns entire response object to parse as you please.</span></span>
 <span><span class="fu"><a href="../reference/osv_query_1.html">osv_query_1</a></span><span class="op">(</span><span class="st">'dask'</span>, ecosystem <span class="op">=</span> <span class="st">'PyPI'</span><span class="op">)</span></span>

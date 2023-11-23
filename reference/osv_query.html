@@ -16,7 +16,7 @@ in OSV. This can be subset manually or via the parameter all_affected."><meta pr
     
     <a class="navbar-brand me-2" href="../index.html">rosv</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,8 @@ in OSV. This can be subset manually or via the parameter <code>all_affected</cod
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Since the 'query' and 'batchquery' API endpoints have different outputs, this
+    <p>Since the <a href="https://google.github.io/osv.dev/post-v1-query/" class="external-link">query</a> and
+<a href="https://google.github.io/osv.dev/post-v1-querybatch/" class="external-link">batchquery</a> API endpoints have different outputs, this
 function will align their contents to be a list of vulnerabilities. For 'query' this
 meant flattening the returned list once; for 'batchquery' the returned IDs are used to fetch additional
 vulnerability information and then flattened to a list.</p>
@@ -121,7 +122,7 @@ reported vulnerabilities. To avoid this behaviour, set the <code>all_affected</c
 the response but instead use ranges. Filtering currently does not apply to this field and may return
 all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
 examine the response object using lower-level functions like <code><a href="osv_query_1.html">osv_query_1()</a></code>.</p>
-<p>To speed up this creation process for large ecosystems you can set <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::plan()</a></code>
+<p>To speed up the process for large ecosystems you can set <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::plan()</a></code>
 for parallelization; this will be respected via the <code>furrr</code> package. The default will be to run sequentially.
 There are performance impacts to allow for mixed ecosystems to be queried. For packages with many vulnerabilities,
 it can be faster to perform those separately so all vulnerabilities can be pulled at once and not individually. Alternative
