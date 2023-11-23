@@ -96,7 +96,7 @@ RosvQuery1 <- R6::R6Class('RosvQuery1',
 
 
                               # Collapse within each pkg set (e.g. tensorflow can have several affected per vulns)
-                              affected_versions <- purrr::map(affected_versions, list_rbind)
+                              affected_versions <- purrr::map(affected_versions, purrr::list_rbind)
 
                               # Combine summary details per vulns with nested affected details and collapse into 1 dataframe
                               self$content <- purrr::list_rbind(
