@@ -60,8 +60,9 @@ c(dask = 1, readxl = 3, dplyr = 0)
 The most basic usage of {rosv} is to pull all versions of an ecosystem's packages (e.g. PyPI or CRAN) listed 
 in the OSV database. This can be achieved using high-level functions such as `osv_query()` and `create_osv_list()`. 
 
+To start we can query one package in PyPI for vulnerabilities.
+
 ```{r, eval = FALSE}
-# Query one package in PyPI for vulnerabilities
 pkg_vul <- osv_query('dask', ecosystem = 'PyPI', all_affected = FALSE)
 ```
 
@@ -77,9 +78,9 @@ data.frame(name = rep('dask', 3),
            versions = c('0.10.0', '0.10.1', '0.10.2'))
 ```
 
+Pull the entire set of PyPI vulnerability data and de-duplicate 
 
 ```{r example, eval = FALSE}
-# Pull the entire set of PyPI vulnerability data and de-duplicate
 pkg_vul <- osv_query(ecosystem = 'PyPI', all_affected = FALSE)
 pypi_vul <- create_osv_list(pkg_vul, as.data.frame = FALSE, NA_value = ' ')
 head(pypi_vul, 3)
@@ -93,7 +94,7 @@ c("aaiohttp\t ", "accesscontrol\t2.13.0", "accesscontrol\t2.13.1")
 ## Scan an R project
 
 Packages discovered within an R project (such as {renv} LOCK files and installed packages at `.libPaths()`) can be 
-parsed and scanned directly using the `osv_scan()` function. A data.frame is returned with the package name and a logical value 
+parsed and scanned directly using `osv_scan()`. A `data.frame` is returned with the package name and a logical value 
 specifying if a vulnerability was discovered in the OSV database. If a particular scanning mode does not exist, similar 
 functionality can be created if a package list and associated version information is passed to `is_pkg_vulnerable()`.
 
@@ -116,7 +117,8 @@ contained within the R6 object. These are more flexible than their higher-level 
 By default, the results of these functions will be cached. This can be overriden 
 by specifying `cache = FALSE`.
 
-The higher-level API query function `osv_query()` aligns returned content type and parsing method, making it the preferred choice for the typical use-case.
+The higher-level API query function `osv_query()` builds upon these helpers to align the format of returned content, 
+making it the preferred choice for typical use-cases.
 
 ```{r, eval = FALSE}
 # Returns entire response object to parse as you please.

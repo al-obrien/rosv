@@ -6,7 +6,8 @@
 #' in OSV. This can be subset manually or via the parameter \code{all_affected}.
 #'
 #' @details
-#' Since the 'query' and 'batchquery' API endpoints have different outputs, this
+#' Since the \href{https://google.github.io/osv.dev/post-v1-query/}{query} and
+#' \href{https://google.github.io/osv.dev/post-v1-querybatch/}{batchquery} API endpoints have different outputs, this
 #' function will align their contents to be a list of vulnerabilities. For 'query' this
 #' meant flattening the returned list once; for 'batchquery' the returned IDs are used to fetch additional
 #' vulnerability information and then flattened to a list.
@@ -24,7 +25,7 @@
 #' all versions affected within the ranges. If you suspect ranges are used instead of specific version codes,
 #' examine the response object using lower-level functions like \code{osv_query_1()}.
 #'
-#' To speed up this creation process for large ecosystems you can set \code{future::plan()}
+#' To speed up the process for large ecosystems you can set \code{future::plan()}
 #' for parallelization; this will be respected via the \code{furrr} package. The default will be to run sequentially.
 #' There are performance impacts to allow for mixed ecosystems to be queried. For packages with many vulnerabilities,
 #' it can be faster to perform those separately so all vulnerabilities can be pulled at once and not individually. Alternative

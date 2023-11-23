@@ -1,4 +1,4 @@
-# rosv (development version)
+# rosv 0.5.0
 
 ## New features
 * Implemented pagination as core functionality in low-level functions (e.g. `RosvQueryBatch()`)
@@ -11,10 +11,10 @@
 * Upgraded tests with {httptest2} 1.0.0
 * Overhaul `download_osv()` to use R6 objects and memoise for core caching functionality, 
 rename `download_osv()` to `osv_download()` to further standardize names 
-* Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
-available in `purrr::map()` alone
 
 ## Minor changes, improvements, and fixes
+* Use `httr2::req_perform_sequential()` for the `RosvVulns()` methods to get build-in helpers not 
+available in `purrr::map()` alone
 * Corrected input not being de-duplicated in certain situations for `create_osv_list()`
 * Remove page_token parameter from mid-level functions, all handled at low-level automatically
 * Add groupings to pkgdown reference tab
