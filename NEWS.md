@@ -1,4 +1,4 @@
-# rosv (development version)
+# rosv 0.5.1
 
 * Missing :: for some functions (e.g. `purrr::list_rbind()`)
 
