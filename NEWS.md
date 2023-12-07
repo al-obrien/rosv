@@ -1,5 +1,7 @@
 # rosv (development version)
 
+* Update jsonlite to address libyajl patches for CVE-2022-24795, CVE-2022-24795, CVE-2023-33460
+
 # rosv 0.5.1
 
 * Missing :: for some functions (e.g. `purrr::list_rbind()`)
