@@ -12,7 +12,7 @@ checks](https://badges.cranchecks.info/summary/rosv.svg)](https://cran.r-project
 [![R-CMD-check](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/al-obrien/rosv/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/al-obrien/rosv/branch/master/graph/badge.svg)](https://app.codecov.io/gh/al-obrien/rosv?branch=master)
-[![Dependencies](https://tinyverse.netlify.com/badge/rosv)](https://cran.r-project.org/package=rosv)
+[![Dependencies](https://tinyverse.netlify.app/badge/rosv)](https://cran.r-project.org/package=rosv)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/rosv?color=blue)](https://cran.r-project.org/package=rosv)
 <!-- badges: end -->
 
